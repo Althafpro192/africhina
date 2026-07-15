@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "dashboard": "Dasbor",
+    "requests": "Permintaan Saya",
+    "logout": "Keluar",
+    "login": "Masuk"
+  },
+  "dashboard": {
+    "total_volume": "Total Volume",
+    "pending_responses": "Menunggu Tanggapan",
+    "suppliers": "Pemasok Dihubungi",
+    "new_request": "Permintaan Baru"
+  },
+  "status": {
+    "pending": "Tertunda",
+    "quoted": "Dikutip",
+    "processing": "Diproses",
+    "production": "Dalam Produksi",
+    "completed": "Selesai"
+  }
+}
