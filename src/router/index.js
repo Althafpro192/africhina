@@ -5,6 +5,7 @@ import LoginView from '../views/Login.vue'
 import DashboardView from '../views/Dashboard.vue'
 import RequestDetailsView from '../views/RequestDetails.vue'
 import AdminDashboardView from '../views/AdminDashboard.vue'
+import OrderDetailView from '../views/OrderDetail.vue'
 
 const routes = [
   {
@@ -18,9 +19,14 @@ const routes = [
     component: DashboardView
   },
   {
-    path: '/requests/:id', // :id adalah parameter dinamis (misal: /requests/123)
+    path: '/requests', // :id adalah parameter dinamis (misal: /requests/123)
     name: 'RequestDetails',
     component: RequestDetailsView
+  },
+  {
+    path: '/orderdetail', // :id adalah parameter dinamis (misal: /requests/123)
+    name: 'OrderDetail',
+    component: OrderDetailView
   },
   {
     path: '/admin',
