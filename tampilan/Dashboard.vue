@@ -4,15 +4,15 @@
     <!-- Top Navigation Bar -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-header flex justify-between items-center w-full px-4 sm:px-6 py-4 shadow-sm" style="height: 72px;">
       <div class="flex items-center gap-4">
-        <span class="text-xl sm:text-2xl font-extrabold text-[#3525cd] tracking-tight">{{ $t('auth.title') }}</span>
+        <span class="text-xl sm:text-2xl font-extrabold text-[#3525cd] tracking-tight">AfriChina Bridge</span>
       </div>
       
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex gap-4 xl:gap-6 items-center">
-        <button @click="navigate('sourcing')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">{{ $t('nav.sourcing') }}</button>
-        <button @click="navigate('orders')" class="font-semibold text-sm xl:text-base text-[#3525cd] border-b-2 border-[#3525cd] pb-1">{{ $t('nav.orders') }}</button>
-        <button @click="navigate('suppliers')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">{{ $t('nav.suppliers') }}</button>
-        <button @click="navigate('logistics')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">{{ $t('nav.logistics') }}</button>
+        <button @click="navigate('sourcing')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">Sourcing</button>
+        <button @click="navigate('orders')" class="font-semibold text-sm xl:text-base text-[#3525cd] border-b-2 border-[#3525cd] pb-1">Orders</button>
+        <button @click="navigate('suppliers')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">Suppliers</button>
+        <button @click="navigate('logistics')" class="font-semibold text-sm xl:text-base text-gray-600 hover:text-[#3525cd] transition-colors duration-200">Logistics</button>
       </nav>
 
       <!-- Right Side Actions -->
@@ -22,7 +22,7 @@
           <input 
             v-model="searchQuery" 
             class="bg-transparent border-none focus:ring-0 text-sm w-32 md:w-48 placeholder-gray-500/50 outline-none" 
-            :placeholder="$t('nav.search')" 
+            placeholder="Search requests..." 
             type="text"
           />
         </div>
@@ -40,7 +40,6 @@
           alt="Profile"
           @click="toggleProfileMenu"
         />
-        <LanguageSwitcher />
       </div>
     </header>
 
@@ -58,41 +57,41 @@
       <nav class="flex-grow flex flex-col gap-1 px-2">
         <button @click="navigate('dashboard')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'dashboard' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">dashboard</span>
-          <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
+          <span class="font-semibold text-sm">Dashboard</span>
         </button>
         <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 text-white active-glow rounded-lg font-bold translate-x-1 transition-all duration-200', activeRoute === 'requests' ? 'bg-[#3525cd]' : 'bg-[#3525cd]']">
           <span class="material-symbols-outlined">request_quote</span>
-          <span class="font-semibold text-sm">{{ $t('nav.requests') }}</span>
+          <span class="font-semibold text-sm">Requests</span>
         </button>
         <button @click="navigate('orders')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'orders' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">shopping_cart</span>
-          <span class="font-semibold text-sm">{{ $t('nav.orders') }}</span>
+          <span class="font-semibold text-sm">Orders</span>
         </button>
         <button @click="navigate('suppliers')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'suppliers' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">business</span>
-          <span class="font-semibold text-sm">{{ $t('nav.suppliers') }}</span>
+          <span class="font-semibold text-sm">Suppliers</span>
         </button>
         <button @click="navigate('settings')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'settings' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">settings</span>
-          <span class="font-semibold text-sm">{{ $t('nav.settings') }}</span>
+          <span class="font-semibold text-sm">Settings</span>
         </button>
       </nav>
 
       <div class="px-2 pb-4">
         <button @click="createNewRequest" class="w-full fab-premium text-white py-4 rounded-lg font-semibold transition-all hover:opacity-95 active:scale-95 flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[20px]">add</span>
-          {{ $t('nav.new_request') }}
+          New Request
         </button>
       </div>
 
       <div class="flex flex-col gap-1 border-t border-white/50 pt-4 px-2 pb-4">
         <button @click="openHelp" class="flex items-center gap-4 p-4 text-gray-600 hover:text-[#3525cd] transition-colors rounded-lg hover:bg-white/30">
           <span class="material-symbols-outlined">help</span>
-          <span class="font-semibold text-sm">{{ $t('nav.help') }}</span>
+          <span class="font-semibold text-sm">Help Center</span>
         </button>
         <button @click="logout" class="flex items-center gap-4 p-4 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-white/30">
           <span class="material-symbols-outlined">logout</span>
-          <span class="font-semibold text-sm">{{ $t('nav.logout') }}</span>
+          <span class="font-semibold text-sm">Sign Out</span>
         </button>
       </div>
     </aside>
@@ -111,7 +110,7 @@
         
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 sm:mb-6">
-          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">{{ $t('dashboard.title') }}</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">My Requests</h1>
           <div class="flex items-center gap-2 md:hidden">
             <img class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgjcDm9LUEt_9KYagQYGByJCOUAJOjnoylLj8Hz1fqa6l-Cb04JkhmiHs-34pwid1kWfCXm72UD0Z77HG84YXM1D36P69YKhYAzaUmjvgICMjtZ_SHa2cKUe8r1XD0J6LU8e8ERNbFrHI4y7DenwNcby71OxIRoV-HKCJPIW7mtwjLmvaQRKXSc00H_Ibwdlum73GIIOtW8t6U3jwrQwjuxgb6yj9-JBojC7so2N3pDo7CI6oUzh26FBjNjmNTawdZQeg7R0KnutpZ" alt="Avatar"/>
           </div>
@@ -129,7 +128,7 @@
                 </span>
                 <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Industrial Generator 50kVA</h3>
               </div>
-              <span class="status-quoted font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.quoted') }}</span>
+              <span class="status-quoted font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">Quoted</span>
             </div>
             <div class="space-y-2 mb-4 relative z-10">
               <div class="flex items-center justify-between text-sm text-gray-600">
@@ -156,7 +155,7 @@
                 </span>
                 <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Cotton Fabric Rolls</h3>
               </div>
-              <span class="status-processing font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.processing') }}</span>
+              <span class="status-processing font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">Processing</span>
             </div>
             <div class="space-y-2 mb-4">
               <div class="flex items-center justify-between text-sm text-gray-600">
@@ -180,7 +179,7 @@
                 </span>
                 <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Solar Panels 400W</h3>
               </div>
-              <span class="status-pending font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.pending') }}</span>
+              <span class="status-pending font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">Pending</span>
             </div>
             <div class="space-y-2 mb-4">
               <div class="flex items-center justify-between text-sm text-gray-600">
@@ -197,7 +196,7 @@
           <!-- Empty State Suggestion -->
           <div @click="createNewRequest" class="bg-white/30 backdrop-blur-sm border-2 border-dashed border-[#3525cd]/20 rounded-xl p-4 flex flex-col items-center justify-center opacity-70 hover:opacity-100 transition-all cursor-pointer min-h-[180px] hover:border-[#3525cd]/40 hover:bg-white/40">
             <span class="material-symbols-outlined text-[#3525cd] text-4xl mb-2">add_circle</span>
-            <span class="font-semibold text-sm text-[#3525cd] font-bold text-center">{{ $t('dashboard.create_new') }}</span>
+            <span class="font-semibold text-sm text-[#3525cd] font-bold text-center">Create new sourcing request</span>
           </div>
         </div>
 
@@ -205,19 +204,19 @@
         <div class="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
           <div class="premium-card p-4 sm:p-6 rounded-xl flex flex-col group">
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
-              <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span> {{ $t('dashboard.total_volume') }}
+              <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span> Total Active Volume
             </span>
             <span class="text-2xl sm:text-3xl font-bold gradient-text">$124,800</span>
           </div>
           <div class="premium-card p-4 sm:p-6 rounded-xl flex flex-col group">
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
-              <span class="material-symbols-outlined text-[16px]">hourglass_empty</span> {{ $t('dashboard.pending_responses') }}
+              <span class="material-symbols-outlined text-[16px]">hourglass_empty</span> Pending Responses
             </span>
             <span class="text-2xl sm:text-3xl font-bold gradient-text">04</span>
           </div>
           <div class="premium-card p-4 sm:p-6 rounded-xl flex flex-col group">
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
-              <span class="material-symbols-outlined text-[16px]">group</span> {{ $t('dashboard.suppliers_contacted') }}
+              <span class="material-symbols-outlined text-[16px]">group</span> Suppliers Contacted
             </span>
             <span class="text-2xl sm:text-3xl font-bold gradient-text">12</span>
           </div>
@@ -272,10 +271,6 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-
-const router = useRouter()
 
 // Reactive State
 const searchQuery = ref('')
@@ -331,7 +326,6 @@ onUnmounted(() => {
 const navigate = (route) => {
   console.log(`Navigating to: ${route}`)
   activeRoute.value = route
-  if (route === 'dashboard') router.push('/dashboard')
 }
 
 const toggleNotifications = () => {
@@ -348,7 +342,7 @@ const toggleProfileMenu = () => {
 }
 
 const createNewRequest = () => {
-  router.push('/request/new')
+  console.log('Redirecting to New Request form')
 }
 
 const openHelp = () => {
@@ -356,13 +350,11 @@ const openHelp = () => {
 }
 
 const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
+  console.log('Logging out user')
 }
 
 const viewDetails = (id) => {
-  router.push(`/request/${id}`)
+  console.log(`Viewing details for request: ${id}`)
 }
 
 const trackStatus = (id) => {

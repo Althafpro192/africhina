@@ -8,8 +8,8 @@
           <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">badge</span>
         </div>
         <div>
-          <h1 class="text-[24px] leading-[1.3] font-bold text-[#4f378a] tracking-tight">{{ $t('auth.title') }}</h1>
-          <p class="text-[10px] font-bold text-[#7a7582] tracking-widest uppercase">{{ $t('nav.admin_terminal') }}</p>
+          <h1 class="text-[24px] leading-[1.3] font-bold text-[#4f378a] tracking-tight">AfriChina</h1>
+          <p class="text-[10px] font-bold text-[#7a7582] tracking-widest uppercase">Admin Terminal</p>
         </div>
       </div>
 
@@ -19,7 +19,7 @@
           <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shadow-inner">
             <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">dashboard</span>
           </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.dashboard') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Dashboard</span>
         </a>
         
         <!-- Inactive Nav Items -->
@@ -27,25 +27,25 @@
           <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
             <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">request_quote</span>
           </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.requests') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Requests</span>
         </a>
         <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
           <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
             <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">shopping_cart</span>
           </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.orders') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Orders</span>
         </a>
         <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
           <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
             <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">business</span>
           </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.suppliers') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Suppliers</span>
         </a>
         <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
           <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
             <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">settings</span>
           </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.settings') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Settings</span>
         </a>
       </nav>
 
@@ -65,7 +65,7 @@
         </div>
         <button @click="logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#e6e0e9] text-[#4f378a] font-semibold shadow-md hover:bg-[#ffdad6] hover:text-[#93000a] transition-colors lift-effect">
           <span class="material-symbols-outlined text-xl">logout</span>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.logout') }}</span>
+          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Sign Out</span>
         </button>
       </div>
     </aside>
@@ -75,8 +75,8 @@
       <!-- Header -->
       <header class="flex justify-between items-end gap-6">
         <div>
-          <h2 class="text-[48px] leading-[1.1] tracking-[-0.02em] font-extrabold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">{{ $t('admin.title') }}</h2>
-          <p class="text-[16px] leading-[1.6] font-normal text-[#494551]">{{ $t('admin.subtitle') }}</p>
+          <h2 class="text-[48px] leading-[1.1] tracking-[-0.02em] font-extrabold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">All Requests</h2>
+          <p class="text-[16px] leading-[1.6] font-normal text-[#494551]">Monitor and manage cross-border sourcing operations in real-time.</p>
         </div>
         <div class="flex gap-4 items-center">
           <div class="relative w-80">
@@ -84,7 +84,7 @@
             <input 
               v-model="searchQuery"
               class="w-full pl-12 pr-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 text-[#1d1b20] placeholder:text-[#cbc4d2] outline-none" 
-              :placeholder="$t('admin.search_placeholder')" 
+              placeholder="Search requests, buyers..." 
               type="text"
             />
           </div>
@@ -93,9 +93,8 @@
           </button>
           <button @click="createNewRequest" class="bg-[#4f378a] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-[#4f378a]/20 lift-effect border-t border-white/30">
             <span class="material-symbols-outlined">add</span>
-            {{ $t('nav.new_request') }}
+            New Request
           </button>
-          <LanguageSwitcher />
         </div>
       </header>
 
@@ -109,7 +108,7 @@
             </div>
             <span class="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-lg">+12.5%</span>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.total_requests') }}</h3>
+          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Total Requests</h3>
           <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">1,284</p>
           <div class="mt-4 h-12 w-full">
             <div class="flex items-end gap-1 h-full w-full">
@@ -132,7 +131,7 @@
             </div>
             <span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-lg">High Priority</span>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.pending_approval') }}</h3>
+          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Pending Approval</h3>
           <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">42</p>
           <div class="mt-4 h-12 w-full">
             <div class="flex items-end gap-1 h-full w-full">
@@ -155,7 +154,7 @@
             </div>
             <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-lg">Active</span>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.in_processing') }}</h3>
+          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">In Processing</h3>
           <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">315</p>
           <div class="mt-4 h-12 w-full">
             <div class="flex items-end gap-1 h-full w-full">
@@ -178,7 +177,7 @@
             </div>
             <span class="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-lg">98% Success</span>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.completed_deals') }}</h3>
+          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Completed Deals</h3>
           <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">892</p>
           <div class="mt-4 h-12 w-full">
             <div class="flex items-end gap-1 h-full w-full">
@@ -197,10 +196,10 @@
       <!-- TABLE SECTION -->
       <section class="glass-panel rounded-3xl deep-shadow overflow-hidden">
         <div class="p-6 border-b border-[#cbc4d2] flex justify-between items-center bg-white/30">
-          <h4 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.recent_requests') }}</h4>
+          <h4 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">Recent Sourcing Requests</h4>
           <div class="flex gap-2">
-            <button @click="viewAll" class="px-4 py-2 text-sm font-bold bg-[#e6e0e9] rounded-xl text-[#4f378a] hover:bg-[#4f378a]/10 transition-all">{{ $t('admin.view_all') }}</button>
-            <button @click="exportCSV" class="px-4 py-2 text-sm font-bold bg-[#e6e0e9] rounded-xl text-[#4f378a] hover:bg-[#4f378a]/10 transition-all">{{ $t('admin.export_csv') }}</button>
+            <button @click="viewAll" class="px-4 py-2 text-sm font-bold bg-[#e6e0e9] rounded-xl text-[#4f378a] hover:bg-[#4f378a]/10 transition-all">View All</button>
+            <button @click="exportCSV" class="px-4 py-2 text-sm font-bold bg-[#e6e0e9] rounded-xl text-[#4f378a] hover:bg-[#4f378a]/10 transition-all">Export CSV</button>
           </div>
         </div>
         
@@ -208,12 +207,12 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="text-[#7a7582] uppercase text-[11px] font-bold tracking-widest bg-[#f8f2fa]/50">
-                <th class="px-8 py-4">{{ $t('admin.buyer_entity') }}</th>
-                <th class="px-6 py-4">{{ $t('admin.category') }}</th>
-                <th class="px-6 py-4">{{ $t('admin.request_date') }}</th>
-                <th class="px-6 py-4">{{ $t('admin.est_volume') }}</th>
-                <th class="px-6 py-4">{{ $t('admin.status') }}</th>
-                <th class="px-6 py-4 text-right">{{ $t('admin.actions') }}</th>
+                <th class="px-8 py-4">Buyer Entity</th>
+                <th class="px-6 py-4">Category</th>
+                <th class="px-6 py-4">Request Date</th>
+                <th class="px-6 py-4">Est. Volume</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-[#cbc4d2]/30">
@@ -315,7 +314,7 @@
 
         <!-- Pagination -->
         <div class="p-6 border-t border-[#cbc4d2] flex justify-between items-center">
-          <p class="text-xs text-[#494551] font-medium">{{ $t('admin.showing_entries', { start: 1, end: 10, total: '1,284' }) }}</p>
+          <p class="text-xs text-[#494551] font-medium">Showing 1 to 10 of 1,284 entries</p>
           <div class="flex gap-2">
             <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="w-10 h-10 glass-panel rounded-xl flex items-center justify-center text-[#7a7582] hover:text-[#4f378a] lift-effect disabled:opacity-50 disabled:cursor-not-allowed">
               <span class="material-symbols-outlined">chevron_left</span>
@@ -343,7 +342,7 @@
       <div :class="['glass-panel w-[500px] rounded-3xl p-8 deep-shadow relative border-white/40 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.update_status_title') }}</h3>
+            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">Update Request Status</h3>
             <p class="text-sm text-[#494551] mt-1">Order #AF-2023-9921</p>
           </div>
           <button @click="closeStatusModal" class="text-[#7a7582] hover:text-[#4f378a] transition-colors">
@@ -354,7 +353,7 @@
         <div class="space-y-6">
           <!-- Status Selection -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.update_status_to') }}</label>
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Update Status to:</label>
             <div class="grid grid-cols-2 gap-3">
               <button @click="selectedStatus = 'quoted'" :class="['flex items-center gap-3 p-3 rounded-2xl glass-panel inner-recess transition-all', selectedStatus === 'quoted' ? 'border-[#4f378a] bg-[#4f378a]/5 ring-2 ring-[#4f378a]' : 'hover:bg-blue-50']">
                 <span class="material-symbols-outlined text-orange-600">request_quote</span>
@@ -377,7 +376,7 @@
 
           <!-- Supplier Assignment -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.assign_supplier') }}</label>
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Assign Supplier (Optional):</label>
             <div class="relative">
               <select v-model="selectedSupplier" class="w-full pl-4 pr-10 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 appearance-none text-[#1d1b20] outline-none bg-transparent">
                 <option>Yiwu Global Manufacturing Ltd.</option>
@@ -390,16 +389,16 @@
 
           <!-- Notes -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.internal_notes') }}</label>
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Internal Notes:</label>
             <textarea v-model="internalNotes" class="w-full p-4 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 h-24 resize-none text-[#1d1b20] outline-none bg-transparent" placeholder="Type any internal updates here..."></textarea>
           </div>
 
           <div class="flex gap-4 pt-4">
             <button @click="closeStatusModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
-              {{ $t('admin.cancel') }}
+              Cancel
             </button>
             <button @click="saveChanges" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect">
-              {{ $t('admin.save_changes') }}
+              Save Changes
             </button>
           </div>
         </div>
@@ -411,10 +410,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-
-const router = useRouter()
 
 // Reactive State
 const searchQuery = ref('')
@@ -450,11 +445,7 @@ const exportCSV = () => console.log('Export CSV')
 const changePage = (page) => {
   if (page >= 1 && page <= 3) currentPage.value = page
 }
-const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
-}
+const logout = () => console.log('Logout')
 </script>
 
 <style scoped>

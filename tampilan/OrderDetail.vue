@@ -7,18 +7,17 @@
         <button @click="goBack" class="p-2 hover:bg-white/50 rounded-lg transition-colors">
           <span class="material-symbols-outlined text-gray-600">arrow_back</span>
         </button>
-        <span class="text-lg sm:text-xl font-bold text-[#3525cd]">{{ $t('order_detail.title') }}</span>
+        <span class="text-lg sm:text-xl font-bold text-[#3525cd]">Request Details</span>
       </div>
       
       <div class="flex items-center gap-2 sm:gap-3">
-        <LanguageSwitcher />
         <button @click="editRequest" class="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
           <span class="material-symbols-outlined text-gray-600 text-[18px]">edit</span>
-          <span class="font-medium text-sm text-gray-700">{{ $t('dashboard.edit_request') }}</span>
+          <span class="font-medium text-sm text-gray-700">Edit</span>
         </button>
         <button @click="openUpdateModal" class="flex items-center gap-2 px-3 sm:px-4 py-2 text-white rounded-lg transition-colors" style="background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%);">
           <span class="material-symbols-outlined text-[18px]">update</span>
-          <span class="font-medium text-sm">{{ $t('order_detail.update_status') }}</span>
+          <span class="font-medium text-sm">Update Status</span>
         </button>
       </div>
     </header>
@@ -30,48 +29,48 @@
       :style="{ top: '72px', height: 'calc(100vh - 72px)' }"
     >
       <div class="mb-6 px-2 pt-4">
-        <h2 class="text-xl font-black text-[#3525cd]">{{ $t('auth.title') }}</h2>
-        <p class="text-sm text-gray-500/70">{{ $t('dashboard.verified_buyer') }}</p>
+        <h2 class="text-xl font-black text-[#3525cd]">Global Sourcing</h2>
+        <p class="text-sm text-gray-500/70">Verified Buyer</p>
       </div>
 
       <nav class="flex-grow flex flex-col gap-1 px-2">
         <button @click="navigate('dashboard')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'dashboard' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">dashboard</span>
-          <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
+          <span class="font-semibold text-sm">Dashboard</span>
         </button>
         <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 text-white active-glow rounded-lg font-bold translate-x-1 transition-all duration-200 bg-[#3525cd]']">
           <span class="material-symbols-outlined">request_quote</span>
-          <span class="font-semibold text-sm">{{ $t('nav.requests') }}</span>
+          <span class="font-semibold text-sm">Requests</span>
         </button>
         <button @click="navigate('orders')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'orders' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">shopping_cart</span>
-          <span class="font-semibold text-sm">{{ $t('nav.orders') }}</span>
+          <span class="font-semibold text-sm">Orders</span>
         </button>
         <button @click="navigate('suppliers')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'suppliers' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">business</span>
-          <span class="font-semibold text-sm">{{ $t('nav.suppliers') }}</span>
+          <span class="font-semibold text-sm">Suppliers</span>
         </button>
         <button @click="navigate('settings')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'settings' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">settings</span>
-          <span class="font-semibold text-sm">{{ $t('nav.settings') }}</span>
+          <span class="font-semibold text-sm">Settings</span>
         </button>
       </nav>
 
       <div class="px-2 pb-4">
         <button @click="createNewRequest" class="w-full fab-premium text-white py-4 rounded-lg font-semibold transition-all hover:opacity-95 active:scale-95 flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[20px]">add</span>
-          {{ $t('nav.new_request') }}
+          New Request
         </button>
       </div>
 
       <div class="flex flex-col gap-1 border-t border-white/50 pt-4 px-2 pb-4">
         <button @click="openHelp" class="flex items-center gap-4 p-4 text-gray-600 hover:text-[#3525cd] transition-colors rounded-lg hover:bg-white/30">
           <span class="material-symbols-outlined">help</span>
-          <span class="font-semibold text-sm">{{ $t('nav.help') }}</span>
+          <span class="font-semibold text-sm">Help Center</span>
         </button>
         <button @click="logout" class="flex items-center gap-4 p-4 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-white/30">
           <span class="material-symbols-outlined">logout</span>
-          <span class="font-semibold text-sm">{{ $t('nav.logout') }}</span>
+          <span class="font-semibold text-sm">Sign Out</span>
         </button>
       </div>
     </aside>
@@ -93,7 +92,7 @@
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
             <div>
               <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ $t('order_detail.order_no') }}</span>
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Order #</span>
                 <span class="text-sm font-bold text-[#3525cd]">AF-2023-9921</span>
               </div>
               <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Industrial Generator 50kVA</h1>
@@ -102,24 +101,24 @@
                 <span class="text-sm text-gray-600">Lagos Build Ltd. • Lagos, Nigeria</span>
               </div>
             </div>
-            <span class="status-quoted font-semibold text-xs px-3 py-1 rounded-full text-white self-start">{{ $t('status.quoted') }}</span>
+            <span class="status-quoted font-semibold text-xs px-3 py-1 rounded-full text-white self-start">Quoted</span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
             <div>
-              <p class="text-xs text-gray-500 mb-1">{{ $t('admin.category') }}</p>
+              <p class="text-xs text-gray-500 mb-1">Category</p>
               <p class="font-semibold text-sm text-gray-800">Machinery</p>
             </div>
             <div>
-              <p class="text-xs text-gray-500 mb-1">{{ $t('admin.request_date') }}</p>
+              <p class="text-xs text-gray-500 mb-1">Request Date</p>
               <p class="font-semibold text-sm text-gray-800">Oct 25, 2023</p>
             </div>
             <div>
-              <p class="text-xs text-gray-500 mb-1">{{ $t('request_details.quantity') }}</p>
+              <p class="text-xs text-gray-500 mb-1">Quantity</p>
               <p class="font-semibold text-sm text-gray-800">2 units</p>
             </div>
             <div>
-              <p class="text-xs text-gray-500 mb-1">{{ $t('admin.est_volume') }}</p>
+              <p class="text-xs text-gray-500 mb-1">Est. Volume</p>
               <p class="font-semibold text-sm text-[#3525cd]">$4,500.00</p>
             </div>
           </div>
@@ -137,23 +136,23 @@
                 <div class="w-10 h-10 bg-[#3525cd]/10 rounded-xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-[#3525cd]">inventory_2</span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.product_details') }}</h2>
+                <h2 class="text-lg font-bold text-gray-800">Product Details</h2>
               </div>
               <div class="space-y-3">
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.product_name') }}</span>
+                  <span class="text-sm text-gray-600">Product Name</span>
                   <span class="text-sm font-semibold text-gray-800">Industrial Generator 50kVA</span>
                 </div>
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('admin.category') }}</span>
+                  <span class="text-sm text-gray-600">Category</span>
                   <span class="text-sm font-semibold text-gray-800">Machinery</span>
                 </div>
                 <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.quantity') }}</span>
+                  <span class="text-sm text-gray-600">Quantity</span>
                   <span class="text-sm font-semibold text-gray-800">2 units</span>
                 </div>
                 <div class="flex justify-between py-2">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.budget') }}</span>
+                  <span class="text-sm text-gray-600">Budget Range</span>
                   <span class="text-sm font-semibold text-[#3525cd]">$4,000 - $5,000</span>
                 </div>
               </div>
@@ -165,7 +164,7 @@
                 <div class="w-10 h-10 bg-[#3525cd]/10 rounded-xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-[#3525cd]">description</span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.specifications') }}</h2>
+                <h2 class="text-lg font-bold text-gray-800">Specifications</h2>
               </div>
               <div class="bg-gray-50 rounded-lg p-4">
                 <p class="text-sm text-gray-700 leading-relaxed">
@@ -183,9 +182,9 @@
                   <div class="w-10 h-10 bg-[#3525cd]/10 rounded-xl flex items-center justify-center">
                     <span class="material-symbols-outlined text-[#3525cd]">group</span>
                   </div>
-                  <h2 class="text-lg font-bold text-gray-800">{{ $t('order_detail.supplier_quotes') }} (3)</h2>
+                  <h2 class="text-lg font-bold text-gray-800">Supplier Quotes (3)</h2>
                 </div>
-                <span class="text-xs text-gray-500">{{ $t('order_detail.sorted_price') }}</span>
+                <span class="text-xs text-gray-500">Sorted by price</span>
               </div>
 
               <div class="space-y-3">
@@ -276,7 +275,7 @@
                 <div class="w-10 h-10 bg-[#3525cd]/10 rounded-xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-[#3525cd]">timeline</span>
                 </div>
-                <h2 class="text-lg font-bold text-gray-800">{{ $t('order_detail.status_timeline') }}</h2>
+                <h2 class="text-lg font-bold text-gray-800">Status Timeline</h2>
               </div>
 
               <div class="space-y-4">
@@ -335,30 +334,30 @@
 
             <!-- Quick Actions -->
             <div class="premium-card rounded-xl p-4 sm:p-6">
-              <h3 class="font-bold text-gray-800 mb-4">{{ $t('order_detail.quick_actions') }}</h3>
+              <h3 class="font-bold text-gray-800 mb-4">Quick Actions</h3>
               <div class="space-y-2">
                 <button @click="openUpdateModal" class="w-full flex items-center gap-3 p-3 bg-[#3525cd]/5 hover:bg-[#3525cd]/10 rounded-lg transition-colors">
                   <span class="material-symbols-outlined text-[#3525cd]">update</span>
-                  <span class="text-sm font-semibold text-[#3525cd]">{{ $t('order_detail.update_status') }}</span>
+                  <span class="text-sm font-semibold text-[#3525cd]">Update Status</span>
                 </button>
                 <button @click="editRequest" class="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span class="material-symbols-outlined text-gray-600">edit</span>
-                  <span class="text-sm font-semibold text-gray-700">{{ $t('order_detail.edit_request') }}</span>
+                  <span class="text-sm font-semibold text-gray-700">Edit Request</span>
                 </button>
                 <button @click="downloadPDF" class="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span class="material-symbols-outlined text-gray-600">download</span>
-                  <span class="text-sm font-semibold text-gray-700">{{ $t('order_detail.download_pdf') }}</span>
+                  <span class="text-sm font-semibold text-gray-700">Download PDF</span>
                 </button>
                 <button @click="shareRequest" class="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
                   <span class="material-symbols-outlined text-gray-600">share</span>
-                  <span class="text-sm font-semibold text-gray-700">{{ $t('order_detail.share_request') }}</span>
+                  <span class="text-sm font-semibold text-gray-700">Share Request</span>
                 </button>
               </div>
             </div>
 
             <!-- Contact Info -->
             <div class="premium-card rounded-xl p-4 sm:p-6">
-              <h3 class="font-bold text-gray-800 mb-4">{{ $t('order_detail.buyer_contact') }}</h3>
+              <h3 class="font-bold text-gray-800 mb-4">Buyer Contact</h3>
               <div class="flex items-center gap-3 mb-3">
                 <img 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgjcDm9LUEt_9KYagQYGByJCOUAJOjnoylLj8Hz1fqa6l-Cb04JkhmiHs-34pwid1kWfCXm72UD0Z77HG84YXM1D36P69YKhYAzaUmjvgICMjtZ_SHa2cKUe8r1XD0J6LU8e8ERNbFrHI4y7DenwNcby71OxIRoV-HKCJPIW7mtwjLmvaQRKXSc00H_Ibwdlum73GIIOtW8t6U3jwrQwjuxgb6yj9-JBojC7so2N3pDo7CI6oUzh26FBjNjmNTawdZQeg7R0KnutpZ" 
@@ -404,7 +403,7 @@
         <div class="sticky top-0 bg-white border-b border-gray-100 p-4 sm:p-6 rounded-t-2xl">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-lg sm:text-xl font-bold text-gray-800">{{ $t('admin.update_status_title') }}</h2>
+              <h2 class="text-lg sm:text-xl font-bold text-gray-800">Update Request Status</h2>
               <p class="text-xs sm:text-sm text-gray-500 mt-1">Order #AF-2023-9921</p>
             </div>
             <button @click="closeUpdateModal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -418,7 +417,7 @@
           
           <!-- Status Selection -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-3">{{ $t('admin.update_status_to') }}</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-3">Update Status to:</label>
             <div class="grid grid-cols-2 gap-2">
               <button 
                 v-for="status in statusOptions" 
@@ -444,7 +443,7 @@
           <!-- Assign Supplier -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
-              {{ $t('admin.assign_supplier') }}
+              Assign Supplier (Optional)
             </label>
             <div class="relative">
               <select 
@@ -463,11 +462,12 @@
           <!-- Internal Notes -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
-              {{ $t('admin.internal_notes') }}
+              Internal Notes
             </label>
             <textarea 
               v-model="internalNotes"
               rows="4"
+              placeholder="Add any internal notes about this status update..."
               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#3525cd] focus:border-transparent outline-none transition-all resize-none text-sm"
             ></textarea>
           </div>
@@ -481,14 +481,14 @@
               @click="closeUpdateModal"
               class="flex-1 px-4 py-3 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
             >
-              {{ $t('admin.cancel') }}
+              Cancel
             </button>
             <button 
               @click="saveStatusUpdate"
               class="flex-1 px-4 py-3 text-white font-semibold rounded-lg transition-all hover:opacity-95"
               style="background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%);"
             >
-              {{ $t('admin.save_changes') }}
+              Save Changes
             </button>
           </div>
         </div>
@@ -543,10 +543,6 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-
-const router = useRouter()
 
 // Form State
 const selectedStatus = ref('quoted')
@@ -602,13 +598,12 @@ onUnmounted(() => {
 
 // Methods
 const goBack = () => {
-  router.back()
+  console.log('Navigate back to requests list')
 }
 
 const navigate = (route) => {
   console.log(`Navigating to: ${route}`)
   activeRoute.value = route
-  if (route === 'dashboard') router.push('/dashboard')
 }
 
 const editRequest = () => {
@@ -643,7 +638,7 @@ const shareRequest = () => {
 }
 
 const createNewRequest = () => {
-  router.push('/request/new')
+  console.log('Create new request')
 }
 
 const openHelp = () => {
@@ -651,9 +646,7 @@ const openHelp = () => {
 }
 
 const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
+  console.log('Logout')
 }
 </script>
 

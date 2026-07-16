@@ -7,10 +7,7 @@
           <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <span class="material-icons text-gray-600">arrow_back</span>
           </button>
-          <h1 class="text-2xl font-bold text-purple-700">{{ $t('request_details.title') }}</h1>
-          <div class="ml-auto">
-            <LanguageSwitcher />
-          </div>
+          <h1 class="text-2xl font-bold text-purple-700">New Sourcing Request</h1>
         </div>
       </div>
     </header>
@@ -24,13 +21,13 @@
             <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
               <span class="material-icons text-white text-sm">inventory_2</span>
             </div>
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">{{ $t('request_details.product_details') }}</h2>
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Product Details</h2>
           </div>
 
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ $t('request_details.product_name') }}
+                Product Name
               </label>
               <input
                 v-model="productName"
@@ -43,7 +40,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ $t('request_details.category') }}
+                Category
               </label>
               <div class="relative">
                 <select
@@ -70,12 +67,12 @@
             <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
               <span class="material-icons text-white text-sm">description</span>
             </div>
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">{{ $t('request_details.specifications') }}</h2>
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Specifications</h2>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ $t('request_details.detailed_reqs') }}
+              Detailed Requirements
             </label>
             <textarea
               v-model="specifications"
@@ -99,7 +96,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ $t('request_details.quantity') }}
+                Quantity (Units)
               </label>
               <input
                 v-model="quantity"
@@ -112,7 +109,7 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ $t('request_details.budget') }}
+                Expected Budget (USD)
               </label>
               <div class="relative">
                 <select
@@ -138,7 +135,7 @@
             <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
               <span class="material-icons text-white text-sm">cloud_upload</span>
             </div>
-            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">{{ $t('request_details.references') }}</h2>
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">References</h2>
           </div>
 
           <div
@@ -158,9 +155,9 @@
             />
             <span class="material-icons text-4xl text-gray-400 mb-2">upload_file</span>
             <p class="text-sm text-gray-600 mb-1">
-              <span class="font-medium text-purple-600">{{ $t('request_details.upload_desc') }}</span>
+              <span class="font-medium text-purple-600">Drop images or click to upload</span>
             </p>
-            <p class="text-xs text-gray-500">{{ $t('request_details.upload_hint') }}</p>
+            <p class="text-xs text-gray-500">SVG, PNG, JPG or PDF (max. 10MB)</p>
           </div>
 
           <!-- Uploaded Files Preview -->
@@ -193,9 +190,10 @@
               <span class="material-icons text-purple-600">verified_user</span>
             </div>
             <div>
-              <h3 class="font-semibold text-gray-800 mb-1">{{ $t('request_details.trust_guarantee') }}</h3>
+              <h3 class="font-semibold text-gray-800 mb-1">Trust Guarantee</h3>
               <p class="text-sm text-gray-600">
-                {{ $t('request_details.trust_desc') }}
+                All suppliers on AfriChina Bridge are verified for business licenses and quality standards. 
+                Your RFQ will be matched with the top 5 eligible factories within 48 hours.
               </p>
             </div>
           </div>
@@ -207,11 +205,11 @@
             type="submit"
             class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-4 px-6 rounded-xl hover:from-purple-700 hover:to-purple-800 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
           >
-            {{ $t('request_details.submit') }}
+            Submit Request
             <span class="material-icons text-sm">send</span>
           </button>
           <p class="text-xs text-gray-500 text-center mt-3">
-            {{ $t('request_details.terms') }}
+            By submitting, you agree to our Sourcing Terms of Service.
           </p>
         </div>
       </form>
@@ -222,7 +220,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const router = useRouter()
 
@@ -297,7 +294,7 @@ const submitRequest = () => {
   alert('Request submitted successfully!')
   
   // Navigate back or to success page
-  router.push('/dashboard')
+  router.push('/requests')
 }
 </script>
 
