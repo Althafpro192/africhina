@@ -22,7 +22,7 @@
       
       <!-- Logo & Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center mb-4" style="width: '64px'; height: '64px'; background: 'linear-gradient(135deg, #4f46e5 0%, #3525cd 100%)'; borderRadius: '16px'; boxShadow: '0 10px 25px rgba(53, 37, 205, 0.3)'">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style="background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%); box-shadow: 0 10px 25px rgba(53, 37, 205, 0.3)">
           <span class="material-symbols-outlined text-white" style="font-size: 32px;">bridge</span>
         </div>
         <h1 class="text-3xl font-bold mb-2" style="background: linear-gradient(135deg, #3525cd 0%, #4f46e5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
@@ -31,8 +31,20 @@
         <p class="text-gray-600">{{ $t('auth.subtitle') }}</p>
       </div>
 
+      <!-- Error Message -->
+      <div v-if="errorMsg" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-red-500" style="font-size: 18px;">error</span>
+        {{ errorMsg }}
+      </div>
+
+      <!-- Success Message -->
+      <div v-if="successMsg" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-green-500" style="font-size: 18px;">check_circle</span>
+        {{ successMsg }}
+      </div>
+
       <!-- Login Form -->
-      <form @submit.prevent="handleLogin" class="space-y-6">
+      <form @submit.prevent="handleSubmit" class="space-y-6">
         
         <!-- Company Name (Register Only) -->
         <div v-if="isRegister">
@@ -129,11 +141,13 @@
         <!-- Sign In Button -->
         <button
           type="submit"
-          class="w-full text-white font-semibold py-3 px-6 rounded-xl hover:opacity-95 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
+          :disabled="loading"
+          class="w-full text-white font-semibold py-3 px-6 rounded-xl hover:opacity-95 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
           :style="{ background: 'linear-gradient(135deg, #4f46e5 0%, #3525cd 100%)', boxShadow: '0 10px 25px rgba(53, 37, 205, 0.3)' }"
         >
-          {{ isRegister ? $t('auth.create_account') : $t('auth.sign_in') }}
-          <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+          <span v-if="loading" class="material-symbols-outlined animate-spin" style="font-size: 20px;">progress_activity</span>
+          <span v-else>{{ isRegister ? $t('auth.create_account') : $t('auth.sign_in') }}</span>
+          <span v-if="!loading" class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
         </button>
       </form>
 
@@ -181,6 +195,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { authService } from '../api/authService.js'
 
 const router = useRouter()
 
@@ -189,6 +204,9 @@ const isRegister = ref(false)
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const loading = ref(false)
+const errorMsg = ref('')
+const successMsg = ref('')
 
 const form = ref({
   company_name: '',
@@ -215,23 +233,41 @@ onUnmounted(() => {
 })
 
 // Methods
-const handleLogin = () => {
-  if (isRegister.value) {
-    console.log('Register attempted with:', { email: email.value, ...form.value })
-    localStorage.setItem('user', JSON.stringify({ role: 'buyer', name: form.value.contact_person }))
-    localStorage.setItem('token', 'mock_token')
-    router.push('/dashboard')
-  } else {
-    console.log('Login attempted with:', { email: email.value })
-    if (email.value.includes('admin')) {
-      localStorage.setItem('user', JSON.stringify({ role: 'admin' }))
-      localStorage.setItem('token', 'mock_token')
-      router.push('/admin')
+const handleSubmit = async () => {
+  errorMsg.value = ''
+  successMsg.value = ''
+  loading.value = true
+
+  try {
+    if (isRegister.value) {
+      // Register
+      await authService.register({
+        full_name: form.value.contact_person,
+        email: email.value,
+        password: password.value,
+        country: '',
+        phone: form.value.phone,
+        company_name: form.value.company_name
+      })
+      successMsg.value = 'Account created successfully! Please login.'
+      isRegister.value = false
+      password.value = ''
     } else {
-      localStorage.setItem('user', JSON.stringify({ role: 'buyer' }))
-      localStorage.setItem('token', 'mock_token')
-      router.push('/dashboard')
+      // Login
+      const data = await authService.login(email.value, password.value)
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      if (data.user.role === 'admin') {
+        router.push('/admin')
+      } else {
+        router.push('/dashboard')
+      }
     }
+  } catch (err) {
+    errorMsg.value = err.response?.data?.message || 'An error occurred. Please try again.'
+  } finally {
+    loading.value = false
   }
 }
 
@@ -241,6 +277,8 @@ const handleForgot = () => {
 
 const toggleMode = () => {
   isRegister.value = !isRegister.value
+  errorMsg.value = ''
+  successMsg.value = ''
 }
 
 const togglePassword = () => {

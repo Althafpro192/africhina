@@ -7,6 +7,7 @@ import OrderDetail from '../views/OrderDetail.vue';
 
 // Admin Pages
 import AdminDashboard from '../views/AdminDashboard.vue';
+import AdminSuppliers from '../views/AdminSuppliers.vue';
 
 // Auth Pages
 import Login from '../views/Login.vue';
@@ -19,7 +20,8 @@ const routes = [
   { path: '/request/:id', component: OrderDetail, meta: { requiresAuth: true } },
   
   // Admin Routes
-  { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } }
+  { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/suppliers', component: AdminSuppliers, meta: { requiresAuth: true, requiresAdmin: true } }
 ];
 
 const router = createRouter({

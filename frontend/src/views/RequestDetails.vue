@@ -201,14 +201,22 @@
           </div>
         </div>
 
+        <!-- Error Message -->
+        <div v-if="errorMsg" class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2 mb-4">
+          <span class="material-icons text-red-500">error</span>
+          {{ errorMsg }}
+        </div>
+
         <!-- Submit Button -->
         <div class="pt-4">
           <button
             type="submit"
-            class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-4 px-6 rounded-xl hover:from-purple-700 hover:to-purple-800 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
+            :disabled="isSubmitting"
+            class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-4 px-6 rounded-xl hover:from-purple-700 hover:to-purple-800 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {{ $t('request_details.submit') }}
-            <span class="material-icons text-sm">send</span>
+            <span v-if="isSubmitting" class="material-icons animate-spin">progress_activity</span>
+            <span v-else>{{ $t('request_details.submit') }}</span>
+            <span v-if="!isSubmitting" class="material-icons text-sm">send</span>
           </button>
           <p class="text-xs text-gray-500 text-center mt-3">
             {{ $t('request_details.terms') }}
@@ -223,6 +231,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { requestService } from '../api/requestService.js'
 
 const router = useRouter()
 
@@ -280,24 +289,37 @@ const removeFile = (index) => {
   console.log('File removed')
 }
 
-const submitRequest = () => {
-  const requestData = {
-    productName: productName.value,
-    category: category.value,
-    specifications: specifications.value,
-    quantity: quantity.value,
-    budgetRange: budgetRange.value,
-    files: uploadedFiles.value.map(f => f.name)
+const isSubmitting = ref(false)
+const errorMsg = ref('')
+
+const submitRequest = async () => {
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+  errorMsg.value = '';
+
+  try {
+    const formData = new FormData();
+    formData.append('product_name', productName.value);
+    formData.append('category', category.value);
+    formData.append('specifications', specifications.value);
+    formData.append('quantity', quantity.value);
+    formData.append('budget_range', budgetRange.value);
+
+    // Append up to 3 images as requested by backend route
+    uploadedFiles.value.slice(0, 3).forEach(f => {
+      formData.append('images', f.file);
+    });
+
+    await requestService.createRequest(formData);
+    
+    // Navigate back to dashboard on success
+    router.push('/dashboard');
+  } catch (error) {
+    console.error('Failed to create request:', error);
+    errorMsg.value = error.response?.data?.message || 'Failed to submit request. Please try again.';
+  } finally {
+    isSubmitting.value = false;
   }
-  
-  console.log('Submitting sourcing request:', requestData)
-  // Add your submit logic here
-  
-  // Show success message
-  alert('Request submitted successfully!')
-  
-  // Navigate back or to success page
-  router.push('/dashboard')
 }
 </script>
 

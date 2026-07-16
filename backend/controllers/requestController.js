@@ -16,7 +16,7 @@ export const upload = multer({ storage: storage });
 export const createRequest = async (req, res) => {
   const { product_name, category, specifications, quantity, budget_range } = req.body;
   const imageUrls = req.files ? req.files.map(f => `/uploads/${f.filename}`) : [];
-  
+
   try {
     const newReq = await pool.query(
       `INSERT INTO requests (user_id, product_name, category, specifications, quantity, budget_range, image_urls) 
@@ -64,9 +64,21 @@ export const acceptQuote = async (req, res) => {
       "UPDATE requests SET status = 'approved', quote_accepted_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
       [req.params.id]
     );
-    
+
     await pool.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'approved', 'Buyer accepted quotation')", [req.params.id]);
     res.json(updated.rows[0]);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getTrackingLogs = async (req, res) => {
+  try {
+    const logs = await pool.query(
+      'SELECT * FROM tracking_logs WHERE request_id = $1 ORDER BY created_at ASC',
+      [req.params.id]
+    );
+    res.json(logs.rows);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

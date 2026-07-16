@@ -52,7 +52,7 @@
     >
       <div class="mb-6 px-2 pt-4">
         <h2 class="text-xl font-black text-[#3525cd]">Global Sourcing</h2>
-        <p class="text-sm text-gray-500/70">Verified Buyer</p>
+        <p class="text-sm text-gray-500/70">{{ $t('dashboard.verified_buyer') }}</p>
       </div>
 
       <nav class="flex-grow flex flex-col gap-1 px-2">
@@ -60,7 +60,7 @@
           <span class="material-symbols-outlined">dashboard</span>
           <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
         </button>
-        <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 text-white active-glow rounded-lg font-bold translate-x-1 transition-all duration-200', activeRoute === 'requests' ? 'bg-[#3525cd]' : 'bg-[#3525cd]']">
+        <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 text-white active-glow rounded-lg font-bold translate-x-1 transition-all duration-200 bg-[#3525cd]']">
           <span class="material-symbols-outlined">request_quote</span>
           <span class="font-semibold text-sm">{{ $t('nav.requests') }}</span>
         </button>
@@ -112,85 +112,60 @@
         <!-- Header Section -->
         <div class="flex justify-between items-center mb-4 sm:mb-6">
           <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">{{ $t('dashboard.title') }}</h1>
-          <div class="flex items-center gap-2 md:hidden">
-            <img class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgjcDm9LUEt_9KYagQYGByJCOUAJOjnoylLj8Hz1fqa6l-Cb04JkhmiHs-34pwid1kWfCXm72UD0Z77HG84YXM1D36P69YKhYAzaUmjvgICMjtZ_SHa2cKUe8r1XD0J6LU8e8ERNbFrHI4y7DenwNcby71OxIRoV-HKCJPIW7mtwjLmvaQRKXSc00H_Ibwdlum73GIIOtW8t6U3jwrQwjuxgb6yj9-JBojC7so2N3pDo7CI6oUzh26FBjNjmNTawdZQeg7R0KnutpZ" alt="Avatar"/>
-          </div>
         </div>
 
-        <!-- Bento Grid / Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Loading State -->
+        <div v-if="loadingRequests" class="flex flex-col items-center justify-center py-20">
+          <span class="material-symbols-outlined animate-spin text-[#3525cd] mb-4" style="font-size: 48px;">progress_activity</span>
+          <p class="text-gray-500 font-medium">Loading your requests...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else-if="requests.length === 0" class="flex flex-col items-center justify-center py-20">
+          <span class="material-symbols-outlined text-gray-300 mb-4" style="font-size: 64px;">inbox</span>
+          <h3 class="text-xl font-bold text-gray-600 mb-2">No Requests Yet</h3>
+          <p class="text-gray-400 mb-6">Start by creating your first sourcing request</p>
+          <button @click="createNewRequest" class="fab-premium text-white px-8 py-3 rounded-xl font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined">add</span>
+            {{ $t('nav.new_request') }}
+          </button>
+        </div>
+
+        <!-- Request Cards Grid -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           
-          <!-- Card 1: Industrial Generator -->
-          <div class="premium-card rounded-xl p-4 transition-all group relative overflow-hidden">
+          <!-- Dynamic Request Cards -->
+          <div 
+            v-for="req in filteredRequests" 
+            :key="req.id"
+            class="premium-card rounded-xl p-4 transition-all group relative overflow-hidden cursor-pointer"
+            @click="viewDetails(req.id)"
+          >
             <div class="flex justify-between items-start mb-4 relative z-10">
               <div class="flex flex-col gap-2">
                 <span class="category-badge self-start font-semibold text-xs text-gray-600 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                  <span class="material-symbols-outlined text-[14px]">precision_manufacturing</span> Machinery
+                  <span class="material-symbols-outlined text-[14px]">{{ getCategoryIcon(req.category) }}</span> {{ req.category }}
                 </span>
-                <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Industrial Generator 50kVA</h3>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-800">{{ req.product_name }}</h3>
               </div>
-              <span class="status-quoted font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.quoted') }}</span>
+              <span :class="['font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white', getStatusClass(req.status)]">
+                {{ $t('status.' + req.status) || req.status }}
+              </span>
             </div>
             <div class="space-y-2 mb-4 relative z-10">
               <div class="flex items-center justify-between text-sm text-gray-600">
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 25, 2023</span>
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">inventory_2</span> 2 units</span>
+                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">calendar_today</span> {{ formatDate(req.created_at) }}</span>
+                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">inventory_2</span> {{ req.quantity }} units</span>
               </div>
             </div>
             <div class="flex items-center justify-between mt-6 relative z-10">
-              <div class="bg-[#3525cd]/5 px-3 sm:px-4 py-2 rounded-lg border border-[#3525cd]/10">
-                <span class="font-semibold text-sm text-[#3525cd] font-bold">$4,500.00</span>
+              <div v-if="req.quoted_price" class="bg-[#3525cd]/5 px-3 sm:px-4 py-2 rounded-lg border border-[#3525cd]/10">
+                <span class="font-semibold text-sm text-[#3525cd]">${{ Number(req.quoted_price).toLocaleString() }}</span>
               </div>
-              <button @click="viewDetails('generator')" class="font-semibold text-sm text-[#3525cd] font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              <div v-else class="text-xs text-gray-400 italic">{{ $t('dashboard.awaiting_quotes') }}</div>
+              <button class="font-semibold text-sm text-[#3525cd] font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                {{ $t('dashboard.view_details') }} <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
               </button>
-            </div>
-          </div>
-
-          <!-- Card 2: Cotton Fabric Rolls -->
-          <div class="premium-card rounded-xl p-4 transition-all group">
-            <div class="flex justify-between items-start mb-4">
-              <div class="flex flex-col gap-2">
-                <span class="category-badge self-start font-semibold text-xs text-gray-600 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                  <span class="material-symbols-outlined text-[14px]">apparel</span> Textiles
-                </span>
-                <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Cotton Fabric Rolls</h3>
-              </div>
-              <span class="status-processing font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.processing') }}</span>
-            </div>
-            <div class="space-y-2 mb-4">
-              <div class="flex items-center justify-between text-sm text-gray-600">
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 20, 2023</span>
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">straighten</span> 500m</span>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-black/5 flex justify-end">
-              <button @click="trackStatus('cotton')" class="text-gray-600 font-semibold text-sm flex items-center gap-1 hover:text-[#3525cd] transition-colors">
-                Track Status <span class="material-symbols-outlined text-[16px]">query_stats</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 3: Solar Panels -->
-          <div class="premium-card rounded-xl p-4 transition-all group">
-            <div class="flex justify-between items-start mb-4">
-              <div class="flex flex-col gap-2">
-                <span class="category-badge self-start font-semibold text-xs text-gray-600 px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
-                  <span class="material-symbols-outlined text-[14px]">wb_sunny</span> Solar
-                </span>
-                <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Solar Panels 400W</h3>
-              </div>
-              <span class="status-pending font-semibold text-xs px-2 sm:px-3 py-1 rounded-full text-white">{{ $t('status.pending') }}</span>
-            </div>
-            <div class="space-y-2 mb-4">
-              <div class="flex items-center justify-between text-sm text-gray-600">
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 18, 2023</span>
-                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">inventory_2</span> 100 units</span>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-black/5 flex justify-between items-center">
-              <span class="text-xs text-gray-500/70 italic">Awaiting supplier quotes</span>
-              <button @click="editRequest('solar')" class="text-[#3525cd] font-bold text-sm hover:underline">Edit Request</button>
             </div>
           </div>
 
@@ -207,19 +182,19 @@
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
               <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span> {{ $t('dashboard.total_volume') }}
             </span>
-            <span class="text-2xl sm:text-3xl font-bold gradient-text">$124,800</span>
+            <span class="text-2xl sm:text-3xl font-bold gradient-text">${{ totalVolume }}</span>
           </div>
           <div class="premium-card p-4 sm:p-6 rounded-xl flex flex-col group">
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
               <span class="material-symbols-outlined text-[16px]">hourglass_empty</span> {{ $t('dashboard.pending_responses') }}
             </span>
-            <span class="text-2xl sm:text-3xl font-bold gradient-text">04</span>
+            <span class="text-2xl sm:text-3xl font-bold gradient-text">{{ pendingCount }}</span>
           </div>
           <div class="premium-card p-4 sm:p-6 rounded-xl flex flex-col group">
             <span class="font-semibold text-xs text-gray-600 mb-2 flex items-center gap-2 uppercase tracking-wider">
               <span class="material-symbols-outlined text-[16px]">group</span> {{ $t('dashboard.suppliers_contacted') }}
             </span>
-            <span class="text-2xl sm:text-3xl font-bold gradient-text">12</span>
+            <span class="text-2xl sm:text-3xl font-bold gradient-text">{{ suppliersCount }}</span>
           </div>
         </div>
 
@@ -274,13 +249,16 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { requestService } from '../api/requestService.js'
 
 const router = useRouter()
 
 // Reactive State
 const searchQuery = ref('')
-const notificationCount = ref(3)
+const notificationCount = ref(0)
 const activeRoute = ref('requests')
+const requests = ref([])
+const loadingRequests = ref(true)
 
 // Device Detection
 const isTablet = ref(false)
@@ -290,70 +268,112 @@ const windowWidth = ref(0)
 
 const updateDeviceType = () => {
   windowWidth.value = window.innerWidth
-  
-  // Breakpoints yang lebih presisi
-  // Mobile: < 768px
-  // Tablet: 768px - 1023px (iPad Mini 768px, iPad Air 820px, Surface Pro 912px)
-  // Desktop: >= 1024px (1024x600 laptop, iPad Pro landscape, desktop)
-  
   if (windowWidth.value < 768) {
-    isMobile.value = true
-    isTablet.value = false
-    isDesktop.value = false
-  } else if (windowWidth.value >= 768 && windowWidth.value < 1024) {
-    isMobile.value = false
-    isTablet.value = true
-    isDesktop.value = false
+    isMobile.value = true; isTablet.value = false; isDesktop.value = false
+  } else if (windowWidth.value < 1024) {
+    isMobile.value = false; isTablet.value = true; isDesktop.value = false
   } else {
-    isMobile.value = false
-    isTablet.value = false
-    isDesktop.value = true
+    isMobile.value = false; isTablet.value = false; isDesktop.value = true
   }
-  
-  console.log(`Width: ${windowWidth.value}px | Mobile: ${isMobile.value} | Tablet: ${isTablet.value} | Desktop: ${isDesktop.value}`)
 }
 
-const showSidebar = computed(() => {
-  // Sidebar tampil di tablet dan desktop
-  return isTablet.value || isDesktop.value
+const showSidebar = computed(() => isTablet.value || isDesktop.value)
+
+// Computed stats from real data
+const filteredRequests = computed(() => {
+  if (!searchQuery.value) return requests.value
+  const q = searchQuery.value.toLowerCase()
+  return requests.value.filter(r => 
+    r.product_name.toLowerCase().includes(q) || 
+    r.category.toLowerCase().includes(q)
+  )
 })
+
+const totalVolume = computed(() => {
+  const sum = requests.value
+    .filter(r => r.quoted_price)
+    .reduce((acc, r) => acc + Number(r.quoted_price), 0)
+  return sum.toLocaleString()
+})
+
+const pendingCount = computed(() => {
+  return requests.value.filter(r => r.status === 'pending').length.toString().padStart(2, '0')
+})
+
+const suppliersCount = computed(() => {
+  const unique = new Set(requests.value.filter(r => r.assigned_supplier_id).map(r => r.assigned_supplier_id))
+  return unique.size.toString().padStart(2, '0')
+})
+
+// Fetch data from API
+const fetchRequests = async () => {
+  loadingRequests.value = true
+  try {
+    requests.value = await requestService.getRequests()
+    notificationCount.value = requests.value.filter(r => r.status === 'quoted').length
+  } catch (err) {
+    console.error('Failed to fetch requests:', err)
+  } finally {
+    loadingRequests.value = false
+  }
+}
 
 onMounted(() => {
   updateDeviceType()
   window.addEventListener('resize', updateDeviceType)
+  fetchRequests()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateDeviceType)
 })
 
+// Helper functions
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+const getCategoryIcon = (category) => {
+  const icons = {
+    'Machinery': 'precision_manufacturing',
+    'Textiles': 'apparel',
+    'Solar': 'wb_sunny',
+    'Electronics': 'devices',
+    'Construction': 'construction',
+    'renewable-energy': 'wb_sunny',
+    'industrial-machinery': 'precision_manufacturing',
+    'electronics-it': 'devices',
+    'textiles-apparel': 'apparel',
+    'construction-materials': 'construction'
+  }
+  return icons[category] || 'category'
+}
+
+const getStatusClass = (status) => {
+  const classes = {
+    'pending': 'status-pending',
+    'quoted': 'status-quoted',
+    'approved': 'status-quoted',
+    'processing': 'status-processing',
+    'production': 'status-processing',
+    'shipped': 'status-processing',
+    'completed': 'status-completed'
+  }
+  return classes[status] || 'status-pending'
+}
+
 // Navigation Functions
 const navigate = (route) => {
-  console.log(`Navigating to: ${route}`)
   activeRoute.value = route
   if (route === 'dashboard') router.push('/dashboard')
 }
 
-const toggleNotifications = () => {
-  console.log('Toggling notifications dropdown')
-  notificationCount.value = 0
-}
+const toggleNotifications = () => { notificationCount.value = 0 }
+const openChat = () => { /* Tawk.to will handle this */ }
+const toggleProfileMenu = () => {}
 
-const openChat = () => {
-  console.log('Opening chat widget')
-}
-
-const toggleProfileMenu = () => {
-  console.log('Toggling profile menu')
-}
-
-const createNewRequest = () => {
-  router.push('/request/new')
-}
-
-const openHelp = () => {
-  console.log('Opening Help Center')
-}
+const createNewRequest = () => { router.push('/request/new') }
+const openHelp = () => {}
 
 const logout = () => {
   localStorage.removeItem('token')
@@ -361,17 +381,7 @@ const logout = () => {
   router.push('/login')
 }
 
-const viewDetails = (id) => {
-  router.push(`/request/${id}`)
-}
-
-const trackStatus = (id) => {
-  console.log(`Tracking status for request: ${id}`)
-}
-
-const editRequest = (id) => {
-  console.log(`Editing request: ${id}`)
-}
+const viewDetails = (id) => { router.push(`/request/${id}`) }
 </script>
 
 <style scoped>
@@ -409,22 +419,22 @@ const editRequest = (id) => {
   box-shadow: 0 20px 40px -12px rgba(53, 37, 205, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 1);
 }
 
-.active-glow {
-  box-shadow: 0 4px 12px rgba(53, 37, 205, 0.2);
-}
+.active-glow { box-shadow: 0 4px 12px rgba(53, 37, 205, 0.2); }
 
 .status-quoted {
   background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%);
   box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
 }
-
 .status-processing {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
 }
-
 .status-pending {
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
+}
+.status-completed {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
 }
 
