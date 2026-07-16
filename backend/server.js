@@ -22,7 +22,8 @@ app.use(cors({
    origin: [
     'http://localhost:5173',
     'http://192.168.0.109:5173',   // IP yang muncul di terminal
-    `*`// tambahkan IP lain jika perlu (ZeroTier, dll)
+    'https://africhina.saktiku.my.id', // Domain production kamu
+    'http://africhina.saktiku.my.id'   // Jika ada versi http
   ],
   credentials: true
 }));

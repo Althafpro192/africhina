@@ -7,12 +7,13 @@ import './style.css';
 import en from './locales/en.json';
 import id from './locales/id.json';
 import zh from './locales/zh.json';
+import fr from './locales/fr.json';
 
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
   fallbackLocale: 'en',
-  messages: { en, id, zh }
+  messages: { en, id, zh, fr }
 });
 
 const app = createApp(App);
