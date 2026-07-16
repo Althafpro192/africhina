@@ -19,9 +19,10 @@ const PORT = process.env.PORT || 5000;
 
 // CORS — allow frontend origin
 app.use(cors({
-  origin: [
+   origin: [
     'http://localhost:5173',
-    'http://192.168.0.109:5173'   // IP yang terlihat di terminal
+    'http://192.168.0.109:5173',   // IP yang muncul di terminal
+    `*`// tambahkan IP lain jika perlu (ZeroTier, dll)
   ],
   credentials: true
 }));
@@ -43,7 +44,6 @@ app.get('/', (req, res) => {
   res.send('AfriChina Bridge API is running');
 });
 
-
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

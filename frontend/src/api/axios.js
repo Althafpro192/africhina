@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const LOCAL_IP = '192.168.0.109';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || `http://${LOCAL_IP}:5000/api`,
   headers: {
     'Content-Type': 'application/json',
   },
