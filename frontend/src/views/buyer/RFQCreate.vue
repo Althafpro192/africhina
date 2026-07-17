@@ -230,8 +230,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import { requestService } from '../api/requestService.js'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { requestService } from '../../api/requestService.js'
 
 const router = useRouter()
 
@@ -313,7 +313,7 @@ const submitRequest = async () => {
     await requestService.createRequest(formData);
     
     // Navigate back to dashboard on success
-    router.push('/dashboard');
+    router.push('/buyer/dashboard');
   } catch (error) {
     console.error('Failed to create request:', error);
     errorMsg.value = error.response?.data?.message || 'Failed to submit request. Please try again.';

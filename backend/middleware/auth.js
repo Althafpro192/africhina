@@ -2,8 +2,7 @@ import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
 
 export const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies.token || (req.headers['authorization'] && req.headers['authorization'].split(' ')[1]);
   
   if (!token) {
     return res.status(401).json({ message: 'No token provided' });

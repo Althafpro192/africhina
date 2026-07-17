@@ -194,8 +194,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import { authService } from '../api/authService.js'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { authService } from '../../api/authService.js'
 
 const router = useRouter()
 
@@ -255,13 +255,12 @@ const handleSubmit = async () => {
     } else {
       // Login
       const data = await authService.login(email.value, password.value)
-      localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
       
       if (data.user.role === 'admin') {
-        router.push('/admin')
+        router.push('/admin/dashboard')
       } else {
-        router.push('/dashboard')
+        router.push('/buyer/dashboard')
       }
     }
   } catch (err) {

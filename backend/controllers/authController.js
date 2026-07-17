@@ -36,10 +36,23 @@ export const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
-    res.json({ token, user: { id: user.rows[0].id, full_name: user.rows[0].full_name, role: user.rows[0].role } });
+    
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+
+    res.json({ user: { id: user.rows[0].id, full_name: user.rows[0].full_name, role: user.rows[0].role } });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+export const logout = (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
 };
 
 export const getMe = async (req, res) => {

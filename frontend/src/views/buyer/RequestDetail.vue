@@ -377,10 +377,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import { requestService } from '../api/requestService.js'
-import { adminService } from '../api/adminService.js'
-import { ratingService } from '../api/ratingService.js'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { requestService } from '../../api/requestService.js'
+import { adminService } from '../../api/adminService.js'
+import { ratingService } from '../../api/ratingService.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -523,7 +523,7 @@ const saveStatusUpdate = async () => {
 }
 
 const goBack = () => router.back()
-const navigate = (r) => { activeRoute.value = r; if (r === 'dashboard') router.push('/dashboard') }
+const navigate = (r) => { activeRoute.value = r; if (r === 'dashboard') router.push('/buyer/dashboard') }
 const logout = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('user')

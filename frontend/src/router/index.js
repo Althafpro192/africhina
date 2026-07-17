@@ -1,26 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 // Buyer Pages
-import Dashboard from '../views/Dashboard.vue';
-import RequestDetails from '../views/RequestDetails.vue';
-import OrderDetail from '../views/OrderDetail.vue';
+const Dashboard = () => import('../views/buyer/Dashboard.vue');
+const RFQCreate = () => import('../views/buyer/RFQCreate.vue');
+const RequestDetail = () => import('../views/buyer/RequestDetail.vue');
 
 // Admin Pages
-import AdminDashboard from '../views/AdminDashboard.vue';
-import AdminSuppliers from '../views/AdminSuppliers.vue';
+const AdminDashboard = () => import('../views/admin/Dashboard.vue');
+const AdminSuppliers = () => import('../views/admin/Suppliers.vue');
 
 // Auth Pages
-import Login from '../views/Login.vue';
+const Login = () => import('../views/auth/Login.vue');
 
 const routes = [
-  { path: '/', redirect: '/dashboard' },
+  { path: '/', redirect: '/buyer/dashboard' },
   { path: '/login', component: Login },
-  { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { path: '/request/new', component: RequestDetails, meta: { requiresAuth: true } },
-  { path: '/request/:id', component: OrderDetail, meta: { requiresAuth: true } },
+  { path: '/buyer/dashboard', component: Dashboard, meta: { requiresAuth: true } },
+  { path: '/buyer/rfq/create', component: RFQCreate, meta: { requiresAuth: true } },
+  { path: '/buyer/rfq/:id', component: RequestDetail, meta: { requiresAuth: true } },
   
   // Admin Routes
-  { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/suppliers', component: AdminSuppliers, meta: { requiresAuth: true, requiresAdmin: true } }
 ];
 
@@ -30,15 +30,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const isAuthenticated = !!user;
   
-  if (to.meta.requiresAuth && !token) {
+  if (to.meta.requiresAuth && !isAuthenticated) {
     next('/login');
-  } else if (to.meta.requiresAdmin && user.role !== 'admin') {
-    next('/dashboard');
-  } else if (to.path === '/login' && token) {
-    next(user.role === 'admin' ? '/admin' : '/dashboard');
+  } else if (to.meta.requiresAdmin && user?.role !== 'admin') {
+    next('/buyer/dashboard');
+  } else if (to.path === '/login' && isAuthenticated) {
+    next(user.role === 'admin' ? '/admin/dashboard' : '/buyer/dashboard');
   } else {
     next();
   }

@@ -282,9 +282,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import { adminService } from '../api/adminService.js'
-import { supplierService } from '../api/supplierService.js'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { adminService } from '../../api/adminService.js'
+import { supplierService } from '../../api/supplierService.js'
 
 const router = useRouter()
 

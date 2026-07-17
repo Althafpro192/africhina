@@ -20,7 +20,7 @@
               
               <div v-if="showMenu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                 <div class="py-1">
-                  <router-link to="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('nav.dashboard') }}</router-link>
+                  <router-link to="/buyer/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('nav.dashboard') }}</router-link>
                   <a href="#" @click.prevent="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('nav.logout') }}</a>
                 </div>
               </div>
@@ -38,12 +38,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import LanguageSwitcher from './LanguageSwitcher.vue';
+import LanguageSwitcher from '../components/LanguageSwitcher.vue';
+import { authService } from '../api/authService.js';
 
 const router = useRouter();
 const showMenu = ref(false);
 
-const isLoggedIn = computed(() => !!localStorage.getItem('token'));
+const isLoggedIn = computed(() => !!localStorage.getItem('user'));
 const userInitials = computed(() => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   return user.full_name ? user.full_name.charAt(0).toUpperCase() : 'U';
@@ -53,8 +54,12 @@ const toggleMenu = () => {
   showMenu.value = !showMenu.value;
 };
 
-const logout = () => {
-  localStorage.removeItem('token');
+const logout = async () => {
+  try {
+    await authService.logout();
+  } catch(e) {
+    console.error('Logout failed:', e);
+  }
   localStorage.removeItem('user');
   router.push('/login');
 };
