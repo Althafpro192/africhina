@@ -6,6 +6,11 @@ export const adminService = {
     return data;
   },
 
+  async getAdminRequestById(id) {
+    const { data } = await api.get(`/admin/requests/${id}`);
+    return data;
+  },
+
   async updateRequest(id, formData) {
     // formData can be FormData (with QC images) or plain object
     const isFormData = formData instanceof FormData;

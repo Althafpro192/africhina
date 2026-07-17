@@ -30,13 +30,6 @@
           <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.suppliers') }}</span>
         </a>
         
-        <!-- Other links can be dynamically activated if needed. For now, redirect to dashboard as a shortcut -->
-        <a @click="router.push('/dashboard')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
-            <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">web</span>
-          </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Buyer Dashboard</span>
-        </a>
       </nav>
 
       <!-- Profile Section -->
@@ -134,6 +127,25 @@
       <section class="glass-panel rounded-3xl deep-shadow overflow-hidden">
         <div class="p-6 border-b border-[#cbc4d2] flex justify-between items-center bg-white/30">
           <h4 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.recent_requests') }}</h4>
+          <div class="flex gap-3">
+            <select v-model="filterStatus" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="quoted">Quoted</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <select v-model="filterCategory" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
+              <option value="">All Categories</option>
+              <option value="Machinery">Machinery</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Textiles">Textiles</option>
+              <option value="Construction">Construction</option>
+              <option value="Solar">Solar</option>
+            </select>
+          </div>
         </div>
         
         <div class="overflow-x-auto">
@@ -150,7 +162,7 @@
             </thead>
             <tbody class="divide-y divide-[#cbc4d2]/30" v-if="!loading">
               <tr v-for="req in filteredRequests" :key="req.id" class="group hover:bg-gradient-to-r hover:from-[#4f378a]/5 hover:to-transparent transition-all cursor-pointer">
-                <td class="px-8 py-5" @click="router.push(`/request/${req.id}`)">
+                <td class="px-8 py-5" @click="router.push(`/admin/request/${req.id}`)">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full border-2 border-[#4f378a]/30 p-0.5 flex items-center justify-center bg-gray-100">
                       <span class="material-symbols-outlined text-[#4f378a]">business</span>
@@ -234,20 +246,27 @@
 
           <!-- Price Quote -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Price Quote ($)</label>
-            <input 
-              v-model="adminPrice"
-              type="number"
-              class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none bg-transparent"
-              placeholder="e.g. 4500"
-            />
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Price Quote</label>
+            <div class="flex gap-2">
+              <select v-model="adminCurrency" class="w-1/3 px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-[#1d1b20] bg-white/70">
+                <option value="USD">USD ($)</option>
+                <option value="CNY">CNY (¥)</option>
+                <option value="EUR">EUR (€)</option>
+              </select>
+              <input 
+                v-model="adminPrice"
+                type="number"
+                class="w-2/3 px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-[#1d1b20] bg-white/70"
+                placeholder="e.g. 4500"
+              />
+            </div>
           </div>
 
           <!-- Supplier Assignment -->
           <div class="space-y-2">
             <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.assign_supplier') }}</label>
             <div class="relative">
-              <select v-model="selectedSupplier" class="w-full pl-4 pr-10 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 appearance-none text-[#1d1b20] outline-none bg-transparent">
+              <select v-model="selectedSupplier" class="w-full pl-4 pr-10 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 appearance-none text-[#1d1b20] outline-none bg-white/70">
                 <option value="">None</option>
                 <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
                   {{ supplier.company_name }}
@@ -260,7 +279,48 @@
           <!-- Notes -->
           <div class="space-y-2">
             <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.internal_notes') }}</label>
-            <textarea v-model="internalNotes" class="w-full p-4 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 h-24 resize-none text-[#1d1b20] outline-none bg-transparent" placeholder="Internal updates (not visible to buyer)..."></textarea>
+            <textarea v-model="internalNotes" class="w-full p-4 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 h-24 resize-none text-[#1d1b20] outline-none bg-white/70" placeholder="Internal updates (not visible to buyer)..."></textarea>
+          </div>
+
+          <!-- Production Progress (Visible when processing/production) -->
+          <div v-if="['processing', 'production', 'inspected'].includes(selectedStatus)" class="space-y-2">
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551] flex justify-between">
+              Production Progress <span>{{ productionProgress }}%</span>
+            </label>
+            <input 
+              v-model="productionProgress" 
+              type="range" 
+              min="0" max="100" step="5"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4f378a]"
+            />
+          </div>
+
+          <!-- QC Media Upload -->
+          <div class="space-y-2">
+            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Upload QC Media (Photos/Videos)</label>
+            <div
+              @click="triggerQcUpload"
+              @dragover.prevent
+              @dragenter.prevent
+              @drop.prevent="handleQcDrop"
+              class="border-2 border-dashed border-[#4f378a]/30 bg-[#4f378a]/5 rounded-2xl p-6 text-center cursor-pointer hover:border-[#4f378a]/60 hover:bg-[#4f378a]/10 transition-all"
+            >
+              <input ref="qcFileInput" type="file" multiple accept="image/*,video/*" @change="handleQcSelect" class="hidden" />
+              <span class="material-symbols-outlined text-3xl text-[#4f378a] mb-2">add_a_photo</span>
+              <p class="text-xs text-gray-500 font-medium">Click or drag media here to upload QC updates</p>
+            </div>
+            
+            <div v-if="qcFiles.length > 0" class="flex gap-2 overflow-x-auto py-2 custom-scrollbar">
+              <div v-for="(file, idx) in qcFiles" :key="idx" class="relative shrink-0 w-16 h-16 rounded-xl border border-gray-200 overflow-hidden group">
+                <img v-if="file.type.startsWith('image/')" :src="file.preview" class="w-full h-full object-cover" />
+                <div v-else class="w-full h-full bg-gray-100 flex flex-col items-center justify-center">
+                  <span class="material-symbols-outlined text-gray-400">videocam</span>
+                </div>
+                <button @click.prevent="removeQcFile(idx)" class="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="flex gap-4 pt-4">
@@ -291,6 +351,8 @@ const router = useRouter()
 // Reactive State
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
 const searchQuery = ref('')
+const filterStatus = ref('')
+const filterCategory = ref('')
 const loading = ref(true)
 const requests = ref([])
 const stats = ref(null)
@@ -299,26 +361,44 @@ const saving = ref(false)
 
 const isModalOpen = ref(false)
 const editingRequest = ref(null)
-const selectedStatus = ref('')
+const selectedStatus = ref('pending')
 const selectedSupplier = ref('')
-const internalNotes = ref('')
 const adminPrice = ref('')
+const adminCurrency = ref('USD')
+const internalNotes = ref('')
+const productionProgress = ref(0)
+const qcFiles = ref([])
+const qcFileInput = ref(null)
 
 const statusOptions = [
   { value: 'pending', label: 'Pending', icon: 'hourglass_empty', color: 'text-yellow-600' },
   { value: 'quoted', label: 'Quoted', icon: 'request_quote', color: 'text-orange-600' },
   { value: 'processing', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-600' },
   { value: 'shipped', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-600' },
-  { value: 'completed', label: 'Completed', icon: 'task_alt', color: 'text-green-600' }
+  { value: 'completed', label: 'Completed', icon: 'task_alt', color: 'text-green-600' },
+  { value: 'rejected', label: 'Rejected', icon: 'cancel', color: 'text-red-600' }
 ]
 
 const filteredRequests = computed(() => {
-  if (!searchQuery.value) return requests.value
-  const q = searchQuery.value.toLowerCase()
-  return requests.value.filter(r => 
-    r.product_name.toLowerCase().includes(q) || 
-    r.company_name?.toLowerCase().includes(q)
-  )
+  let result = requests.value
+
+  if (filterStatus.value) {
+    result = result.filter(r => r.status === filterStatus.value)
+  }
+
+  if (filterCategory.value) {
+    result = result.filter(r => r.category === filterCategory.value)
+  }
+
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    result = result.filter(r => 
+      r.product_name.toLowerCase().includes(q) || 
+      r.company_name?.toLowerCase().includes(q)
+    )
+  }
+  
+  return result
 })
 
 const loadData = async () => {
@@ -358,25 +438,57 @@ const openStatusModal = (req) => {
   editingRequest.value = req
   selectedStatus.value = req.status
   selectedSupplier.value = req.assigned_supplier_id || ''
-  internalNotes.value = req.internal_notes || ''
   adminPrice.value = req.quoted_price || ''
+  adminCurrency.value = req.currency || 'USD'
+  internalNotes.value = '' // Clear previous session notes
+  productionProgress.value = req.production_progress || 0
+  qcFiles.value = []
   isModalOpen.value = true
 }
 
 const closeStatusModal = () => {
   isModalOpen.value = false
   editingRequest.value = null
+  qcFiles.value = []
 }
+
+const triggerQcUpload = () => qcFileInput.value?.click()
+
+const handleQcSelect = (e) => processQcFiles(Array.from(e.target.files))
+const handleQcDrop = (e) => processQcFiles(Array.from(e.dataTransfer.files))
+
+const processQcFiles = (files) => {
+  files.forEach(file => {
+    if (qcFiles.value.length >= 5) return;
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      qcFiles.value.push({ file, preview: e.target.result, type: file.type })
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+const removeQcFile = (index) => qcFiles.value.splice(index, 1)
 
 const saveChanges = async () => {
   saving.value = true
   try {
-    await adminService.updateRequest(editingRequest.value.id, {
-      status: selectedStatus.value,
-      assigned_supplier_id: selectedSupplier.value || null,
-      internal_notes: internalNotes.value,
-      quoted_price: adminPrice.value || null
-    })
+    const formData = new FormData()
+    formData.append('status', selectedStatus.value)
+    
+    if (selectedSupplier.value) formData.append('assigned_supplier_id', selectedSupplier.value)
+    if (adminPrice.value) {
+      formData.append('quoted_price', adminPrice.value)
+      formData.append('currency', adminCurrency.value)
+    }
+    if (internalNotes.value) formData.append('notes', internalNotes.value)
+    
+    if (['processing', 'production', 'inspected'].includes(selectedStatus.value)) {
+      formData.append('production_progress', productionProgress.value)
+    }
+    qcFiles.value.forEach(f => formData.append('qc_images', f.file));
+
+    await adminService.updateRequest(editingRequest.value.id, formData)
     closeStatusModal()
     await loadData() // Refresh list and stats
   } catch (error) {

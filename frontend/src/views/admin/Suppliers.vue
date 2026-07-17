@@ -15,7 +15,7 @@
 
       <nav class="flex-1 space-y-3">
         <!-- Inactive Nav Item (Dashboard) -->
-        <a @click="router.push('/admin')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
+        <a @click="router.push('/admin/dashboard')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
           <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
             <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">dashboard</span>
           </div>
@@ -195,9 +195,11 @@
             </div>
             <div class="col-span-2">
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Verification Level</label>
-              <select v-model="form.verification_level" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none bg-transparent">
-                <option value="basic">Basic</option>
-                <option value="verified">Verified</option>
+              <select v-model="form.verification_level" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none bg-transparent text-[#1d1b20]">
+                <option value="Level 1 - Basic">Level 1 - Basic</option>
+                <option value="Level 2 - Advanced">Level 2 - Advanced</option>
+                <option value="Level 3 - Gold">Level 3 - Gold</option>
+                <option value="Level 4 - Premium">Level 4 - Premium</option>
               </select>
             </div>
           </div>
@@ -244,7 +246,7 @@ const form = ref({
   phone_china: '',
   email: '',
   factory_address: '',
-  verification_level: 'basic'
+  verification_level: 'Level 1 - Basic'
 })
 
 const filteredSuppliers = computed(() => {

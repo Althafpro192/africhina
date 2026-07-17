@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const LOCAL_IP = 'api.saktiku.my.id';
-
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || `https://${LOCAL_IP}/api`,
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
