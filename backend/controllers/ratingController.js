@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import pool from '../config/db.js';
 
 export const createRating = async (req, res) => {
@@ -26,7 +27,8 @@ export const createRating = async (req, res) => {
 
     res.status(201).json(newRating.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -40,7 +42,8 @@ export const getRatingsBySupplier = async (req, res) => {
     );
     res.json(ratings.rows);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -52,6 +55,21 @@ export const getRatingByRequest = async (req, res) => {
     );
     res.json(rating.rows[0] || null);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const getAllRatings = async (req, res) => {
+  try {
+    const ratings = await pool.query(
+      `SELECT r.*, u.full_name as buyer_name, u.company_name as buyer_company
+       FROM ratings r JOIN users u ON r.buyer_id = u.id
+       ORDER BY r.created_at DESC`
+    );
+    res.json(ratings.rows);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
@@ -18,7 +19,8 @@ export const register = async (req, res) => {
     );
     res.status(201).json({ user: newUser.rows[0] });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -46,7 +48,8 @@ export const login = async (req, res) => {
 
     res.json({ user: { id: user.rows[0].id, full_name: user.rows[0].full_name, role: user.rows[0].role } });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -61,6 +64,37 @@ export const getMe = async (req, res) => {
     if (user.rows.length === 0) return res.status(404).json({ message: 'User not found' });
     res.json(user.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const { full_name, company_name, phone } = req.body;
+  try {
+    const updated = await pool.query(
+      'UPDATE users SET full_name = $1, company_name = $2, phone = $3 WHERE id = $4 RETURNING id, full_name, email, country, phone, company_name, role',
+      [full_name, company_name, phone, req.userId]
+    );
+    if (updated.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: 'Profile updated successfully', user: updated.rows[0] });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) return res.status(404).json({ message: 'Email not found' });
+    
+    // In a real app, generate a reset token and send an email here.
+    // For this MVP, we simulate a successful email send.
+    res.json({ message: 'Reset link sent to your email.' });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

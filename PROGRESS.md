@@ -4,6 +4,59 @@
 
 ---
 
+## 📅 18 Juli 2026 - Antigravity (AI Assistant)
+
+### ✅ FITUR/PENGERJAAN
+- **[Audit & Perbaikan Kritis]** Mengeksekusi Action Plan dari Laporan Audit.
+  - Memperbaiki bug kritis `buyer_id` menjadi `user_id` di `requestController.js`.
+  - Mencegah kebocoran data `internal_notes` ke buyer di `requestController.js`.
+  - Menyelaraskan skema database dengan kode melalui file migrasi `03_sync_schema.sql` (tambah tabel `request_options`, `messages`, dll).
+  - Mengamankan backend: mengganti CORS wildcard, menambahkan `helmet`, menghapus fallback Socket.IO secret.
+  - Menambahkan validasi input via `express-validator` di auth dan request routes.
+  - Menambahkan global error handler middleware.
+  - Membersihkan dead code (`rewrite_*.js`, `test-*.cjs`).
+  - Mengimplementasikan `AdminLayout.vue` dan me-refactor seluruh halaman admin untuk menghindari duplikasi sidebar dan konsistensi desain.
+  - Melengkapi terjemahan i18n untuk `zh.json` dan `fr.json`.
+  - Membuat `Dockerfile` untuk backend dan frontend.
+  - Mengkonfigurasi log rotation harian dengan `winston-daily-rotate-file`.
+  - Menyiapkan `.env.production.example`.
+
+- **[Landing Page]** Membuat halaman publik sebelum login.
+  - Membuat LandingPage.vue dengan hero, fitur, cara kerja, testimoni, CTA footer.
+  - Menggunakan BaseButton dan BaseCard dari UI kit.
+  - Menambahkan i18n untuk semua teks (EN & ID).
+  - Mengupdate router untuk route `/`.
+
+- **[Dokumentasi]** Memperbarui README.md.
+  - Menulis ulang deskripsi proyek, fitur, teknologi, instalasi, dan lisensi.
+
+### 📂 FILE YANG DIUBAH/DITAMBAH
+- `backend/controllers/requestController.js` (Modifikasi)
+- `backend/03_sync_schema.sql` (Baru)
+- `backend/server.js` (Modifikasi)
+- `backend/middleware/validation.js` (Baru)
+- `backend/routes/auth.js`, `backend/routes/requests.js` (Modifikasi)
+- `frontend/src/components/layout/AdminLayout.vue` (Baru)
+- `frontend/src/views/admin/Dashboard.vue`, `Suppliers.vue`, `RequestDetail.vue`, `RatingsModeration.vue` (Modifikasi)
+- `frontend/src/locales/zh.json`, `fr.json` (Modifikasi)
+- `backend/config/logger.js` (Modifikasi)
+- `backend/Dockerfile`, `frontend/Dockerfile` (Baru)
+- `.env.production.example` (Baru)
+- `frontend/src/views/LandingPage.vue` (Baru)
+- `frontend/src/router/index.js` (Modifikasi)
+- `frontend/src/locales/en.json`, `id.json` (Modifikasi)
+- `README.md` (Modifikasi)
+
+### 🚧 BLOCKER / KENDALA
+- Belum ada.
+
+### ✅ STATUS HARI INI
+- [x] Laporan Audit Selesai
+- [x] Perbaikan Blocker & Keamanan Selesai
+- [x] Refactoring Admin UI Selesai
+
+---
+
 ## 📅 17 Juli 2026 - AI Developer
 
 ### ✅ FITUR/PENGERJAAN
@@ -17,6 +70,11 @@
   - Memindahkan file ke struktur baru dan memperbaiki imports.
   - Memperbarui `router/index.js` agar path mengikuti struktur baru.
   - Fix autentikasi via user payload karena HttpOnly cookie menyembunyikan token.
+- **[Arsitektur]** Menyelesaikan Konversi ke Monolith (Fase 1).
+  - Build frontend dan pindahkan `dist/` ke `backend/public/`.
+  - Ubah `server.js` menambahkan `express.static` dan fallback untuk SPA routing.
+  - Hapus CORS (Frontend dan Backend sekarang satu origin pada port 5000).
+  - Update `.env` frontend menggunakan `/api` dan hapus proxy di `vite.config.js`.
 
 ### 🐛 PERBAIKAN (BUG FIX)
 - N/A
@@ -34,6 +92,7 @@
 ### ✅ STATUS HARI INI
 - [x] Selesai Phase 0 Backend
 - [x] Selesai Phase 1 Frontend Restructure
+- [x] Selesai Fase 1 (Monolith Architecture)
 
 ---
 

@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import pool from '../config/db.js';
 
 export const getSuppliers = async (req, res) => {
@@ -5,7 +6,8 @@ export const getSuppliers = async (req, res) => {
     const suppliers = await pool.query('SELECT * FROM suppliers ORDER BY created_at DESC');
     res.json(suppliers.rows);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -15,7 +17,8 @@ export const getSupplierById = async (req, res) => {
     if (supplier.rows.length === 0) return res.status(404).json({ message: 'Supplier not found' });
     res.json(supplier.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -28,7 +31,8 @@ export const createSupplier = async (req, res) => {
     );
     res.status(201).json(newSupplier.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -52,7 +56,8 @@ export const updateSupplier = async (req, res) => {
     if (updated.rows.length === 0) return res.status(404).json({ message: 'Supplier not found' });
     res.json(updated.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -62,6 +67,7 @@ export const deleteSupplier = async (req, res) => {
     if (result.rows.length === 0) return res.status(404).json({ message: 'Supplier not found' });
     res.json({ message: 'Supplier deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };

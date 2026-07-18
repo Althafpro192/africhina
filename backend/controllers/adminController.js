@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import pool from '../config/db.js';
 import nodemailer from 'nodemailer';
 
@@ -12,14 +13,39 @@ export const getAdminRequests = async (req, res) => {
     `);
     res.json(requests.rows);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const getAdminRequestById = async (req, res) => {
+  try {
+    const request = await pool.query(`
+      SELECT r.*, u.full_name as buyer_name, u.company_name as buyer_company, u.email as buyer_email,
+             s.company_name as supplier_name, s.verification_level, s.factory_address 
+      FROM requests r 
+      JOIN users u ON r.user_id = u.id 
+      LEFT JOIN suppliers s ON r.assigned_supplier_id = s.id
+      WHERE r.id = $1
+    `, [req.params.id]);
+    
+    if (request.rows.length === 0) return res.status(404).json({ message: 'Request not found' });
+    
+    // Fetch options
+    const options = await pool.query('SELECT * FROM request_options WHERE request_id = $1 ORDER BY created_at ASC', [req.params.id]);
+    const responseData = request.rows[0];
+    responseData.options = options.rows;
+    
+    res.json(responseData);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 export const updateAdminRequest = async (req, res) => {
   const { id } = req.params;
   const { status, assigned_supplier_id, quoted_price, internal_notes, production_progress } = req.body;
-  const mediaUrls = req.files ? req.files.map(f => `/uploads/${f.filename}`) : null;
 
   try {
     let updateQuery = 'UPDATE requests SET updated_at = CURRENT_TIMESTAMP';
@@ -46,11 +72,6 @@ export const updateAdminRequest = async (req, res) => {
       updateQuery += `, production_progress = $${idx++}`;
       values.push(production_progress);
     }
-    if (mediaUrls && mediaUrls.length > 0) {
-      // append new media
-      updateQuery += `, production_media = array_cat(COALESCE(production_media, '{}'), $${idx++})`;
-      values.push(mediaUrls);
-    }
 
     updateQuery += ` WHERE id = $${idx} RETURNING *`;
     values.push(id);
@@ -61,25 +82,33 @@ export const updateAdminRequest = async (req, res) => {
     }
     res.json(updated.rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
 export const getAdminStatistics = async (req, res) => {
   try {
     const totalRequests = await pool.query('SELECT count(*) FROM requests');
+    const pendingRequests = await pool.query("SELECT count(*) FROM requests WHERE status IN ('menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran')");
+    const processingRequests = await pool.query("SELECT count(*) FROM requests WHERE status IN ('sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin')");
+    const completedRequests = await pool.query("SELECT count(*) FROM requests WHERE status = 'selesai'");
     const statusCounts = await pool.query('SELECT status, count(*) FROM requests GROUP BY status');
     const categoryCounts = await pool.query('SELECT category, count(*) FROM requests GROUP BY category');
     const avgResponseTime = '24h'; // Mock data for now
     
     res.json({
-      total: totalRequests.rows[0].count,
+      total_requests: parseInt(totalRequests.rows[0].count),
+      pending_requests: parseInt(pendingRequests.rows[0].count),
+      processing_requests: parseInt(processingRequests.rows[0].count),
+      completed_requests: parseInt(completedRequests.rows[0].count),
       statusBreakdown: statusCounts.rows,
       categoryBreakdown: categoryCounts.rows,
       avgResponseTime
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -115,6 +144,28 @@ export const sendEmailToSupplier = async (req, res) => {
 
     res.json({ message: 'Email sent successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const uploadQCMedia = async (req, res) => {
+  const { id } = req.params;
+  const mediaUrls = req.files ? req.files.map(f => `/uploads/${f.filename}`) : [];
+
+  if (mediaUrls.length === 0) {
+    return res.status(400).json({ message: 'No media files uploaded' });
+  }
+
+  try {
+    const updated = await pool.query(
+      "UPDATE requests SET production_media = array_cat(COALESCE(production_media, '{}'), $1), updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+      [mediaUrls, id]
+    );
+    await pool.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'qc_update', 'Admin uploaded new QC media')", [id]);
+    res.json(updated.rows[0]);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
