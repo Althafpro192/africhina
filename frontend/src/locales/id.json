@@ -108,5 +108,38 @@
     "shipped": "Dikirim",
     "production": "Dalam Produksi",
     "completed": "Selesai"
+  },
+  "landing": {
+    "title": "Jembatan Digital Antara Afrika & Tiongkok",
+    "subtitle": "Platform B2B premium yang menghubungkan importir Afrika dengan pemasok Tiongkok yang terverifikasi.",
+    "cta_start": "Mulai Sekarang",
+    "cta_learn": "Pelajari Lebih Lanjut",
+    "stats_suppliers": "Pemasok Terverifikasi",
+    "stats_countries": "Negara Afrika",
+    "stats_success": "Tingkat Keberhasilan",
+    "features": {
+      "trust": "Kepercayaan & Verifikasi",
+      "trust_desc": "Lencana Pabrik Terverifikasi, data pabrik yang jelas, dan bukti QC.",
+      "transparency": "Transparansi Penuh",
+      "transparency_desc": "Linimasa 5 langkah visual untuk melacak pesanan secara real-time.",
+      "communication": "Komunikasi Tanpa Hambatan",
+      "communication_desc": "Sistem obrolan dan penawaran terpadu menjembatani bahasa dan budaya."
+    },
+    "how_it_works": {
+      "title": "Cara Kerja",
+      "step1": "Ajukan Kebutuhan",
+      "step1_desc": "Isi detail produk, spesifikasi, jumlah, dan anggaran.",
+      "step2": "Dapatkan Penawaran",
+      "step2_desc": "Tim kami menemukan pemasok terbaik dan mengirimkan harga.",
+      "step3": "Pantau Produksi",
+      "step3_desc": "Lacak kemajuan melalui linimasa dan foto QC.",
+      "step4": "Terima & Nilai",
+      "step4_desc": "Konfirmasi kedatangan dan berikan penilaian pada pemasok."
+    },
+    "testimonials": {
+      "title": "Apa Kata Pengguna Kami"
+    },
+    "cta_footer": "Siap untuk memulai perdagangan yang aman?",
+    "cta_footer_button": "Daftar Gratis"
   }
 }

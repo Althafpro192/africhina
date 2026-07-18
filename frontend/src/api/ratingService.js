@@ -14,5 +14,10 @@ export const ratingService = {
   async getByRequest(requestId) {
     const { data } = await api.get(`/ratings/request/${requestId}`);
     return data;
+  },
+
+  async getRatings() {
+    const { data } = await api.get('/ratings');
+    return data;
   }
 };

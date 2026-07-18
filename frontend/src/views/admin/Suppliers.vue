@@ -1,58 +1,5 @@
 <template>
-  <div class="flex min-h-screen text-[#1d1b20]" style="background: radial-gradient(circle at top left, #fdf7ff, #f2ecf4); font-family: 'Inter', sans-serif; overflow-x: hidden;">
-    
-    <!-- SIDEBAR -->
-    <aside class="glass-panel w-72 h-screen sticky top-0 flex flex-col p-6 z-40 border-r-0 rounded-r-3xl deep-shadow">
-      <div class="mb-10 flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4f378a] to-[#6750a4] flex items-center justify-center shadow-lg border-t border-white/40">
-          <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">badge</span>
-        </div>
-        <div>
-          <h1 class="text-[24px] leading-[1.3] font-bold text-[#4f378a] tracking-tight">{{ $t('auth.title') }}</h1>
-          <p class="text-[10px] font-bold text-[#7a7582] tracking-widest uppercase">{{ $t('nav.admin_terminal') }}</p>
-        </div>
-      </div>
-
-      <nav class="flex-1 space-y-3">
-        <!-- Inactive Nav Item (Dashboard) -->
-        <a @click="router.push('/admin/dashboard')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
-            <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">dashboard</span>
-          </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.dashboard') }}</span>
-        </a>
-        
-        <!-- Active Nav Item (Suppliers) -->
-        <a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-gradient-to-r from-[#4f378a] to-[#6750a4] text-white shadow-lg lift-effect group cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shadow-inner">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">business</span>
-          </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.suppliers') }}</span>
-        </a>
-      </nav>
-
-      <!-- Profile Section -->
-      <div class="mt-auto pt-6 border-t border-[#cbc4d2] space-y-4">
-        <div class="flex items-center gap-3 p-2 rounded-2xl bg-[#f8f2fa] border border-white/30">
-          <div class="relative">
-            <div class="w-10 h-10 rounded-full border-2 border-[#4f378a] overflow-hidden shadow-md flex items-center justify-center bg-gray-200">
-              <span class="material-symbols-outlined text-[#4f378a]">person</span>
-            </div>
-            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-          </div>
-          <div class="flex-1 overflow-hidden">
-            <p class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#1d1b20] truncate">{{ user.full_name }}</p>
-            <p class="text-[10px] text-[#494551]">Administrator</p>
-          </div>
-        </div>
-        <button @click="logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#e6e0e9] text-[#4f378a] font-semibold shadow-md hover:bg-[#ffdad6] hover:text-[#93000a] transition-colors lift-effect">
-          <span class="material-symbols-outlined text-xl">logout</span>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.logout') }}</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
+  <AdminLayout>
     <main class="flex-1 p-10 max-w-[1600px] mx-auto space-y-10">
       <!-- Header -->
       <header class="flex justify-between items-end gap-6">
@@ -74,7 +21,6 @@
             <span class="material-symbols-outlined">add_business</span>
             Add Supplier
           </button>
-          <LanguageSwitcher />
         </div>
       </header>
 
@@ -216,15 +162,14 @@
         </form>
       </div>
     </div>
-
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { supplierService } from '../../api/supplierService.js'
+import AdminLayout from '../../components/layout/AdminLayout.vue'
 
 const router = useRouter()
 
@@ -316,12 +261,6 @@ const deleteSupplierItem = async (id) => {
   } catch (error) {
     alert(error.response?.data?.message || 'Failed to delete supplier')
   }
-}
-
-const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
 }
 </script>
 

@@ -13,8 +13,8 @@
       <!-- Quick Actions Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div @click="$router.push('/buyer/rfq/create')" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
-          <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-[#3525cd]">add_circle</span>
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-[#4f378a]">add_circle</span>
           </div>
           <div>
             <h3 class="font-bold text-gray-800">New Request</h3>
@@ -22,8 +22,8 @@
           </div>
         </div>
         <div @click="$router.push('/buyer/requests')" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
-          <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-[#3525cd]">request_quote</span>
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-[#4f378a]">request_quote</span>
           </div>
           <div>
             <h3 class="font-bold text-gray-800">My Requests</h3>
@@ -31,8 +31,8 @@
           </div>
         </div>
         <div @click="$router.push('/buyer/suppliers')" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
-          <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-            <span class="material-symbols-outlined text-[#3525cd]">business</span>
+          <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-[#4f378a]">business</span>
           </div>
           <div>
             <h3 class="font-bold text-gray-800">Find Suppliers</h3>
@@ -47,8 +47,8 @@
         <!-- Activity Chart -->
         <div class="lg:col-span-2 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8">
           <h2 class="text-lg font-bold text-gray-800 mb-8 flex items-center gap-2">
-            <div class="w-8 h-8 bg-[#3525cd]/10 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-[#3525cd] text-[18px]">insights</span>
+            <div class="w-8 h-8 bg-[#4f378a]/10 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-[#4f378a] text-[18px]">insights</span>
             </div>
             Activity Overview
           </h2>
@@ -61,7 +61,7 @@
             <div v-for="(day, index) in activityData" :key="index" class="w-full flex flex-col justify-end group h-full relative cursor-pointer">
               <!-- Bar -->
               <div 
-                :class="['w-full rounded-t-lg transition-all duration-500', index === activityData.length - 1 ? 'bg-[#3525cd] shadow-[0_0_15px_rgba(53,37,205,0.3)] hover:opacity-90' : 'bg-[#3525cd]/20 hover:bg-[#3525cd]/40']"
+                :class="['w-full rounded-t-lg transition-all duration-500', index === activityData.length - 1 ? 'bg-[#4f378a] shadow-[0_0_15px_rgba(53,37,205,0.3)] hover:opacity-90' : 'bg-[#4f378a]/20 hover:bg-[#4f378a]/40']"
                 :style="{ height: Math.max((day.count / maxActivity) * 100, 5) + '%' }"
               ></div>
               <!-- Tooltip -->
@@ -97,9 +97,9 @@
           <div v-else class="space-y-6 flex-1 overflow-y-auto pr-2">
             
             <div v-for="update in recentUpdates" :key="update.id" class="flex items-start gap-4">
-              <div class="w-2 h-2 mt-1.5 rounded-full bg-[#3525cd] shrink-0 shadow-[0_0_5px_rgba(53,37,205,0.5)]"></div>
+              <div class="w-2 h-2 mt-1.5 rounded-full bg-[#4f378a] shrink-0 shadow-[0_0_5px_rgba(53,37,205,0.5)]"></div>
               <div>
-                <p class="text-sm font-bold text-gray-800 leading-snug line-clamp-2 cursor-pointer hover:text-[#3525cd] transition-colors" @click="$router.push(`/buyer/rfq/${update.id}`)">
+                <p class="text-sm font-bold text-gray-800 leading-snug line-clamp-2 cursor-pointer hover:text-[#4f378a] transition-colors" @click="$router.push(`/buyer/rfq/${update.id}`)">
                   {{ update.product_name }}
                 </p>
                 <div class="flex items-center gap-2 mt-1">

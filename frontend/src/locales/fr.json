@@ -108,5 +108,38 @@
         "shipped": "Expédié",
         "production": "En production",
         "completed": "Terminé"
+    },
+    "landing": {
+        "title": "Le pont numérique entre l'Afrique et la Chine",
+        "subtitle": "Plateforme B2B de confiance connectant les importateurs africains aux fournisseurs chinois vérifiés.",
+        "cta_start": "Commencer",
+        "cta_learn": "En savoir plus",
+        "stats_suppliers": "Fournisseurs vérifiés",
+        "stats_countries": "Pays africains",
+        "stats_success": "Taux de réussite",
+        "features": {
+            "trust": "Confiance et vérification",
+            "trust_desc": "Badges d'usine vérifiés avec des données claires et des preuves de contrôle qualité.",
+            "transparency": "Transparence de bout en bout",
+            "transparency_desc": "Chronologie visuelle en 5 étapes pour suivre votre commande en temps réel.",
+            "communication": "Communication sans friction",
+            "communication_desc": "Système de discussion et de devis intégré surmontant les barrières linguistiques et culturelles."
+        },
+        "how_it_works": {
+            "title": "Comment ça marche",
+            "step1": "Soumettre une demande",
+            "step1_desc": "Remplissez les détails du produit, les spécifications, la quantité et le budget.",
+            "step2": "Obtenir des devis",
+            "step2_desc": "Notre équipe trouve les meilleurs fournisseurs et envoie les prix.",
+            "step3": "Suivre la production",
+            "step3_desc": "Suivez les progrès avec la chronologie et les photos d'inspection.",
+            "step4": "Recevoir et évaluer",
+            "step4_desc": "Confirmez la livraison et laissez un avis pour le fournisseur."
+        },
+        "testimonials": {
+            "title": "Témoignages"
+        },
+        "cta_footer": "Prêt à commencer à trader en toute sécurité ?",
+        "cta_footer_button": "S'inscrire gratuitement"
     }
 }

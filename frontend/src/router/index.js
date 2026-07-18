@@ -15,12 +15,15 @@ const RequestDetail = () => import('../views/buyer/RequestDetail.vue');
 const AdminDashboard = () => import('../views/admin/Dashboard.vue');
 const AdminSuppliers = () => import('../views/admin/Suppliers.vue');
 const AdminRequestDetail = () => import('../views/admin/RequestDetail.vue');
+const AdminRatingsModeration = () => import('../views/admin/RatingsModeration.vue');
 
 // Auth Pages
 const Login = () => import('../views/auth/Login.vue');
 
+const LandingPage = () => import('../views/LandingPage.vue');
+
 const routes = [
-  { path: '/', redirect: '/buyer/dashboard' },
+  { path: '/', component: LandingPage, meta: { public: true } },
   { path: '/login', component: Login },
   { path: '/buyer/dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { path: '/buyer/requests', component: Requests, meta: { requiresAuth: true } },
@@ -34,7 +37,8 @@ const routes = [
   // Admin Routes
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/suppliers', component: AdminSuppliers, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/admin/request/:id', component: AdminRequestDetail, meta: { requiresAuth: true, requiresAdmin: true } }
+  { path: '/admin/request/:id', component: AdminRequestDetail, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/ratings', component: AdminRatingsModeration, meta: { requiresAuth: true, requiresAdmin: true } }
 ];
 
 const router = createRouter({

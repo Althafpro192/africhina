@@ -108,5 +108,38 @@
     "shipped": "Shipped",
     "production": "In Production",
     "completed": "Completed"
+  },
+  "landing": {
+    "title": "Digital Bridge Between Africa & China",
+    "subtitle": "Premium B2B platform connecting African importers with verified Chinese suppliers.",
+    "cta_start": "Get Started",
+    "cta_learn": "Learn More",
+    "stats_suppliers": "Verified Suppliers",
+    "stats_countries": "African Countries",
+    "stats_success": "Success Rate",
+    "features": {
+      "trust": "Trust & Verification",
+      "trust_desc": "Verified Factory badge, clear factory data, and QC evidence.",
+      "transparency": "End-to-End Transparency",
+      "transparency_desc": "Visual 5-step timeline to track orders in real-time.",
+      "communication": "Frictionless Communication",
+      "communication_desc": "Integrated chat and quoting system bridges language and culture."
+    },
+    "how_it_works": {
+      "title": "How It Works",
+      "step1": "Submit RFQ",
+      "step1_desc": "Fill product details, specs, quantity, and budget.",
+      "step2": "Get Quotation",
+      "step2_desc": "Our team finds the best suppliers and sends prices.",
+      "step3": "Monitor Production",
+      "step3_desc": "Track progress via timeline and QC photos.",
+      "step4": "Receive & Rate",
+      "step4_desc": "Confirm arrival and rate the supplier."
+    },
+    "testimonials": {
+      "title": "What Our Users Say"
+    },
+    "cta_footer": "Ready to start safe trading?",
+    "cta_footer_button": "Sign Up Free"
   }
 }

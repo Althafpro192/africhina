@@ -12,7 +12,7 @@
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#3525cd] mb-4" style="font-size: 48px;">progress_activity</span>
+        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
         <p class="text-gray-500 font-medium">Loading your suppliers...</p>
       </div>
 
@@ -23,7 +23,7 @@
         </div>
         <h3 class="text-xl font-bold text-gray-800 mb-2">No Connected Suppliers</h3>
         <p class="text-gray-500 mb-8 text-center max-w-md">You haven't partnered with any suppliers yet. Suppliers will appear here once you accept their quotes.</p>
-        <button @click="$router.push('/buyer/sourcing')" class="px-6 py-3 bg-[#3525cd] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#3525cd]/20">
+        <button @click="$router.push('/buyer/sourcing')" class="px-6 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
           Start Sourcing
         </button>
       </div>
@@ -35,11 +35,11 @@
           :key="supplier.id"
           class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm hover:shadow-xl rounded-2xl p-6 transition-all duration-300 group flex flex-col hover:-translate-y-1 relative overflow-hidden cursor-pointer"
         >
-          <div class="absolute inset-0 bg-gradient-to-br from-[#3525cd]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+          <div class="absolute inset-0 bg-gradient-to-br from-[#4f378a]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
           
           <div class="flex items-start justify-between mb-4 relative z-10">
             <div class="w-14 h-14 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-[#3525cd] text-3xl">factory</span>
+              <span class="material-symbols-outlined text-[#4f378a] text-3xl">factory</span>
             </div>
             <div class="flex flex-col items-end">
               <span class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
@@ -50,7 +50,7 @@
           </div>
 
           <div class="mb-6 relative z-10">
-            <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#3525cd] transition-colors line-clamp-2 leading-tight">{{ supplier.name }}</h3>
+            <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#4f378a] transition-colors line-clamp-2 leading-tight">{{ supplier.name }}</h3>
             <p class="text-xs text-gray-500 mt-2 flex items-start gap-1">
               <span class="material-symbols-outlined text-[14px] mt-0.5">location_on</span>
               <span class="line-clamp-2">{{ supplier.address || 'Location unavailable' }}</span>
@@ -64,7 +64,7 @@
             </div>
             <div>
               <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Volume</span>
-              <span class="text-lg font-black text-[#3525cd]">${{ supplier.totalVolume.toLocaleString() }}</span>
+              <span class="text-lg font-black text-[#4f378a]">${{ supplier.totalVolume.toLocaleString() }}</span>
             </div>
           </div>
           

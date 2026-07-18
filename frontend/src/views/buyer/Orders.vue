@@ -12,7 +12,7 @@
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#3525cd] mb-4" style="font-size: 48px;">progress_activity</span>
+        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
         <p class="text-gray-500 font-medium">Loading your orders...</p>
       </div>
 
@@ -23,7 +23,7 @@
         </div>
         <h3 class="text-xl font-bold text-gray-800 mb-2">No Active Orders</h3>
         <p class="text-gray-500 mb-8 text-center max-w-md">You haven't placed any orders yet. Start by accepting a quote from a supplier in your sourcing requests.</p>
-        <button @click="$router.push('/buyer/requests')" class="px-6 py-3 bg-[#3525cd] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#3525cd]/20">
+        <button @click="$router.push('/buyer/requests')" class="px-6 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
           View My Requests
         </button>
       </div>
@@ -40,7 +40,7 @@
             <!-- Header -->
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="text-lg font-bold text-gray-800 group-hover:text-[#3525cd] transition-colors mb-1">{{ order.product_name }}</h3>
+                <h3 class="text-lg font-bold text-gray-800 group-hover:text-[#4f378a] transition-colors mb-1">{{ order.product_name }}</h3>
                 <div class="flex items-center gap-2 text-sm text-gray-500">
                   <span class="font-medium text-gray-700">Order #{{ order.id.split('-')[0].toUpperCase() }}</span>
                   <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
@@ -68,7 +68,7 @@
           <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 sm:border-l border-gray-100 pt-4 sm:pt-0 sm:pl-6 shrink-0 sm:min-w-[160px]">
             <div class="text-left sm:text-right">
               <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Order Value</span>
-              <span class="font-black text-xl text-[#3525cd]">${{ Number(order.quoted_price).toLocaleString() }}</span>
+              <span class="font-black text-xl text-[#4f378a]">${{ Number(order.quoted_price).toLocaleString() }}</span>
             </div>
             <div class="text-left sm:text-right mt-2 sm:mt-4">
               <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Quantity</span>
@@ -96,9 +96,10 @@ const notificationCount = ref(0)
 const requests = ref([])
 const loading = ref(true)
 
-// Filter for Order statuses
+// Filter for Order statuses (after it becomes an order)
 const filteredOrders = computed(() => {
-  let filtered = requests.value.filter(r => ['approved', 'processing', 'production'].includes(r.status))
+  const orderStatuses = ['processing', 'production', 'shipped', 'completed']
+  let filtered = requests.value.filter(r => orderStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
     filtered = filtered.filter(r => 

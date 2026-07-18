@@ -1,59 +1,5 @@
 <template>
-  <div class="flex min-h-screen text-[#1d1b20]" style="background: radial-gradient(circle at top left, #fdf7ff, #f2ecf4); font-family: 'Inter', sans-serif; overflow-x: hidden;">
-    
-    <!-- SIDEBAR -->
-    <aside class="glass-panel w-72 h-screen sticky top-0 flex flex-col p-6 z-40 border-r-0 rounded-r-3xl deep-shadow">
-      <div class="mb-10 flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4f378a] to-[#6750a4] flex items-center justify-center shadow-lg border-t border-white/40">
-          <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">badge</span>
-        </div>
-        <div>
-          <h1 class="text-[24px] leading-[1.3] font-bold text-[#4f378a] tracking-tight">{{ $t('auth.title') }}</h1>
-          <p class="text-[10px] font-bold text-[#7a7582] tracking-widest uppercase">{{ $t('nav.admin_terminal') }}</p>
-        </div>
-      </div>
-
-      <nav class="flex-1 space-y-3">
-        <!-- Active Nav Item (Dashboard) -->
-        <a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-gradient-to-r from-[#4f378a] to-[#6750a4] text-white shadow-lg lift-effect group cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shadow-inner">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-          </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.dashboard') }}</span>
-        </a>
-
-        <!-- Suppliers Nav Item -->
-        <a @click="router.push('/admin/suppliers')" class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#494551] hover:bg-[#ece6ee] transition-all lift-effect group cursor-pointer">
-          <div class="w-8 h-8 rounded-lg bg-[#e6e0e9] flex items-center justify-center shadow-sm border border-white/50">
-            <span class="material-symbols-outlined text-xl text-[#4f378a]" style="font-variation-settings: 'FILL' 0;">business</span>
-          </div>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.suppliers') }}</span>
-        </a>
-        
-      </nav>
-
-      <!-- Profile Section -->
-      <div class="mt-auto pt-6 border-t border-[#cbc4d2] space-y-4">
-        <div class="flex items-center gap-3 p-2 rounded-2xl bg-[#f8f2fa] border border-white/30">
-          <div class="relative">
-            <div class="w-10 h-10 rounded-full border-2 border-[#4f378a] overflow-hidden shadow-md flex items-center justify-center bg-gray-200">
-              <span class="material-symbols-outlined text-[#4f378a]">person</span>
-            </div>
-            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-          </div>
-          <div class="flex-1 overflow-hidden">
-            <p class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#1d1b20] truncate">{{ user.full_name }}</p>
-            <p class="text-[10px] text-[#494551]">Administrator</p>
-          </div>
-        </div>
-        <button @click="logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#e6e0e9] text-[#4f378a] font-semibold shadow-md hover:bg-[#ffdad6] hover:text-[#93000a] transition-colors lift-effect">
-          <span class="material-symbols-outlined text-xl">logout</span>
-          <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('nav.logout') }}</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
+  <AdminLayout>
     <main class="flex-1 p-10 max-w-[1600px] mx-auto space-y-10">
       <!-- Header -->
       <header class="flex justify-between items-end gap-6">
@@ -71,7 +17,6 @@
               type="text"
             />
           </div>
-          <LanguageSwitcher />
         </div>
       </header>
 
@@ -130,12 +75,12 @@
           <div class="flex gap-3">
             <select v-model="filterStatus" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
               <option value="">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="quoted">Quoted</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="completed">Completed</option>
-              <option value="rejected">Rejected</option>
+              <option value="menunggu_penawaran_admin">Pending</option>
+              <option value="menunggu_pemilihan_buyer">Quoted</option>
+              <option value="sedang_diproses">Processing</option>
+              <option value="dikirim">Shipped</option>
+              <option value="selesai">Completed</option>
+              <option value="batal">Rejected</option>
             </select>
             <select v-model="filterCategory" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
               <option value="">All Categories</option>
@@ -180,12 +125,15 @@
                 <td class="px-6 py-5 font-bold text-[#1d1b20]">{{ req.quoted_price ? '$' + Number(req.quoted_price).toLocaleString() : 'Pending' }}</td>
                 <td class="px-6 py-5">
                   <div :class="getStatusBadgeClass(req.status)">
-                    {{ req.status.toUpperCase() }}
+                    {{ formatStatusLabel(req.status) }}
                   </div>
                 </td>
-                <td class="px-6 py-5 text-right">
+                <td class="px-6 py-5 text-right flex justify-end gap-2">
                   <button @click.stop="openStatusModal(req)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold">
                     Edit Status
+                  </button>
+                  <button @click.stop="openMediaModal(req)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold" title="Upload QC Media">
+                    <span class="material-symbols-outlined text-[18px]">add_a_photo</span>
                   </button>
                 </td>
               </tr>
@@ -216,7 +164,7 @@
       ></div>
       
       <!-- Modal Content -->
-      <div :class="['glass-panel w-[500px] rounded-3xl p-8 deep-shadow relative border-white/40 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
             <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.update_status_title') }}</h3>
@@ -236,10 +184,10 @@
                 v-for="status in statusOptions" 
                 :key="status.value"
                 @click="selectedStatus = status.value" 
-                :class="['flex items-center gap-3 p-3 rounded-2xl glass-panel inner-recess transition-all', selectedStatus === status.value ? 'border-[#4f378a] bg-[#4f378a]/5 ring-2 ring-[#4f378a]' : 'hover:bg-blue-50']"
+                :class="['flex items-center gap-3 p-3 rounded-2xl bg-white border transition-all', selectedStatus === status.value ? 'border-[#4f378a] bg-[#4f378a]/5 ring-2 ring-[#4f378a]' : 'border-gray-200 hover:bg-gray-50']"
               >
-                <span :class="['material-symbols-outlined', status.color]">{{ status.icon }}</span>
-                <span class="font-bold text-xs text-[#1d1b20]">{{ status.label }}</span>
+                <span :class="['material-symbols-outlined', selectedStatus === status.value ? 'text-[#4f378a]' : status.color]">{{ status.icon }}</span>
+                <span :class="['font-bold text-xs', selectedStatus === status.value ? 'text-[#4f378a]' : 'text-[#1d1b20]']">{{ status.label }}</span>
               </button>
             </div>
           </div>
@@ -295,9 +243,43 @@
             />
           </div>
 
+
+          <div class="flex gap-4 pt-4">
+            <button @click="closeStatusModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
+              {{ $t('admin.cancel') }}
+            </button>
+            <button @click="saveChanges" :disabled="saving" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70 flex items-center justify-center">
+              <span v-if="saving" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+              {{ $t('admin.save_changes') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QC MEDIA MODAL -->
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isMediaModalOpen ? 'visible' : 'invisible']">
+      <!-- Backdrop -->
+      <div 
+        :class="['absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm transition-opacity duration-300', isMediaModalOpen ? 'opacity-100' : 'opacity-0']" 
+        @click="closeMediaModal"
+      ></div>
+      
+      <!-- Modal Content -->
+      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300', isMediaModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">Upload QC Media</h3>
+            <p class="text-sm text-[#494551] mt-1">{{ editingRequest?.product_name }}</p>
+          </div>
+          <button @click="closeMediaModal" class="text-[#7a7582] hover:text-[#4f378a] transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="space-y-6">
           <!-- QC Media Upload -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Upload QC Media (Photos/Videos)</label>
             <div
               @click="triggerQcUpload"
               @dragover.prevent
@@ -324,25 +306,24 @@
           </div>
 
           <div class="flex gap-4 pt-4">
-            <button @click="closeStatusModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
-              {{ $t('admin.cancel') }}
+            <button @click="closeMediaModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
+              Cancel
             </button>
-            <button @click="saveChanges" :disabled="saving" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70 flex items-center justify-center">
-              <span v-if="saving" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
-              {{ $t('admin.save_changes') }}
+            <button @click="saveMedia" :disabled="uploadingMedia || qcFiles.length === 0" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70 flex items-center justify-center">
+              <span v-if="uploadingMedia" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+              Upload Media
             </button>
           </div>
         </div>
       </div>
     </div>
-
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { adminService } from '../../api/adminService.js'
 import { supplierService } from '../../api/supplierService.js'
 
@@ -360,6 +341,8 @@ const suppliers = ref([])
 const saving = ref(false)
 
 const isModalOpen = ref(false)
+const isMediaModalOpen = ref(false)
+const uploadingMedia = ref(false)
 const editingRequest = ref(null)
 const selectedStatus = ref('pending')
 const selectedSupplier = ref('')
@@ -371,12 +354,12 @@ const qcFiles = ref([])
 const qcFileInput = ref(null)
 
 const statusOptions = [
-  { value: 'pending', label: 'Pending', icon: 'hourglass_empty', color: 'text-yellow-600' },
-  { value: 'quoted', label: 'Quoted', icon: 'request_quote', color: 'text-orange-600' },
-  { value: 'processing', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-600' },
-  { value: 'shipped', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-600' },
-  { value: 'completed', label: 'Completed', icon: 'task_alt', color: 'text-green-600' },
-  { value: 'rejected', label: 'Rejected', icon: 'cancel', color: 'text-red-600' }
+  { value: 'menunggu_penawaran_admin', label: 'Pending', icon: 'hourglass_empty', color: 'text-yellow-600' },
+  { value: 'menunggu_pemilihan_buyer', label: 'Quoted', icon: 'request_quote', color: 'text-orange-600' },
+  { value: 'sedang_diproses', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-600' },
+  { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-600' },
+  { value: 'selesai', label: 'Completed', icon: 'task_alt', color: 'text-green-600' },
+  { value: 'batal', label: 'Rejected', icon: 'cancel', color: 'text-red-600' }
 ]
 
 const filteredRequests = computed(() => {
@@ -419,15 +402,38 @@ onMounted(() => {
 })
 
 const getStatusBadgeClass = (status) => {
-  const base = 'flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold w-fit shadow-sm'
+  const base = 'flex items-center justify-center px-3 py-1.5 rounded-full text-[11px] font-bold w-fit shadow-sm'
   const map = {
-    'pending': 'text-yellow-600 bg-yellow-100',
-    'quoted': 'text-orange-600 bg-orange-100',
-    'processing': 'text-blue-600 bg-blue-100',
-    'shipped': 'text-purple-600 bg-purple-100',
-    'completed': 'text-green-600 bg-green-100'
+    'menunggu_penawaran_admin': 'text-yellow-700 bg-yellow-100 border border-yellow-200',
+    'menunggu_pemilihan_buyer': 'text-orange-700 bg-orange-100 border border-orange-200',
+    'menunggu_kesepakatan_final': 'text-orange-700 bg-orange-100 border border-orange-200',
+    'menunggu_pembayaran': 'text-blue-700 bg-blue-100 border border-blue-200',
+    'menunggu_verifikasi_pembayaran': 'text-blue-700 bg-blue-100 border border-blue-200',
+    'sedang_diproses': 'text-blue-700 bg-blue-100 border border-blue-200',
+    'dikirim': 'text-purple-700 bg-purple-100 border border-purple-200',
+    'menunggu_verifikasi_admin': 'text-purple-700 bg-purple-100 border border-purple-200',
+    'selesai': 'text-green-700 bg-green-100 border border-green-200',
+    'batal': 'text-red-700 bg-red-100 border border-red-200',
+    'dispute': 'text-red-700 bg-red-100 border border-red-200'
   }
-  return `${base} ${map[status] || map['pending']}`
+  return `${base} ${map[status] || 'text-gray-700 bg-gray-100 border border-gray-200'}`
+}
+
+const formatStatusLabel = (status) => {
+  const map = {
+    'menunggu_penawaran_admin': 'PENDING',
+    'menunggu_pemilihan_buyer': 'QUOTED',
+    'menunggu_kesepakatan_final': 'QUOTED',
+    'menunggu_pembayaran': 'PROCESSING',
+    'menunggu_verifikasi_pembayaran': 'PROCESSING',
+    'sedang_diproses': 'PROCESSING',
+    'dikirim': 'SHIPPED',
+    'menunggu_verifikasi_admin': 'SHIPPED',
+    'selesai': 'COMPLETED',
+    'batal': 'REJECTED',
+    'dispute': 'DISPUTE'
+  }
+  return map[status] || status.toUpperCase()
 }
 
 const formatDate = (dateStr) => {
@@ -448,6 +454,17 @@ const openStatusModal = (req) => {
 
 const closeStatusModal = () => {
   isModalOpen.value = false
+  editingRequest.value = null
+}
+
+const openMediaModal = (req) => {
+  editingRequest.value = req
+  qcFiles.value = []
+  isMediaModalOpen.value = true
+}
+
+const closeMediaModal = () => {
+  isMediaModalOpen.value = false
   editingRequest.value = null
   qcFiles.value = []
 }
@@ -486,7 +503,6 @@ const saveChanges = async () => {
     if (['processing', 'production', 'inspected'].includes(selectedStatus.value)) {
       formData.append('production_progress', productionProgress.value)
     }
-    qcFiles.value.forEach(f => formData.append('qc_images', f.file));
 
     await adminService.updateRequest(editingRequest.value.id, formData)
     closeStatusModal()
@@ -498,10 +514,20 @@ const saveChanges = async () => {
   }
 }
 
-const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
+const saveMedia = async () => {
+  uploadingMedia.value = true
+  try {
+    const formData = new FormData()
+    qcFiles.value.forEach(f => formData.append('qc_images', f.file));
+    
+    await adminService.uploadMedia(editingRequest.value.id, formData)
+    closeMediaModal()
+    await loadData()
+  } catch (error) {
+    alert(error.response?.data?.message || 'Failed to upload media')
+  } finally {
+    uploadingMedia.value = false
+  }
 }
 </script>
 

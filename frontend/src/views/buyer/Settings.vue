@@ -32,7 +32,7 @@
             
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-              <input v-model="form.full_name" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#3525cd] outline-none" required />
+              <input v-model="form.full_name" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none" required />
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
@@ -40,15 +40,15 @@
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
-              <input v-model="form.phone" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#3525cd] outline-none" />
+              <input v-model="form.phone" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none" />
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Company Name</label>
-              <input v-model="form.company_name" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#3525cd] outline-none" required />
+              <input v-model="form.company_name" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none" required />
             </div>
             
             <div class="pt-4">
-              <button type="submit" :disabled="saving" class="px-6 py-2.5 bg-[#3525cd] text-white font-semibold rounded-lg hover:opacity-95 transition-opacity disabled:opacity-50 flex items-center gap-2">
+              <button type="submit" :disabled="saving" class="px-6 py-2.5 bg-[#4f378a] text-white font-semibold rounded-lg hover:opacity-95 transition-opacity disabled:opacity-50 flex items-center gap-2">
                 <span v-if="saving" class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
                 Save Changes
               </button>

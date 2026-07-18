@@ -12,7 +12,7 @@
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#3525cd] mb-4" style="font-size: 48px;">progress_activity</span>
+        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
         <p class="text-gray-500 font-medium">Loading logistics data...</p>
       </div>
 
@@ -23,7 +23,7 @@
         </div>
         <h3 class="text-xl font-bold text-gray-800 mb-2">No Active Shipments</h3>
         <p class="text-gray-500 mb-8 text-center max-w-md">You don't have any orders currently in transit. Logistics tracking will appear here once your orders are shipped.</p>
-        <button @click="$router.push('/buyer/orders')" class="px-6 py-3 bg-[#3525cd] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#3525cd]/20">
+        <button @click="$router.push('/buyer/orders')" class="px-6 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
           Check My Orders
         </button>
       </div>
@@ -40,10 +40,10 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="flex items-center gap-4">
               <div class="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center shrink-0 border border-indigo-200">
-                <span class="material-symbols-outlined text-[#3525cd]">directions_boat</span>
+                <span class="material-symbols-outlined text-[#4f378a]">directions_boat</span>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-gray-800 group-hover:text-[#3525cd] transition-colors mb-0.5">{{ item.product_name }}</h3>
+                <h3 class="text-lg font-bold text-gray-800 group-hover:text-[#4f378a] transition-colors mb-0.5">{{ item.product_name }}</h3>
                 <p class="text-xs text-gray-500 font-medium">Order #{{ item.id.split('-')[0].toUpperCase() }} • {{ item.quantity }} units</p>
               </div>
             </div>
@@ -63,7 +63,7 @@
               <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 rounded-full z-0"></div>
               
               <!-- Active Line -->
-              <div class="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-emerald-400 to-[#3525cd] -translate-y-1/2 rounded-full z-0 transition-all duration-1000" 
+              <div class="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-emerald-400 to-[#4f378a] -translate-y-1/2 rounded-full z-0 transition-all duration-1000" 
                    :style="{ width: item.status === 'completed' ? '100%' : '50%' }"></div>
               
               <!-- Nodes -->
@@ -79,16 +79,16 @@
                 
                 <!-- Transit -->
                 <div class="flex flex-col items-center">
-                  <div :class="['w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-colors', item.status === 'completed' ? 'bg-emerald-500' : 'bg-[#3525cd]']">
+                  <div :class="['w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-colors', item.status === 'completed' ? 'bg-emerald-500' : 'bg-[#4f378a]']">
                     <div class="w-2 h-2 bg-white rounded-full"></div>
                   </div>
                   <span class="text-[10px] font-bold text-gray-700 mt-2">In Transit</span>
-                  <span class="text-[10px] text-[#3525cd] font-semibold" v-if="item.status === 'shipped'">Customs / Sea Freight</span>
+                  <span class="text-[10px] text-[#4f378a] font-semibold" v-if="item.status === 'shipped'">Customs / Sea Freight</span>
                 </div>
 
                 <!-- Destination -->
                 <div class="flex flex-col items-center">
-                  <div :class="['w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-colors', item.status === 'completed' ? 'bg-[#3525cd]' : 'bg-gray-300']">
+                  <div :class="['w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-colors', item.status === 'completed' ? 'bg-[#4f378a]' : 'bg-gray-300']">
                     <div v-if="item.status === 'completed'" class="w-2 h-2 bg-white rounded-full"></div>
                   </div>
                   <span class="text-[10px] font-bold text-gray-700 mt-2">Delivered</span>

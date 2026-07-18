@@ -108,5 +108,38 @@
     "shipped": "已发货",
     "production": "生产中",
     "completed": "已完成"
+  },
+  "landing": {
+    "title": "非洲与中国之间的数字桥梁",
+    "subtitle": "连接非洲进口商与经过验证的中国供应商的优质 B2B 平台。",
+    "cta_start": "开始使用",
+    "cta_learn": "了解更多",
+    "stats_suppliers": "已验证供应商",
+    "stats_countries": "非洲国家",
+    "stats_success": "成功率",
+    "features": {
+      "trust": "信任与验证",
+      "trust_desc": "认证工厂徽章，清晰的工厂数据和质量控制证据。",
+      "transparency": "端到端透明度",
+      "transparency_desc": "5 步可视化时间表以实时跟踪订单。",
+      "communication": "无障碍沟通",
+      "communication_desc": "集成的聊天和报价系统跨越语言和文化障碍。"
+    },
+    "how_it_works": {
+      "title": "工作原理",
+      "step1": "提交采购需求",
+      "step1_desc": "填写产品详情、规格、数量和预算。",
+      "step2": "获取报价",
+      "step2_desc": "我们的团队寻找最佳供应商并发送价格。",
+      "step3": "监控生产",
+      "step3_desc": "通过时间表和质检照片跟踪进度。",
+      "step4": "接收和评价",
+      "step4_desc": "确认到货并对供应商进行评价。"
+    },
+    "testimonials": {
+      "title": "用户评价"
+    },
+    "cta_footer": "准备好开始安全的贸易了吗？",
+    "cta_footer_button": "免费注册"
   }
 }

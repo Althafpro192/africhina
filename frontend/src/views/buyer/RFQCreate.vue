@@ -19,8 +19,8 @@
         <!-- Product Details Section -->
         <div class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm rounded-3xl p-6 sm:p-8">
           <div class="flex items-center gap-4 mb-8 border-b border-gray-100 pb-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center border border-[#3525cd]/10">
-              <span class="material-symbols-outlined text-[#3525cd]">inventory_2</span>
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center border border-[#4f378a]/10">
+              <span class="material-symbols-outlined text-[#4f378a]">inventory_2</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.product_details') }}</h2>
           </div>
@@ -34,7 +34,7 @@
                 v-model="form.productName"
                 type="text"
                 placeholder="e.g. Solar Panel 450W Monocrystalline"
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
                 required
               />
             </div>
@@ -46,7 +46,7 @@
               <div class="relative">
                 <select
                   v-model="form.category"
-                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                   required
                 >
                   <option value="" disabled selected>Select category</option>
@@ -69,7 +69,7 @@
                 v-model="form.subCategory"
                 type="text"
                 placeholder="e.g. Solar Panels"
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
                 required
               />
             </div>
@@ -79,8 +79,8 @@
         <!-- Specifications Section -->
         <div class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm rounded-3xl p-6 sm:p-8">
           <div class="flex items-center gap-4 mb-8 border-b border-gray-100 pb-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center border border-[#3525cd]/10">
-              <span class="material-symbols-outlined text-[#3525cd]">description</span>
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center border border-[#4f378a]/10">
+              <span class="material-symbols-outlined text-[#4f378a]">description</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.specifications') }}</h2>
           </div>
@@ -94,7 +94,7 @@
                 v-model="form.specifications"
                 rows="4"
                 placeholder="Describe technical specs, materials, and sizes."
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all resize-none text-gray-800 font-medium placeholder-gray-400"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all resize-none text-gray-800 font-medium placeholder-gray-400"
                 required
               ></textarea>
             </div>
@@ -107,7 +107,7 @@
                 v-model="form.qualityRequirements"
                 rows="2"
                 placeholder="e.g. Must pass SGS inspection, zero defect tolerance."
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all resize-none text-gray-800 font-medium placeholder-gray-400"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all resize-none text-gray-800 font-medium placeholder-gray-400"
               ></textarea>
             </div>
 
@@ -119,7 +119,7 @@
                 v-model="form.certifications"
                 type="text"
                 placeholder="e.g. ISO 9001, CE, RoHS"
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
               />
             </div>
           </div>
@@ -128,8 +128,8 @@
         <!-- Quantity & Budget Section -->
         <div class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm rounded-3xl p-6 sm:p-8">
           <div class="flex items-center gap-4 mb-8 border-b border-gray-100 pb-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center border border-[#3525cd]/10">
-              <span class="material-symbols-outlined text-[#3525cd]">payments</span>
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center border border-[#4f378a]/10">
+              <span class="material-symbols-outlined text-[#4f378a]">payments</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">Quantity, Budget & Logistics</h2>
           </div>
@@ -144,13 +144,13 @@
                   v-model="form.quantity"
                   type="number"
                   placeholder="e.g. 500"
-                  class="flex-[2] px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
+                  class="flex-[2] px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all text-gray-800 font-medium placeholder-gray-400"
                   required
                 />
                 <div class="relative flex-1">
                   <select
                     v-model="form.unit"
-                    class="w-full h-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                    class="w-full h-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                     required
                   >
                     <option value="pcs">Pieces</option>
@@ -170,7 +170,7 @@
               <div class="relative">
                 <select
                   v-model="form.currency"
-                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                   required
                 >
                   <option value="USD">USD ($)</option>
@@ -190,7 +190,7 @@
               <div class="relative">
                 <select
                   v-model="form.budgetRange"
-                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                   required
                 >
                   <option value="" disabled selected>Select budget range</option>
@@ -210,7 +210,7 @@
               <input
                 v-model="form.deliveryTimeline"
                 type="date"
-                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all text-gray-800 font-medium"
+                class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all text-gray-800 font-medium"
                 required
               />
             </div>
@@ -224,7 +224,7 @@
               <div class="relative">
                 <select
                   v-model="form.shippingTerms"
-                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                   required
                 >
                   <option value="" disabled selected>Select terms</option>
@@ -243,7 +243,7 @@
               <div class="relative">
                 <select
                   v-model="form.paymentTerms"
-                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#3525cd]/10 focus:border-[#3525cd] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
+                  class="w-full px-5 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 focus:border-[#4f378a] outline-none transition-all appearance-none text-gray-800 font-medium cursor-pointer"
                   required
                 >
                   <option value="" disabled selected>Select payment</option>
@@ -261,8 +261,8 @@
         <!-- References Section -->
         <div class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm rounded-3xl p-6 sm:p-8">
           <div class="flex items-center gap-4 mb-8 border-b border-gray-100 pb-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 rounded-xl flex items-center justify-center border border-[#3525cd]/10">
-              <span class="material-symbols-outlined text-[#3525cd]">cloud_upload</span>
+            <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 rounded-xl flex items-center justify-center border border-[#4f378a]/10">
+              <span class="material-symbols-outlined text-[#4f378a]">cloud_upload</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.references') }}</h2>
           </div>
@@ -272,7 +272,7 @@
             @dragover.prevent
             @dragenter.prevent
             @drop.prevent="handleDrop"
-            class="border-2 border-dashed border-[#3525cd]/30 bg-[#3525cd]/5 rounded-2xl p-10 text-center cursor-pointer hover:border-[#3525cd]/60 hover:bg-[#3525cd]/10 transition-all group"
+            class="border-2 border-dashed border-[#4f378a]/30 bg-[#4f378a]/5 rounded-2xl p-10 text-center cursor-pointer hover:border-[#4f378a]/60 hover:bg-[#4f378a]/10 transition-all group"
           >
             <input
               ref="fileInput"
@@ -283,7 +283,7 @@
               class="hidden"
             />
             <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-3xl text-[#3525cd]">upload_file</span>
+              <span class="material-symbols-outlined text-3xl text-[#4f378a]">upload_file</span>
             </div>
             <p class="text-base text-gray-700 font-bold mb-1">
               {{ $t('request_details.upload_desc') }}
@@ -340,7 +340,7 @@
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="w-full bg-[#3525cd] text-white font-bold text-lg py-5 px-6 rounded-2xl hover:opacity-90 transform hover:-translate-y-1 transition-all shadow-xl shadow-[#3525cd]/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+            class="w-full bg-[#4f378a] text-white font-bold text-lg py-5 px-6 rounded-2xl hover:opacity-90 transform hover:-translate-y-1 transition-all shadow-xl shadow-[#4f378a]/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
           >
             <span v-if="isSubmitting" class="material-symbols-outlined animate-spin">progress_activity</span>
             <span v-else>{{ $t('request_details.submit') }}</span>

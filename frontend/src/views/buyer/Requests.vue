@@ -8,14 +8,14 @@
           <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">{{ $t('nav.requests') }}</h1>
           <p class="text-gray-500 mt-2 text-sm sm:text-base">Manage your active sourcing requests and review quotes.</p>
         </div>
-        <button @click="createNewRequest" class="hidden sm:flex px-5 py-2.5 bg-[#3525cd] text-white font-bold rounded-xl hover:opacity-90 transition-all items-center gap-2 shadow-lg shadow-[#3525cd]/20">
+        <button @click="createNewRequest" class="hidden sm:flex px-5 py-2.5 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all items-center gap-2 shadow-lg shadow-[#4f378a]/20">
           <span class="material-symbols-outlined text-[20px]">add</span> New Request
         </button>
       </div>
 
       <!-- Loading State -->
       <div v-if="loadingRequests" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#3525cd] mb-4" style="font-size: 48px;">progress_activity</span>
+        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
         <p class="text-gray-500 font-medium">Loading your requests...</p>
       </div>
 
@@ -26,7 +26,7 @@
         </div>
         <h3 class="text-xl font-bold text-gray-800 mb-2">No Active Requests</h3>
         <p class="text-gray-500 mb-8 text-center max-w-md">You don't have any pending requests. Start by creating a new sourcing request.</p>
-        <button @click="createNewRequest" class="px-8 py-3 bg-[#3525cd] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#3525cd]/20">
+        <button @click="createNewRequest" class="px-8 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
           Create Sourcing Request
         </button>
       </div>
@@ -40,8 +40,8 @@
           @click="viewDetails(req.id)"
         >
           <div class="flex items-start gap-4 flex-1">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#3525cd]/10 to-[#3525cd]/5 border border-[#3525cd]/10 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-[#3525cd]">{{ getCategoryIcon(req.category) }}</span>
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 border border-[#4f378a]/10 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[#4f378a]">{{ getCategoryIcon(req.category) }}</span>
             </div>
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
@@ -49,7 +49,7 @@
                 <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
                 <span class="text-xs text-gray-400 font-medium">{{ formatDate(req.created_at) }}</span>
               </div>
-              <h3 class="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-[#3525cd] transition-colors leading-tight">{{ req.product_name }}</h3>
+              <h3 class="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-[#4f378a] transition-colors leading-tight">{{ req.product_name }}</h3>
               <p class="text-sm text-gray-500 mt-1.5 line-clamp-1 max-w-2xl">{{ req.specifications || 'No detailed specifications provided.' }}</p>
             </div>
           </div>
@@ -60,7 +60,7 @@
             </span>
             <div v-if="req.quoted_price" class="text-right">
               <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Est. Value</span>
-              <span class="font-black text-lg sm:text-xl text-[#3525cd]">${{ Number(req.quoted_price).toLocaleString() }}</span>
+              <span class="font-black text-lg sm:text-xl text-[#4f378a]">${{ Number(req.quoted_price).toLocaleString() }}</span>
             </div>
             <div v-else class="text-right">
               <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Target Qty</span>
@@ -90,7 +90,8 @@ const loadingRequests = ref(true)
 
 // Filter for only 'pending' and 'quoted' status
 const filteredRequests = computed(() => {
-  let filtered = requests.value.filter(r => ['pending', 'quoted'].includes(r.status))
+  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_verifikasi_admin', 'dp_verified', 'approved']
+  let filtered = requests.value.filter(r => activeStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
     filtered = filtered.filter(r => 

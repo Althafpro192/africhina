@@ -4,15 +4,13 @@
     <!-- Top Navigation Bar -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-header flex justify-between items-center w-full px-4 sm:px-6 py-4 shadow-sm" style="height: 72px;">
       <div class="flex items-center gap-4">
-        <span class="text-xl sm:text-2xl font-extrabold text-[#3525cd] tracking-tight">{{ $t('auth.title') }}</span>
+        <span class="text-xl sm:text-2xl font-extrabold text-[#4f378a] tracking-tight">{{ $t('auth.title') }}</span>
       </div>
       
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex gap-4 xl:gap-6 items-center">
-        <button @click="navigate('sourcing')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'sourcing' ? 'text-[#3525cd] border-b-2 border-[#3525cd] pb-1' : 'text-gray-600 hover:text-[#3525cd]']">{{ $t('nav.sourcing') }}</button>
-        <button @click="navigate('orders')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'orders' ? 'text-[#3525cd] border-b-2 border-[#3525cd] pb-1' : 'text-gray-600 hover:text-[#3525cd]']">{{ $t('nav.orders') }}</button>
-        <button @click="navigate('suppliers')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'suppliers' ? 'text-[#3525cd] border-b-2 border-[#3525cd] pb-1' : 'text-gray-600 hover:text-[#3525cd]']">{{ $t('nav.suppliers') }}</button>
-        <button @click="navigate('logistics')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'logistics' ? 'text-[#3525cd] border-b-2 border-[#3525cd] pb-1' : 'text-gray-600 hover:text-[#3525cd]']">{{ $t('nav.logistics') }}</button>
+        <button @click="navigate('sourcing')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'sourcing' ? 'text-[#4f378a] border-b-2 border-[#4f378a] pb-1' : 'text-gray-600 hover:text-[#4f378a]']">{{ $t('nav.sourcing') }}</button>
+        <button @click="navigate('logistics')" :class="['font-semibold text-sm xl:text-base transition-colors duration-200', activeRoute === 'logistics' ? 'text-[#4f378a] border-b-2 border-[#4f378a] pb-1' : 'text-gray-600 hover:text-[#4f378a]']">{{ $t('nav.logistics') }}</button>
       </nav>
 
       <!-- Right Side Actions -->
@@ -28,19 +26,27 @@
           />
         </div>
         
-        <button @click="toggleNotifications" class="material-symbols-outlined text-gray-600 hover:text-[#3525cd] transition-colors relative p-1">
+        <button @click="toggleNotifications" class="material-symbols-outlined text-gray-600 hover:text-[#4f378a] transition-colors relative p-1">
           notifications
           <span v-if="notificationCount > 0" class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
         </button>
         
-        <button @click="openChat" class="hidden sm:flex material-symbols-outlined text-gray-600 hover:text-[#3525cd] transition-colors p-1">chat</button>
+        <button @click="openChat" class="hidden sm:flex material-symbols-outlined text-gray-600 hover:text-[#4f378a] transition-colors p-1">chat</button>
         
-        <img 
-          class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-sm object-cover cursor-pointer" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2RyODKtjBq88GCEOb-L1uA_CtkK3ef6kiw8x2MkcxAyKA5k5exGbISqmxr4ywURFwwn2E-ht7wTlhC6QomyTA7OI1s0-PDO_juQB1o9Y_EIVRHQCec9tT3Jf35QCDiVBsUoMTSR8pyjUaeA_pXveQS2lHoCnAIhUrdxmp3NzyW2mX0hGdg-VV5_6JRD0ZqLdP525IP4hdJjwbgoLP92DyHa5e9kc0AbYCAkLfd0i7pFK4dGb8mzUjQ260snLqXL3uuXW8d18C9ot9"
-          alt="Profile"
-          @click="toggleProfileMenu"
-        />
+        <div class="relative">
+          <img 
+            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-sm object-cover cursor-pointer" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2RyODKtjBq88GCEOb-L1uA_CtkK3ef6kiw8x2MkcxAyKA5k5exGbISqmxr4ywURFwwn2E-ht7wTlhC6QomyTA7OI1s0-PDO_juQB1o9Y_EIVRHQCec9tT3Jf35QCDiVBsUoMTSR8pyjUaeA_pXveQS2lHoCnAIhUrdxmp3NzyW2mX0hGdg-VV5_6JRD0ZqLdP525IP4hdJjwbgoLP92DyHa5e9kc0AbYCAkLfd0i7pFK4dGb8mzUjQ260snLqXL3uuXW8d18C9ot9"
+            alt="Profile"
+            @click="toggleProfileMenu"
+          />
+          <div v-if="showProfileMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 border border-gray-100 z-50">
+            <button @click="navigate('settings'); showProfileMenu = false" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px]">settings</span>
+              {{ $t('nav.settings') }}
+            </button>
+          </div>
+        </div>
         <LanguageSwitcher />
       </div>
     </header>
@@ -52,7 +58,7 @@
       :style="{ top: '72px', left: '10px', height: 'calc(100vh - 72px)' }"
     >
       <div class="mb-6 px-2 pt-4">
-        <h2 class="text-xl font-black text-[#3525cd]">Global Sourcing</h2>
+        <h2 class="text-xl font-black text-[#4f378a]">Global Sourcing</h2>
         <p class="text-sm text-gray-500/70">{{ $t('dashboard.verified_buyer') }}</p>
       </div>
 
@@ -61,22 +67,11 @@
           <span class="material-symbols-outlined">dashboard</span>
           <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
         </button>
-        <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'requests' ? 'text-white active-glow bg-[#3525cd] translate-x-1 font-bold' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
+        <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'requests' ? 'text-white active-glow bg-[#4f378a] translate-x-1 font-bold' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">request_quote</span>
           <span class="font-semibold text-sm">{{ $t('nav.requests') }}</span>
         </button>
-        <button @click="navigate('orders')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'orders' ? 'bg-white/40 translate-x-1 text-[#3525cd] font-bold' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          <span class="font-semibold text-sm">{{ $t('nav.orders') }}</span>
-        </button>
-        <button @click="navigate('suppliers')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'suppliers' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
-          <span class="material-symbols-outlined">business</span>
-          <span class="font-semibold text-sm">{{ $t('nav.suppliers') }}</span>
-        </button>
-        <button @click="navigate('settings')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'settings' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
-          <span class="material-symbols-outlined">settings</span>
-          <span class="font-semibold text-sm">{{ $t('nav.settings') }}</span>
-        </button>
+
       </nav>
 
       <div class="px-2 pb-4">
@@ -87,7 +82,7 @@
       </div>
 
       <div class="flex flex-col gap-1 border-t border-white/50 pt-4 px-2 pb-4">
-        <button @click="openHelp" class="flex items-center gap-4 p-4 text-gray-600 hover:text-[#3525cd] transition-colors rounded-lg hover:bg-white/30">
+        <button @click="openHelp" class="flex items-center gap-4 p-4 text-gray-600 hover:text-[#4f378a] transition-colors rounded-lg hover:bg-white/30">
           <span class="material-symbols-outlined">help</span>
           <span class="font-semibold text-sm">{{ $t('nav.help') }}</span>
         </button>
@@ -130,26 +125,19 @@
       v-if="isMobile"
       class="fixed bottom-0 left-0 right-0 glass-header border-t border-white/50 flex justify-around py-3 px-2 z-40"
     >
-      <button @click="navigate('dashboard')" :class="['flex flex-col items-center p-1', activeRoute === 'dashboard' ? 'text-[#3525cd]' : 'text-gray-600 hover:text-[#3525cd]']">
+      <button @click="navigate('dashboard')" :class="['flex flex-col items-center p-1', activeRoute === 'dashboard' ? 'text-[#4f378a]' : 'text-gray-600 hover:text-[#4f378a]']">
         <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'dashboard' ? 'font-variation-settings: \'FILL\' 1;' : ''">dashboard</span>
         <span class="text-[10px] font-semibold">Home</span>
       </button>
-      <button @click="navigate('requests')" :class="['flex flex-col items-center p-1', activeRoute === 'requests' ? 'text-[#3525cd]' : 'text-gray-600 hover:text-[#3525cd]']">
+      <button @click="navigate('requests')" :class="['flex flex-col items-center p-1', activeRoute === 'requests' ? 'text-[#4f378a]' : 'text-gray-600 hover:text-[#4f378a]']">
         <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'requests' ? 'font-variation-settings: \'FILL\' 1;' : ''">request_quote</span>
         <span class="text-[10px] font-semibold">Requests</span>
       </button>
-      <button @click="navigate('orders')" :class="['flex flex-col items-center p-1', activeRoute === 'orders' ? 'text-[#3525cd]' : 'text-gray-600 hover:text-[#3525cd]']">
-        <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'orders' ? 'font-variation-settings: \'FILL\' 1;' : ''">shopping_cart</span>
-        <span class="text-[10px] font-semibold">Orders</span>
+      <button @click="navigate('logistics')" :class="['flex flex-col items-center p-1', activeRoute === 'logistics' ? 'text-[#4f378a]' : 'text-gray-600 hover:text-[#4f378a]']">
+        <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'logistics' ? 'font-variation-settings: \'FILL\' 1;' : ''">local_shipping</span>
+        <span class="text-[10px] font-semibold">Logistics</span>
       </button>
-      <button @click="navigate('suppliers')" :class="['flex flex-col items-center p-1', activeRoute === 'suppliers' ? 'text-[#3525cd]' : 'text-gray-600 hover:text-[#3525cd]']">
-        <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'suppliers' ? 'font-variation-settings: \'FILL\' 1;' : ''">business</span>
-        <span class="text-[10px] font-semibold">Suppliers</span>
-      </button>
-      <button @click="navigate('settings')" :class="['flex flex-col items-center p-1', activeRoute === 'settings' ? 'text-[#3525cd]' : 'text-gray-600 hover:text-[#3525cd]']">
-        <span class="material-symbols-outlined text-[20px]" :style="activeRoute === 'settings' ? 'font-variation-settings: \'FILL\' 1;' : ''">settings</span>
-        <span class="text-[10px] font-semibold">Settings</span>
-      </button>
+
     </nav>
   </div>
 </template>
@@ -217,7 +205,8 @@ const navigate = (route) => {
 
 const toggleNotifications = () => { }
 const openChat = () => { }
-const toggleProfileMenu = () => {}
+const showProfileMenu = ref(false)
+const toggleProfileMenu = () => { showProfileMenu.value = !showProfileMenu.value }
 const createNewRequest = () => { router.push('/buyer/rfq/create') }
 const openHelp = () => {}
 
@@ -255,7 +244,7 @@ const logout = async () => {
 .active-glow { box-shadow: 0 4px 12px rgba(53, 37, 205, 0.2); }
 
 .fab-premium {
-  background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #4f378a 100%);
   box-shadow: 0 15px 30px rgba(53, 37, 205, 0.3), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 </style>
