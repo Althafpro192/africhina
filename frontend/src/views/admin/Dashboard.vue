@@ -321,6 +321,9 @@
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
@@ -370,7 +373,7 @@ const filteredRequests = computed(() => {
   }
 
   if (filterCategory.value) {
-    result = result.filter(r => r.category === filterCategory.value)
+    result = result.filter(r => r.category && r.category.toLowerCase() === filterCategory.value.toLowerCase())
   }
 
   if (searchQuery.value) {
@@ -508,7 +511,7 @@ const saveChanges = async () => {
     closeStatusModal()
     await loadData() // Refresh list and stats
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to update')
+    showToast(error.response?.data?.message || 'Failed to update')
   } finally {
     saving.value = false
   }
@@ -524,7 +527,7 @@ const saveMedia = async () => {
     closeMediaModal()
     await loadData()
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to upload media')
+    showToast(error.response?.data?.message || 'Failed to upload media')
   } finally {
     uploadingMedia.value = false
   }

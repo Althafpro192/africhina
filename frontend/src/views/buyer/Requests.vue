@@ -1,72 +1,105 @@
 <template>
   <BuyerLayout activeRoute="requests" v-model:searchQuery="searchQuery" :notificationCount="notificationCount">
-    <div class="w-full max-w-5xl mx-auto py-4 sm:py-8">
+    <div class="flex h-full w-full overflow-hidden bg-gray-50/30">
       
-      <!-- Header Section -->
-      <div class="flex justify-between items-end mb-6 sm:mb-8">
-        <div>
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">{{ $t('nav.requests') }}</h1>
-          <p class="text-gray-500 mt-2 text-sm sm:text-base">Manage your active sourcing requests and review quotes.</p>
-        </div>
-        <button @click="createNewRequest" class="hidden sm:flex px-5 py-2.5 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all items-center gap-2 shadow-lg shadow-[#4f378a]/20">
-          <span class="material-symbols-outlined text-[20px]">add</span> New Request
-        </button>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="loadingRequests" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
-        <p class="text-gray-500 font-medium">Loading your requests...</p>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="filteredRequests.length === 0" class="flex flex-col items-center justify-center py-20 bg-white/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-sm">
-        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-gray-300" style="font-size: 48px;">inbox</span>
-        </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">No Active Requests</h3>
-        <p class="text-gray-500 mb-8 text-center max-w-md">You don't have any pending requests. Start by creating a new sourcing request.</p>
-        <button @click="createNewRequest" class="px-8 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
-          Create Sourcing Request
-        </button>
-      </div>
-
-      <!-- Request List -->
-      <div v-else class="space-y-4">
-        <div 
-          v-for="req in filteredRequests" 
-          :key="req.id"
-          class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm hover:shadow-xl rounded-2xl p-5 sm:p-6 transition-all duration-300 group cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:-translate-y-1"
-          @click="viewDetails(req.id)"
-        >
-          <div class="flex items-start gap-4 flex-1">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 border border-[#4f378a]/10 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-[#4f378a]">{{ getCategoryIcon(req.category) }}</span>
+      <!-- Left Pane: Request List -->
+      <div 
+        :class="[
+          'w-full lg:w-[400px] xl:w-[450px] shrink-0 border-r border-gray-200 bg-white overflow-y-auto custom-scrollbar',
+          { 'hidden lg:block': route.params.id }
+        ]"
+      >
+        <div class="p-4 sm:p-6">
+          <!-- Header Section -->
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight">{{ $t('nav.requests') }}</h1>
+              <p class="text-gray-500 text-xs mt-1">Manage your active sourcing requests</p>
             </div>
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">{{ req.category }}</span>
-                <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
-                <span class="text-xs text-gray-400 font-medium">{{ formatDate(req.created_at) }}</span>
+            <button @click="createNewRequest" class="p-2 bg-[#4f378a] text-white rounded-lg hover:opacity-90 transition-all shadow-md" title="New Request">
+              <span class="material-symbols-outlined text-[20px]">add</span>
+            </button>
+          </div>
+
+          <!-- Loading State -->
+          <div v-if="loadingRequests" class="flex flex-col items-center justify-center py-20">
+            <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 32px;">progress_activity</span>
+          </div>
+
+          <!-- Empty State -->
+          <div v-else-if="filteredRequests.length === 0" class="flex flex-col items-center justify-center py-10 text-center">
+            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-gray-300" style="font-size: 32px;">inbox</span>
+            </div>
+            <h3 class="text-base font-bold text-gray-800 mb-1">No Active Requests</h3>
+            <p class="text-gray-500 mb-6 text-xs max-w-[200px]">You don't have any pending requests.</p>
+            <button @click="createNewRequest" class="px-5 py-2 text-sm bg-[#4f378a] text-white font-bold rounded-lg shadow-md">
+              Create Request
+            </button>
+          </div>
+
+          <!-- Request List -->
+          <div v-else class="space-y-3">
+            <div
+              v-for="req in filteredRequests"
+              :key="req.id"
+              :class="[
+                'border rounded-xl p-4 transition-all duration-200 cursor-pointer flex flex-col gap-3 relative overflow-hidden',
+                route.params.id == req.id 
+                  ? 'bg-blue-50/50 border-[#4f378a] shadow-md ring-1 ring-[#4f378a]/50' 
+                  : 'bg-white border-gray-100 hover:border-[#4f378a]/30 hover:shadow-md hover:-translate-y-0.5'
+              ]"
+              @click="viewDetails(req.id)"
+            >
+              <!-- Indicator line for active item -->
+              <div v-if="route.params.id == req.id" class="absolute left-0 top-0 bottom-0 w-1 bg-[#4f378a]"></div>
+              
+              <div class="flex justify-between items-start">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">{{ req.category }}</span>
+                  <span class="text-[10px] text-gray-400 font-medium">{{ formatDate(req.created_at) }}</span>
+                </div>
+                <span :class="['font-bold text-[9px] px-2 py-0.5 rounded-full text-white whitespace-nowrap', getStatusClass(req.status)]">
+                  {{ req.status === 'quoted' ? 'Quote Received' : 'Awaiting Quotes' }}
+                </span>
               </div>
-              <h3 class="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-[#4f378a] transition-colors leading-tight">{{ req.product_name }}</h3>
-              <p class="text-sm text-gray-500 mt-1.5 line-clamp-1 max-w-2xl">{{ req.specifications || 'No detailed specifications provided.' }}</p>
-            </div>
-          </div>
+              
+              <div>
+                <h3 :class="['text-sm font-bold leading-tight line-clamp-1', route.params.id == req.id ? 'text-[#4f378a]' : 'text-gray-800']">
+                  {{ req.product_name }}
+                </h3>
+                <p class="text-xs text-gray-500 mt-1 line-clamp-1">{{ req.specifications || 'No detailed specifications.' }}</p>
+              </div>
 
-          <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 sm:border-l border-gray-100 pt-4 sm:pt-0 sm:pl-6 shrink-0 sm:min-w-[160px]">
-            <span :class="['font-bold text-[10px] sm:text-xs px-3 py-1.5 rounded-full text-white shadow-sm whitespace-nowrap', getStatusClass(req.status)]">
-              {{ req.status === 'quoted' ? 'Quote Received' : 'Awaiting Quotes' }}
-            </span>
-            <div v-if="req.quoted_price" class="text-right">
-              <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Est. Value</span>
-              <span class="font-black text-lg sm:text-xl text-[#4f378a]">${{ Number(req.quoted_price).toLocaleString() }}</span>
-            </div>
-            <div v-else class="text-right">
-              <span class="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Target Qty</span>
-              <span class="font-bold text-sm sm:text-base text-gray-700">{{ req.quantity }} units</span>
+              <div class="flex justify-between items-end mt-1 pt-3 border-t border-gray-100/60">
+                <div v-if="req.quoted_price">
+                  <span class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Est. Value</span>
+                  <span class="font-black text-sm text-[#4f378a]">${{ Number(req.quoted_price).toLocaleString() }}</span>
+                </div>
+                <div v-else>
+                  <span class="block text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-0.5">Target Qty</span>
+                  <span class="font-bold text-xs text-gray-700">{{ req.quantity }} units</span>
+                </div>
+                
+                <span v-if="route.params.id == req.id" class="material-symbols-outlined text-[#4f378a] text-[18px]">chevron_right</span>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Right Pane: Details (Router View) -->
+      <div 
+        :class="[
+          'flex-1 overflow-y-auto bg-gray-50/30 relative custom-scrollbar',
+          { 'hidden lg:block': !route.params.id }
+        ]"
+      >
+        <router-view :key="route.fullPath" v-if="route.params.id"></router-view>
+        <div v-else class="h-full w-full flex flex-col items-center justify-center text-gray-400">
+          <span class="material-symbols-outlined text-[80px] mb-6 opacity-20">inventory_2</span>
+          <h2 class="text-xl font-bold text-gray-600 mb-2">Pilih Permintaan</h2>
+          <p class="text-sm">Silakan pilih salah satu pesanan dari daftar di sebelah kiri untuk melihat detailnya.</p>
         </div>
       </div>
 
@@ -76,11 +109,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import { requestService } from '../../api/requestService.js'
 
 const router = useRouter()
+const route = useRoute()
 
 // Reactive State
 const searchQuery = ref('')
@@ -90,7 +124,7 @@ const loadingRequests = ref(true)
 
 // Filter for only 'pending' and 'quoted' status
 const filteredRequests = computed(() => {
-  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_verifikasi_admin', 'dp_verified', 'approved']
+  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved']
   let filtered = requests.value.filter(r => activeStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
@@ -114,6 +148,15 @@ const fetchRequests = async () => {
     loadingRequests.value = false
   }
 }
+
+// Custom CSS for scrollbar to keep it clean in split-pane
+const customStyle = document.createElement('style')
+customStyle.innerHTML = `
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+`
+document.head.appendChild(customStyle)
 
 onMounted(() => {
   fetchRequests()

@@ -29,8 +29,15 @@ export const requestService = {
     return data;
   },
 
-  async selectOption(id, option_id) {
-    const { data } = await api.post(`/requests/${id}/select-option`, { option_id });
+  async updateRequestDetails(id, formData) {
+    const { data } = await api.put(`/requests/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data;
+  },
+
+  async selectOption(id, option_ids) {
+    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids });
     return data;
   },
 

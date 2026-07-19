@@ -73,6 +73,9 @@
                   </div>
                 </td>
                 <td class="px-6 py-5 text-right">
+                  <button @click="openViewModal(supplier)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold mr-2">
+                    View
+                  </button>
                   <button @click="openEditModal(supplier)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold mr-2">
                     Edit
                   </button>
@@ -103,10 +106,10 @@
     <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isModalOpen ? 'visible' : 'invisible']">
       <div class="absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm" @click="closeModal"></div>
       
-      <div :class="['glass-panel w-[600px] rounded-3xl p-8 deep-shadow relative border-white/40 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+      <div :class="['bg-white w-[600px] rounded-3xl p-8 deep-shadow relative border border-gray-200 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ isEditing ? 'Edit Supplier' : 'Add New Supplier' }}</h3>
+            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ isViewing ? 'Supplier Details' : (isEditing ? 'Edit Supplier' : 'Add New Supplier') }}</h3>
           </div>
           <button @click="closeModal" class="text-[#7a7582] hover:text-[#4f378a] transition-colors">
             <span class="material-symbols-outlined">close</span>
@@ -117,31 +120,31 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Company Name</label>
-              <input v-model="form.company_name" required class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.company_name" required :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div>
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Category</label>
-              <input v-model="form.category" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.category" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div>
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Contact Person</label>
-              <input v-model="form.contact_person" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.contact_person" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div>
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Phone</label>
-              <input v-model="form.phone_china" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.phone_china" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div class="col-span-2">
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Email</label>
-              <input v-model="form.email" type="email" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.email" type="email" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div class="col-span-2">
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Factory Address</label>
-              <input v-model="form.factory_address" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none" />
+              <input v-model="form.factory_address" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none disabled:bg-gray-100 disabled:text-gray-500" />
             </div>
             <div class="col-span-2">
               <label class="text-[12px] font-semibold text-[#494551] block mb-1">Verification Level</label>
-              <select v-model="form.verification_level" class="w-full px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none bg-transparent text-[#1d1b20]">
+              <select v-model="form.verification_level" :disabled="isViewing" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-[#1d1b20] disabled:bg-gray-100 disabled:text-gray-500">
                 <option value="Level 1 - Basic">Level 1 - Basic</option>
                 <option value="Level 2 - Advanced">Level 2 - Advanced</option>
                 <option value="Level 3 - Gold">Level 3 - Gold</option>
@@ -150,13 +153,13 @@
             </div>
           </div>
 
-          <div class="flex gap-4 pt-6">
-            <button type="button" @click="closeModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
-              Cancel
+          <div class="flex justify-end gap-3 mt-6">
+            <button type="button" @click="closeModal" class="px-6 py-3 rounded-2xl font-bold text-[#494551] hover:bg-[#ece6ee] transition-colors">
+              {{ isViewing ? 'Close' : 'Cancel' }}
             </button>
-            <button type="submit" :disabled="saving" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70">
-              <span v-if="saving" class="material-symbols-outlined animate-spin align-middle mr-2 text-sm">progress_activity</span>
-              Save Supplier
+            <button v-if="!isViewing" type="submit" :disabled="saving" class="bg-[#4f378a] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50">
+              <span v-if="saving" class="material-symbols-outlined animate-spin">progress_activity</span>
+              {{ isEditing ? 'Save Changes' : 'Save Supplier' }}
             </button>
           </div>
         </form>
@@ -166,6 +169,9 @@
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { supplierService } from '../../api/supplierService.js'
@@ -182,6 +188,7 @@ const saving = ref(false)
 
 const isModalOpen = ref(false)
 const isEditing = ref(false)
+const isViewing = ref(false)
 const editingId = ref(null)
 
 const form = ref({
@@ -221,12 +228,31 @@ onMounted(() => {
 
 const openCreateModal = () => {
   isEditing.value = false
-  form.value = { company_name: '', category: '', contact_person: '', phone_china: '', email: '', factory_address: '', verification_level: 'basic' }
+  isViewing.value = false
+  editingId.value = null
+  form.value = {
+    company_name: '',
+    category: '',
+    contact_person: '',
+    phone_china: '',
+    email: '',
+    factory_address: '',
+    verification_level: 'Level 1 - Basic'
+  }
   isModalOpen.value = true
 }
 
 const openEditModal = (supplier) => {
   isEditing.value = true
+  isViewing.value = false
+  editingId.value = supplier.id
+  form.value = { ...supplier }
+  isModalOpen.value = true
+}
+
+const openViewModal = (supplier) => {
+  isEditing.value = false
+  isViewing.value = true
   editingId.value = supplier.id
   form.value = { ...supplier }
   isModalOpen.value = true
@@ -247,7 +273,7 @@ const saveSupplier = async () => {
     closeModal()
     await loadSuppliers()
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to save supplier')
+    showToast(error.response?.data?.message || 'Failed to save supplier')
   } finally {
     saving.value = false
   }
@@ -259,7 +285,7 @@ const deleteSupplierItem = async (id) => {
     await supplierService.remove(id)
     await loadSuppliers()
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to delete supplier')
+    showToast(error.response?.data?.message || 'Failed to delete supplier')
   }
 }
 </script>

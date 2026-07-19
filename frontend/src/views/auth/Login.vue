@@ -71,12 +71,18 @@
           <!-- Phone -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('auth.phone') }}</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">phone</span>
+            <div class="flex gap-2">
+              <select v-model="form.country_code" class="w-1/3 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none bg-white">
+                <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }}</option>
+              </select>
+              <div class="relative w-2/3">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">phone</span>
+                </div>
+                <input v-model="form.phone" type="text" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" :style="{ fontSize: isMobile ? '14px' : '16px' }" placeholder="1234567890" required />
               </div>
-              <input v-model="form.phone" type="text" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" :style="{ fontSize: isMobile ? '14px' : '16px' }" required />
             </div>
+            <p v-if="phoneError" class="text-xs text-red-500 mt-1">{{ phoneError }}</p>
           </div>
         </div>
 
@@ -188,14 +194,56 @@
       <p>{{ $t('auth.footer') }}</p>
     </div>
 
+    <!-- Forgot Password Modal -->
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isForgotModalOpen ? 'visible' : 'invisible']">
+      <div class="absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm" @click="closeForgotModal"></div>
+      
+      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300 max-w-[90vw]', isForgotModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3 class="text-[24px] leading-[1.3] font-bold text-[#3525cd]">Reset Password</h3>
+            <p class="text-sm text-gray-500 mt-2">Enter your email address to request a password reset link.</p>
+          </div>
+          <button @click="closeForgotModal" class="text-gray-400 hover:text-gray-700 transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <form @submit.prevent="submitForgotPassword" class="space-y-4">
+          <div v-if="forgotSuccessMsg" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+            {{ forgotSuccessMsg }}
+          </div>
+          <div v-if="forgotErrorMsg" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            {{ forgotErrorMsg }}
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+            <input v-model="forgotEmail" type="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all" required placeholder="e.g. buyer@example.com" />
+          </div>
+          
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button" @click="closeForgotModal" class="px-6 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors">
+              Cancel
+            </button>
+            <button type="submit" :disabled="forgotLoading" class="px-6 py-3 rounded-xl bg-[#3525cd] text-white font-bold shadow-lg hover:opacity-95 transition-all disabled:opacity-50 flex items-center gap-2">
+              <span v-if="forgotLoading" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+              Request Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { authService } from '../../api/authService.js'
+import { countryCodes, validatePhone } from '../../utils/phoneValidation.js'
 
 const router = useRouter()
 
@@ -211,8 +259,17 @@ const successMsg = ref('')
 const form = ref({
   company_name: '',
   contact_person: '',
-  phone: ''
+  phone: '',
+  country_code: '+62'
 })
+const phoneError = ref('')
+
+// Forgot Password State
+const isForgotModalOpen = ref(false)
+const forgotEmail = ref('')
+const forgotLoading = ref(false)
+const forgotSuccessMsg = ref('')
+const forgotErrorMsg = ref('')
 
 // Device Detection
 const isMobile = ref(false)
@@ -232,8 +289,27 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateDeviceType)
 })
 
+watch(() => form.value.phone, () => {
+  if (isRegister.value && form.value.phone) {
+    phoneError.value = validatePhone(form.value.phone, form.value.country_code)
+  } else {
+    phoneError.value = ''
+  }
+})
+
+watch(() => form.value.country_code, () => {
+  if (isRegister.value && form.value.phone) {
+    phoneError.value = validatePhone(form.value.phone, form.value.country_code)
+  }
+})
+
 // Methods
 const handleSubmit = async () => {
+  if (isRegister.value && phoneError.value) {
+    errorMsg.value = 'Please fix the phone number errors.'
+    return
+  }
+
   errorMsg.value = ''
   successMsg.value = ''
   loading.value = true
@@ -245,7 +321,8 @@ const handleSubmit = async () => {
         full_name: form.value.contact_person,
         email: email.value,
         password: password.value,
-        country: '',
+        country: form.value.country_code,
+        country_code: form.value.country_code,
         phone: form.value.phone,
         company_name: form.value.company_name
       })
@@ -271,7 +348,28 @@ const handleSubmit = async () => {
 }
 
 const handleForgot = () => {
-  console.log('Forgot password clicked')
+  isForgotModalOpen.value = true
+  forgotEmail.value = email.value
+  forgotErrorMsg.value = ''
+  forgotSuccessMsg.value = ''
+}
+
+const closeForgotModal = () => {
+  isForgotModalOpen.value = false
+}
+
+const submitForgotPassword = async () => {
+  forgotLoading.value = true
+  forgotErrorMsg.value = ''
+  forgotSuccessMsg.value = ''
+  try {
+    const data = await authService.forgotPassword(forgotEmail.value)
+    forgotSuccessMsg.value = data.message || 'Request sent successfully.'
+  } catch (err) {
+    forgotErrorMsg.value = err.response?.data?.message || 'Failed to send request.'
+  } finally {
+    forgotLoading.value = false
+  }
 }
 
 const toggleMode = () => {

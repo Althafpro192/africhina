@@ -1,10 +1,10 @@
 import pool from '../config/db.js';
 import logger from '../config/logger.js';
 
-// Buyer selects an option
+// Buyer selects options
 export const selectOption = async (req, res) => {
   const { id } = req.params;
-  const { option_id } = req.body;
+  const { option_ids } = req.body;
   
   try {
     const requestCheck = await pool.query('SELECT status FROM requests WHERE id = $1 AND user_id = $2', [id, req.userId]);
@@ -13,13 +13,42 @@ export const selectOption = async (req, res) => {
       return res.status(400).json({ message: 'Invalid status for selecting option' });
     }
 
-    const updated = await pool.query(
-      "UPDATE requests SET selected_option_id = $1, status = 'menunggu_kesepakatan_final', updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
-      [option_id, id]
-    );
-
-    await pool.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_kesepakatan_final', 'Buyer has selected a product option')", [id]);
-    res.json(updated.rows[0]);
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      if (option_ids && option_ids.length > 0) {
+        // Mark selected options
+        await client.query(
+          "UPDATE request_options SET is_selected = true WHERE id = ANY($1)",
+          [option_ids]
+        );
+        // Update request status to negotiation
+        const updated = await client.query(
+          "UPDATE requests SET status = 'menunggu_kesepakatan_final', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
+          [id]
+        );
+        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_kesepakatan_final', 'Buyer has selected product option(s)')", [id]);
+        
+        await client.query('COMMIT');
+        res.json(updated.rows[0]);
+      } else {
+        // Buyer rejected all options
+        const updated = await client.query(
+          "UPDATE requests SET status = 'menunggu_penawaran_admin', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
+          [id]
+        );
+        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_penawaran_admin', 'Buyer requested alternative options')", [id]);
+        
+        await client.query('COMMIT');
+        res.json(updated.rows[0]);
+      }
+    } catch (e) {
+      await client.query('ROLLBACK');
+      throw e;
+    } finally {
+      client.release();
+    }
   } catch (error) {
     logger.error(error);
     res.status(500).json({ message: 'Internal Server Error' });

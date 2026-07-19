@@ -1,60 +1,140 @@
 <template>
-  <div class="min-h-screen bg-[#f8fafc] text-on-surface antialiased font-['Inter',_sans-serif]">
+  <div class="h-full bg-[#f8fafc] text-on-surface antialiased font-['Inter',_sans-serif] relative">
     
-    <!-- Top Navigation Bar -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-header flex justify-between items-center w-full px-4 sm:px-6 py-4 shadow-sm" style="height: 72px;">
-      <div class="flex items-center gap-4">
-        <button @click="goBack" class="p-2 hover:bg-white/50 rounded-lg transition-colors">
-          <span class="material-symbols-outlined text-gray-600">arrow_back</span>
-        </button>
-        <span class="text-lg sm:text-xl font-bold text-[#4f378a]">{{ $t('order_detail.title') }}</span>
-      </div>
-      
-      <div class="flex items-center gap-2 sm:gap-3">
-        <LanguageSwitcher />
-      </div>
-    </header>
+    <!-- Mobile Back Button (only shown on small screens) -->
+    <div class="lg:hidden flex items-center gap-4 p-4 border-b border-gray-200 bg-white sticky top-0 z-40">
+      <button @click="goBack" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+        <span class="material-symbols-outlined text-gray-600">arrow_back</span>
+      </button>
+      <span class="text-lg font-bold text-[#4f378a]">{{ $t('order_detail.title') }}</span>
+    </div>
 
-    <!-- Side Navigation Bar -->
-    <aside 
-      v-if="showSidebar"
-      class="flex flex-col h-screen w-64 fixed left-0 glass-sidebar border-r border-white/50 z-40"
-      :style="{ top: '72px', height: 'calc(100vh - 72px)' }"
-    >
-      <div class="mb-6 px-2 pt-4">
-        <h2 class="text-xl font-black text-[#4f378a]">{{ $t('auth.title') }}</h2>
-        <p class="text-sm text-gray-500/70">{{ userRole === 'admin' ? 'Administrator' : $t('dashboard.verified_buyer') }}</p>
-      </div>
+    <!-- Edit Request Modal -->
+    <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+        <div class="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+          <h2 class="text-xl font-bold text-gray-800">
+            Edit {{ activeEditSection === 'product_details' ? 'Detail Produk' : 
+                     activeEditSection === 'quality' ? 'Kualitas & Sertifikasi' : 
+                     activeEditSection === 'logistics' ? 'Budget & Logistik' : 'Lampiran' }}
+          </h2>
+          <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-1">
+          <!-- Product Details Form -->
+          <div v-if="activeEditSection === 'product_details'" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Product Name *</label>
+              <input v-model="editForm.product_name" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
+                <select v-model="editForm.category" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                  <option value="electronics">Electronics</option>
+                  <option value="machinery">Machinery</option>
+                  <option value="apparel">Apparel</option>
+                  <option value="home_garden">Home & Garden</option>
+                  <option value="auto_parts">Auto Parts</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Sub-category</label>
+                <input v-model="editForm.sub_category" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Description & Specifications *</label>
+              <textarea v-model="editForm.description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+            </div>
+          </div>
 
-      <nav class="flex-grow flex flex-col gap-1 px-2">
-        <button @click="navigate('dashboard')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'dashboard' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
-          <span class="material-symbols-outlined">dashboard</span>
-          <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
-        </button>
-        <button @click="navigate('requests')" :class="['flex items-center gap-4 p-4 text-white active-glow rounded-lg font-bold translate-x-1 transition-all duration-200 bg-[#4f378a]']">
-          <span class="material-symbols-outlined">request_quote</span>
-          <span class="font-semibold text-sm">{{ $t('nav.requests') }}</span>
-        </button>
-      </nav>
+          <!-- Quality Form -->
+          <div v-if="activeEditSection === 'quality'" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Quality Requirements *</label>
+              <textarea v-model="editForm.quality_requirements" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Required Certifications</label>
+              <input v-model="editForm.certifications" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g. ISO 9001, CE, RoHS">
+            </div>
+          </div>
 
-      <div class="flex flex-col gap-1 border-t border-white/50 pt-4 px-2 pb-4">
-        <button @click="logout" class="flex items-center gap-4 p-4 text-gray-600 hover:text-red-500 transition-colors rounded-lg hover:bg-white/30">
-          <span class="material-symbols-outlined">logout</span>
-          <span class="font-semibold text-sm">{{ $t('nav.logout') }}</span>
-        </button>
+          <!-- Logistics Form -->
+          <div v-if="activeEditSection === 'logistics'" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Quantity *</label>
+                <input v-model="editForm.quantity" type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Unit</label>
+                <input v-model="editForm.unit" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="e.g. Pieces, kg">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Budget Range *</label>
+                <input v-model="editForm.budget_range" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Target Delivery</label>
+                <input v-model="editForm.target_delivery" type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Shipping Terms *</label>
+                <select v-model="editForm.shipping_terms" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                  <option value="FOB">FOB</option>
+                  <option value="CIF">CIF</option>
+                  <option value="EXW">EXW</option>
+                  <option value="DDP">DDP</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Payment Terms *</label>
+                <select v-model="editForm.payment_terms" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                  <option value="TT">T/T</option>
+                  <option value="LC">L/C</option>
+                  <option value="PayPal">PayPal</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attachments Form -->
+          <div v-if="activeEditSection === 'attachments'" class="space-y-4">
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer" @click="$refs.editPhotoInput.click()">
+              <span class="material-symbols-outlined text-4xl text-[#4f378a] mb-2">cloud_upload</span>
+              <p class="font-bold text-gray-700 mb-1">Upload New Attachments</p>
+              <p class="text-xs text-gray-500">Note: Uploading new files will replace existing ones.</p>
+              <input type="file" ref="editPhotoInput" @change="handleEditPhotoUpload" class="hidden" multiple accept="image/*,.pdf" />
+            </div>
+            <div v-if="editFiles.length > 0" class="mt-4">
+              <h4 class="text-sm font-bold text-gray-700 mb-2">New Files to Upload ({{ editFiles.length }})</h4>
+              <div class="flex flex-col gap-2">
+                <div v-for="(file, idx) in editFiles" :key="idx" class="flex justify-between items-center p-2 bg-blue-50 rounded-lg border border-blue-100">
+                  <span class="text-xs font-semibold text-blue-800">{{ file.name }}</span>
+                  <button @click="editFiles.splice(idx, 1)" class="text-red-500 hover:text-red-700"><span class="material-symbols-outlined text-[16px]">close</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50 shrink-0">
+          <button @click="showEditModal = false" class="px-5 py-2.5 text-gray-600 font-semibold hover:bg-gray-200 rounded-xl transition-colors">Cancel</button>
+          <button @click="submitEdit" :disabled="savingEdit" class="px-6 py-2.5 bg-[#4f378a] hover:bg-[#3d2a6b] text-white font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+            <span v-if="savingEdit" class="material-symbols-outlined animate-spin">progress_activity</span>
+            {{ savingEdit ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
       </div>
-    </aside>
+    </div>
 
     <!-- Main Content -->
-    <main 
-      class="min-h-screen transition-all duration-300"
-      :style="{ 
-        paddingTop: '88px',
-        paddingLeft: showSidebar ? '272px' : '16px',
-        paddingRight: '16px',
-        paddingBottom: isMobile ? '100px' : '32px'
-      }"
-    >
+    <main class="w-full pb-24 p-4 sm:p-6 lg:p-8">
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
         <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
       </div>
@@ -119,64 +199,207 @@
           <!-- Left Column -->
           <div class="lg:col-span-2 space-y-4 sm:space-y-6">
             
-            <!-- Product Details -->
-            <div class="premium-card rounded-xl p-4 sm:p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
-                  <span class="material-symbols-outlined text-[#4f378a]">inventory_2</span>
+            <!-- Bagian 1: Detail Produk -->
+            <div class="premium-card rounded-xl p-4 sm:p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4f378a]">inventory_2</span>
+                  </div>
+                  <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.product_details') }}</h2>
                 </div>
-                <h2 class="text-lg font-bold text-gray-800">{{ $t('request_details.product_details') }}</h2>
+                <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('product_details')" class="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors" title="Edit Detail Produk">
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
               </div>
-              <div class="space-y-3">
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.product_name') }}</span>
-                  <span class="text-sm font-semibold text-gray-800">{{ request.product_name }}</span>
+              <div class="space-y-4">
+                <div>
+                  <h3 class="text-xl font-bold text-gray-900 mb-1">{{ request.product_name }}</h3>
+                  <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <span class="px-2 py-0.5 bg-gray-100 rounded-md">{{ request.category }}</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span class="px-2 py-0.5 bg-gray-100 rounded-md">{{ request.sub_category || 'N/A' }}</span>
+                  </div>
                 </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('admin.category') }}</span>
-                  <span class="text-sm font-semibold text-gray-800">{{ request.category }}</span>
-                </div>
-                <div class="flex justify-between py-2 border-b border-gray-100">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.quantity') }}</span>
-                  <span class="text-sm font-semibold text-gray-800">{{ request.quantity }} units</span>
-                </div>
-                <div class="flex justify-between py-2">
-                  <span class="text-sm text-gray-600">{{ $t('request_details.budget') }}</span>
-                  <span class="text-sm font-semibold text-[#4f378a]">{{ request.budget_range }}</span>
+                
+                <div v-if="request.description" class="pt-4 border-t border-gray-100">
+                  <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Deskripsi & Spesifikasi:</h4>
+                  <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ request.description }}</p>
                 </div>
               </div>
             </div>
 
+            <!-- Bagian 2: Kualitas & Sertifikasi -->
+            <div class="premium-card rounded-xl p-4 sm:p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4f378a]">verified</span>
+                  </div>
+                  <h2 class="text-lg font-bold text-gray-800">KUALITAS & SERTIFIKASI</h2>
+                </div>
+                <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('quality')" class="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors" title="Edit Kualitas">
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Persyaratan Kualitas:</h4>
+                  <div class="flex gap-2 items-start bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                    <span class="material-symbols-outlined text-emerald-600 text-[18px] mt-0.5">task_alt</span>
+                    <p class="text-sm text-gray-700 whitespace-pre-line">{{ request.quality_requirements || 'Tidak ada persyaratan khusus' }}</p>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Sertifikasi Dibutuhkan:</h4>
+                  <div v-if="request.certifications" class="flex flex-wrap gap-2">
+                    <span v-for="cert in request.certifications.split(',')" :key="cert" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
+                      {{ cert.trim() }}
+                    </span>
+                  </div>
+                  <p v-else class="text-sm text-gray-500 italic">Tidak ada</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bagian 3: Budget & Logistik -->
+            <div class="premium-card rounded-xl p-4 sm:p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4f378a]">local_shipping</span>
+                  </div>
+                  <h2 class="text-lg font-bold text-gray-800">BUDGET & LOGISTIK</h2>
+                </div>
+                <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('logistics')" class="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors" title="Edit Budget & Logistik">
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <div class="py-2 border-b border-gray-100 sm:border-0">
+                  <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Quantity</span>
+                  <span class="text-sm font-semibold text-gray-800">{{ request.quantity }} {{ request.unit || 'units' }}</span>
+                </div>
+                <div class="py-2 border-b border-gray-100 sm:border-0">
+                  <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Target Delivery</span>
+                  <span class="text-sm font-semibold text-gray-800">{{ request.delivery_timeline ? formatDate(request.delivery_timeline).split(',')[0] : '-' }}</span>
+                </div>
+                <div class="py-2 border-b border-gray-100 sm:border-0">
+                  <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Budget Range</span>
+                  <span class="text-sm font-bold text-[#4f378a]">{{ request.currency || 'USD' }} {{ request.budget_range }}</span>
+                </div>
+                <div class="py-2 border-b border-gray-100 sm:border-0">
+                  <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Shipping</span>
+                  <span class="text-sm font-semibold text-gray-800">{{ request.shipping_terms || '-' }}</span>
+                </div>
+                <div class="py-2 sm:col-span-2">
+                  <span class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Payment</span>
+                  <span class="text-sm font-semibold text-gray-800">{{ request.payment_terms || '-' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bagian 4: Lampiran -->
+            <div class="premium-card rounded-xl p-4 sm:p-6 mb-6">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4f378a]">attach_file</span>
+                  </div>
+                  <h2 class="text-lg font-bold text-gray-800">LAMPIRAN ({{ request.image_urls ? request.image_urls.length : 0 }} file)</h2>
+                </div>
+                <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('attachments')" class="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors" title="Edit Lampiran">
+                  <span class="material-symbols-outlined text-[20px]">edit</span>
+                </button>
+              </div>
+              <div v-if="request.image_urls && request.image_urls.length > 0" class="flex flex-col gap-3">
+                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="'http://localhost:5000' + file" target="_blank" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors group">
+                  <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 group-hover:text-[#4f378a] transition-colors">
+                    <span class="material-symbols-outlined">description</span>
+                  </div>
+                  <div class="flex-1 overflow-hidden">
+                    <p class="text-sm font-semibold text-gray-700 truncate">{{ file.split('/').pop() }}</p>
+                    <p class="text-xs text-gray-500">Click to view</p>
+                  </div>
+                  <span class="material-symbols-outlined text-gray-400 group-hover:text-[#4f378a]">open_in_new</span>
+                </a>
+              </div>
+              <div v-else class="text-center py-6 text-gray-500 text-sm italic">
+                Tidak ada lampiran
+              </div>
+            </div>
+
+            <!-- Product Options (Golden Path) -->
             <!-- Product Options (Golden Path) -->
             <div v-if="request.options && request.options.length > 0" class="premium-card rounded-xl p-4 sm:p-6 bg-blue-50/30 border border-blue-100">
-              <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-[#4f378a]/10 rounded-xl flex items-center justify-center">
-                  <span class="material-symbols-outlined text-[#4f378a]">list_alt</span>
-                </div>
-                <h2 class="text-lg font-bold text-gray-800">Product Options</h2>
+              <div class="mb-4">
+                <h2 class="text-lg font-bold text-gray-800">Pilih Opsi Produk untuk Request #{{ request.id.split('-')[0].toUpperCase() }}</h2>
+                <p class="text-sm text-gray-600 mt-1">Admin telah menyiapkan {{ request.options.length }} pilihan untuk Anda. Anda dapat memilih satu atau lebih opsi.</p>
               </div>
               
-              <div class="space-y-4">
-                <div v-for="opt in request.options" :key="opt.id" class="border border-gray-200 bg-white rounded-xl p-4 flex flex-col sm:flex-row gap-4 relative" :class="{'ring-2 ring-[#4f378a]': request.selected_option_id === opt.id}">
-                  <div v-if="opt.image_url" class="w-full sm:w-32 h-32 shrink-0">
-                    <img :src="opt.image_url" class="w-full h-full object-cover rounded-lg border border-gray-100" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="opt in request.options" :key="opt.id" 
+                     @click="request.status === 'menunggu_pemilihan_buyer' ? toggleOption(opt.id) : null"
+                     :class="[
+                       'border bg-white rounded-xl overflow-hidden flex flex-col relative transition-all duration-300',
+                       (request.status === 'menunggu_pemilihan_buyer' ? 'cursor-pointer hover:border-[#4f378a]/50' : ''),
+                       (selectedOptionIds.includes(opt.id) || opt.is_selected) 
+                         ? 'ring-4 ring-[#4f378a] shadow-xl transform -translate-y-2 border-transparent' 
+                         : 'border-gray-200'
+                     ]">
+                     
+                  <!-- Selected Badge -->
+                  <div v-if="selectedOptionIds.includes(opt.id) || opt.is_selected" class="absolute top-2 right-2 z-10 px-3 py-1 bg-[#4f378a] text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-md">
+                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Terpilih
                   </div>
-                  <div class="flex-1">
-                    <div class="flex justify-between items-start mb-2">
-                      <h3 class="font-bold text-gray-800">{{ opt.product_name }}</h3>
-                      <span v-if="request.selected_option_id === opt.id" class="px-2 py-1 bg-[#4f378a] text-white text-xs font-bold rounded-lg flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Selected
-                      </span>
+
+                  <div v-if="opt.images && opt.images.length > 0" class="w-full h-48 bg-gray-100 shrink-0 border-b border-gray-200 relative overflow-hidden">
+                    <div v-for="(img, i) in opt.images" :key="i" 
+                         class="absolute inset-0 bg-white shadow-sm transition-transform"
+                         :style="{ zIndex: opt.images.length - i, transform: i > 0 ? `translate(${i * 6}px, ${i * 6}px) rotate(${i * 2}deg)` : '' }">
+                      <img :src="'http://localhost:5000' + img" class="w-full h-full object-cover" />
                     </div>
-                    <p class="text-sm text-gray-600 mb-3">{{ opt.description }}</p>
-                    <p class="font-bold text-[#4f378a] mb-4">Price: {{ opt.price_min }} - {{ opt.price_max }}</p>
+                    <div v-if="opt.images.length > 1" class="absolute bottom-2 right-2 z-50 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded">
+                      +{{ opt.images.length - 1 }}
+                    </div>
+                  </div>
+                  <div v-else-if="opt.image_url" class="w-full h-48 bg-gray-100 shrink-0 border-b border-gray-200 relative overflow-hidden">
+                    <img :src="'http://localhost:5000' + opt.image_url" class="w-full h-full object-cover absolute inset-0" />
+                  </div>
+                  <div class="p-4 flex-1 flex flex-col">
+                    <h3 class="font-bold text-gray-800 text-lg mb-1">{{ opt.product_name }}</h3>
+                    <p class="text-sm text-gray-600 mb-3 flex-1">{{ opt.description }}</p>
                     
-                    <button v-if="request.status === 'menunggu_pemilihan_buyer' && !request.selected_option_id" 
-                            @click="selectOption(opt.id)" 
-                            :disabled="selectingOption"
-                            class="px-4 py-2 bg-[#4f378a] text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                      Pilih Opsi Ini
-                    </button>
+                    <div class="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-4">
+                      <div class="flex items-center gap-1 text-amber-700 font-bold text-xs mb-1">
+                        <span class="material-symbols-outlined text-[16px]">stars</span> Admin's Recommendation:
+                      </div>
+                      <p class="text-sm text-gray-700">{{ opt.admin_reason }}</p>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm mb-4">
+                      <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-[#4f378a]/10 flex items-center justify-center text-[#4f378a] shrink-0"><span class="material-symbols-outlined text-[14px]">payments</span></span>
+                        <span class="font-bold text-[#4f378a]">
+                          {{ opt.is_fixed_price ? 'USD ' + opt.price_min + ' (Fixed)' : 'USD ' + opt.price_min + ' - ' + opt.price_max + ' (Range)' }}
+                        </span>
+                      </div>
+                      
+                      <div v-if="['sea', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0"><span class="material-symbols-outlined text-[14px]">directions_boat</span></span>
+                        <span class="font-semibold text-gray-800">Laut: {{ opt.est_time_sea }}</span>
+                      </div>
+                      
+                      <div v-if="['air', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 shrink-0"><span class="material-symbols-outlined text-[14px]">flight</span></span>
+                        <span class="font-semibold text-gray-800">Udara: {{ opt.est_time_air }}</span>
+                      </div>
+
+                      <div v-if="opt.target_delivery" class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0"><span class="material-symbols-outlined text-[14px]">calendar_month</span></span>
+                        <span class="font-semibold text-gray-800">Target: {{ formatDate(opt.target_delivery).split(',')[0] }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -223,7 +446,7 @@
             <div v-if="['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final'].includes(request.status)" class="premium-card rounded-xl p-4 sm:p-6 bg-red-50 border border-red-200 mt-4">
               <h3 class="font-bold text-red-800 mb-2">Batalkan Permintaan</h3>
               <p class="text-sm text-red-600 mb-4">Jika Anda berubah pikiran, Anda dapat membatalkan permintaan ini sebelum pembayaran dilakukan.</p>
-              <button @click="cancelModalOpen = true" class="w-full px-4 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors">
+              <button @click="showCancelModal = true" class="w-full px-4 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors">
                 Batalkan Permintaan
               </button>
             </div>
@@ -317,14 +540,14 @@
         </div>
       </div>
       <!-- Cancel Modal -->
-      <div v-if="cancelModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="cancelModalOpen = false"></div>
+      <div v-if="showCancelModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showCancelModal = false"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
           <h2 class="text-lg font-bold text-gray-800 mb-4">Batalkan Permintaan</h2>
           <p class="text-sm text-gray-600 mb-4">Tuliskan alasan Anda membatalkan permintaan ini.</p>
           <textarea v-model="cancelReason" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl mb-4" placeholder="Alasan pembatalan..."></textarea>
           <div class="flex gap-2 justify-end">
-            <button @click="cancelModalOpen = false" class="px-4 py-2 text-gray-600 font-semibold hover:bg-gray-100 rounded-lg">Batal</button>
+            <button @click="showCancelModal = false" class="px-4 py-2 text-gray-600 font-semibold hover:bg-gray-100 rounded-lg">Batal</button>
             <button @click="submitCancel" :disabled="!cancelReason || cancelling" class="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 disabled:opacity-50">Ya, Batalkan</button>
           </div>
         </div>
@@ -345,13 +568,33 @@
       </div>
 
     </main>
+
+    <!-- Multi-Select Options Action Bar -->
+    <div v-if="request && request.status === 'menunggu_pemilihan_buyer'" class="absolute bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <p class="font-bold text-gray-800 text-lg">{{ selectedOptionIds.length }} Opsi Terpilih</p>
+        <p class="text-sm text-gray-600">Klik opsi di atas untuk menambah pilihan.</p>
+      </div>
+      <div class="flex w-full sm:w-auto gap-3">
+        <button @click="submitSelection([])" :disabled="selectingOption" class="flex-1 sm:flex-none px-6 py-3 bg-white text-gray-700 border border-gray-300 font-bold rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50">
+          Minta Opsi Lain
+        </button>
+        <button @click="submitSelection(selectedOptionIds)" :disabled="selectingOption || selectedOptionIds.length === 0" class="flex-1 sm:flex-none px-8 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:bg-purple-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#4f378a]/30">
+          <span v-if="selectingOption" class="material-symbols-outlined animate-spin">progress_activity</span>
+          <span v-else class="material-symbols-outlined">check_circle</span>
+          Konfirmasi
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import ChatComponent from '../../components/chat/ChatComponent.vue'
 import { requestService } from '../../api/requestService.js'
 import { ratingService } from '../../api/ratingService.js'
@@ -372,9 +615,15 @@ const ratingReview = ref('')
 const existingRating = ref(null)
 const submittingRating = ref(false)
 
-const cancelModalOpen = ref(false)
+const showCancelModal = ref(false)
 const cancelReason = ref('')
 const cancelling = ref(false)
+
+const showEditModal = ref(false)
+const activeEditSection = ref('')
+const savingEdit = ref(false)
+const editForm = ref({})
+const editFiles = ref([])
 
 const disputeModalOpen = ref(false)
 const disputeReason = ref('')
@@ -487,13 +736,28 @@ onMounted(() => {
 })
 onUnmounted(() => window.removeEventListener('resize', updateDeviceType))
 
-const selectOption = async (optionId) => {
+const selectedOptionIds = ref([])
+
+const toggleOption = (id) => {
+  if (selectedOptionIds.value.includes(id)) {
+    selectedOptionIds.value = selectedOptionIds.value.filter(oid => oid !== id);
+  } else {
+    selectedOptionIds.value.push(id);
+  }
+}
+
+const submitSelection = async (optionIds) => {
+  if (optionIds.length === 0) {
+    if (!confirm('Anda tidak memilih opsi satupun. Anda yakin ingin meminta opsi alternatif dari Admin?')) return;
+  }
+  
   selectingOption.value = true;
   try {
-    await requestService.selectOption(request.value.id, optionId);
+    await requestService.selectOption(request.value.id, optionIds);
     await loadData();
+    selectedOptionIds.value = [];
   } catch (e) {
-    alert(e.response?.data?.message || 'Failed to select option');
+    showToast(e.response?.data?.message || 'Failed to submit selection');
   } finally {
     selectingOption.value = false;
   }
@@ -515,7 +779,7 @@ const submitPaymentProof = async () => {
     paymentProofFile.value = null;
     await loadData();
   } catch (e) {
-    alert(e.response?.data?.message || 'Failed to upload payment proof');
+    showToast(e.response?.data?.message || 'Failed to upload payment proof');
   } finally {
     uploadingProof.value = false;
   }
@@ -528,7 +792,7 @@ const confirmDelivery = async () => {
     await requestService.confirmDelivery(request.value.id)
     await loadData()
   } catch (err) {
-    alert(err.response?.data?.message || 'Failed to confirm delivery')
+    showToast(err.response?.data?.message || 'Failed to confirm delivery')
   } finally {
     confirming.value = false
   }
@@ -538,12 +802,66 @@ const submitCancel = async () => {
   cancelling.value = true;
   try {
     await requestService.cancelRequest(request.value.id, cancelReason.value);
-    cancelModalOpen.value = false;
+    showCancelModal.value = false;
     await loadData();
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to cancel request');
+    showToast(error.response?.data?.message || 'Failed to cancel request');
   } finally {
     cancelling.value = false;
+  }
+}
+
+const openEditModal = (section) => {
+  activeEditSection.value = section;
+  editForm.value = {
+    product_name: request.value.product_name,
+    category: request.value.category,
+    sub_category: request.value.sub_category,
+    description: request.value.description,
+    quality_requirements: request.value.quality_requirements,
+    certifications: request.value.certifications,
+    quantity: request.value.quantity,
+    unit: request.value.unit,
+    budget_range: request.value.budget_range,
+    target_delivery: request.value.delivery_timeline ? request.value.delivery_timeline.split('T')[0] : '',
+    shipping_terms: request.value.shipping_terms,
+    payment_terms: request.value.payment_terms
+  };
+  editFiles.value = [];
+  showEditModal.value = true;
+}
+
+const handleEditPhotoUpload = (e) => {
+  if (e.target.files.length > 0) {
+    editFiles.value = Array.from(e.target.files).slice(0, 3);
+  }
+}
+
+const submitEdit = async () => {
+  savingEdit.value = true;
+  try {
+    const formData = new FormData();
+    for(const key in editForm.value) {
+      if(editForm.value[key] !== null && editForm.value[key] !== undefined) {
+        formData.append(key, editForm.value[key]);
+      }
+    }
+    
+    if (activeEditSection.value === 'attachments' && editFiles.value.length > 0) {
+      for (const file of editFiles.value) {
+        formData.append('images', file);
+      }
+    } else if (activeEditSection.value === 'attachments' && editFiles.value.length === 0) {
+      formData.append('keep_images', 'true');
+    }
+
+    await requestService.updateRequestDetails(request.value.id, formData);
+    showEditModal.value = false;
+    await loadData();
+  } catch (e) {
+    showToast(e.response?.data?.message || 'Gagal menyimpan perubahan');
+  } finally {
+    savingEdit.value = false;
   }
 }
 
@@ -554,7 +872,7 @@ const submitDispute = async () => {
     disputeModalOpen.value = false;
     await loadData();
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to dispute request');
+    showToast(error.response?.data?.message || 'Failed to dispute request');
   } finally {
     disputing.value = false;
   }
@@ -571,13 +889,15 @@ const submitRating = async () => {
     })
     existingRating.value = data
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to submit rating')
+    showToast(error.response?.data?.message || 'Failed to submit rating')
   } finally {
     submittingRating.value = false
   }
 }
 
-const goBack = () => router.back()
+const goBack = () => {
+  router.push('/buyer/requests');
+}
 const navigate = (r) => { activeRoute.value = r; if (r === 'dashboard') router.push('/buyer/dashboard') }
 const logout = () => {
   localStorage.removeItem('token')

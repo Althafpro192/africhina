@@ -34,9 +34,17 @@
           </div>
           <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Ratings Moderation</span>
         </router-link>
+
+        <div class="pt-4 mt-4 border-t border-gray-200">
+          <p class="px-4 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Security</p>
+          <router-link to="/admin/security/password-resets" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-all lift-effect group cursor-pointer" :class="isActive('/admin/security/password-resets') ? 'bg-gradient-to-r from-[#4f378a] to-[#6750a4] text-white shadow-lg' : 'text-[#494551] hover:bg-[#ece6ee]'">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-inner" :class="isActive('/admin/security/password-resets') ? 'bg-white/20' : 'bg-[#e6e0e9] border border-white/50'">
+              <span class="material-symbols-outlined text-xl" :class="isActive('/admin/security/password-resets') ? '' : 'text-[#4f378a]'" :style="isActive('/admin/security/password-resets') ? `font-variation-settings: 'FILL' 1;` : `font-variation-settings: 'FILL' 0;`">lock_reset</span>
+            </div>
+            <span class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">Password Resets</span>
+          </router-link>
+        </div>
       </nav>
-
-
 
       <!-- Profile Section -->
       <div class="space-y-4">

@@ -6,9 +6,9 @@ export const authService = {
     return data;
   },
 
-  async register({ full_name, email, password, country, phone, company_name }) {
+  async register({ full_name, email, password, country, country_code, phone, company_name }) {
     const { data } = await api.post('/auth/register', {
-      full_name, email, password, country, phone, company_name
+      full_name, email, password, country, country_code, phone, company_name
     });
     return data;
   },
@@ -25,6 +25,30 @@ export const authService = {
   
   async forgotPassword(email) {
     const response = await api.post('/auth/forgot-password', { email })
+    return response.data
+  },
+
+  async uploadAvatar(file) {
+    const formData = new FormData()
+    formData.append('avatar', file)
+    const response = await api.post('/auth/profile/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return response.data
+  },
+
+  async executeResetPassword(token, newPassword) {
+    const response = await api.post('/auth/reset-password', { token, newPassword })
+    return response.data
+  },
+
+  async getResetRequests() {
+    const response = await api.get('/auth/admin/reset-requests')
+    return response.data
+  },
+
+  async generateResetLink(id) {
+    const response = await api.post(`/auth/admin/reset-requests/${id}/generate`)
     return response.data
   }
 };

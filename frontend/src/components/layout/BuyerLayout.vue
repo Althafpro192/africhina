@@ -63,7 +63,7 @@
       </div>
 
       <nav class="flex-grow flex flex-col gap-1 px-2">
-        <button @click="navigate('dashboard')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'dashboard' ? 'bg-white/40 translate-x-1' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
+        <button @click="navigate('dashboard')" :class="['flex items-center gap-4 p-4 rounded-lg transition-all duration-200', activeRoute === 'dashboard' ? 'text-white active-glow bg-[#4f378a] translate-x-1 font-bold' : 'text-gray-600 hover:bg-white/40 hover:translate-x-1']">
           <span class="material-symbols-outlined">dashboard</span>
           <span class="font-semibold text-sm">{{ $t('nav.dashboard') }}</span>
         </button>

@@ -62,8 +62,22 @@ export const adminService = {
     return data;
   },
 
-  async uploadOptions(id, options) {
-    const { data } = await api.post(`/admin/requests/${id}/options`, { options });
+  async uploadOptions(id, formData) {
+    const { data } = await api.post(`/admin/requests/${id}/options`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data;
+  },
+
+  async updateOption(requestId, optionId, formData) {
+    const { data } = await api.put(`/admin/requests/${requestId}/options/${optionId}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data;
+  },
+
+  async deleteOption(requestId, optionId) {
+    const { data } = await api.delete(`/admin/requests/${requestId}/options/${optionId}`);
     return data;
   },
 

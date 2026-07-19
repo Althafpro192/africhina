@@ -155,6 +155,9 @@
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { requestService } from '../../api/requestService.js'
@@ -280,7 +283,7 @@ const startRecording = async () => {
     recordTimer = setInterval(() => { recordingTime.value++ }, 1000)
     
   } catch (err) {
-    alert("Could not access microphone. Please allow permissions.")
+    showToast("Could not access microphone. Please allow permissions.")
     console.error(err)
   }
 }
@@ -333,7 +336,7 @@ const deleteMsg = async (msgId) => {
     }
   } catch (err) {
     console.error(err)
-    alert("Failed to delete message")
+    showToast("Failed to delete message")
   }
 }
 

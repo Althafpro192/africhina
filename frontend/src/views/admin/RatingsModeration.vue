@@ -84,6 +84,9 @@
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
@@ -119,7 +122,7 @@ const togglePublish = async (rating) => {
     const updated = await adminService.togglePublishRating(rating.id, !rating.is_published);
     rating.is_published = updated.is_published;
   } catch (error) {
-    alert(error.response?.data?.message || 'Failed to update rating status')
+    showToast(error.response?.data?.message || 'Failed to update rating status')
   }
 }
 

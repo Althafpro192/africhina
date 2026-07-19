@@ -130,6 +130,76 @@ export const getTrackingLogs = async (req, res) => {
   }
 };
 
+export const editRequestDetails = async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const requestCheck = await client.query('SELECT * FROM requests WHERE id = $1 AND user_id = $2', [id, req.userId]);
+    if (requestCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'Request not found or unauthorized' });
+    }
+    
+    if (requestCheck.rows[0].status !== 'menunggu_penawaran_admin') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ message: 'Cannot edit request at this stage' });
+    }
+
+    const currentRequest = requestCheck.rows[0];
+    const {
+      product_name, category, sub_category, description,
+      quality_requirements, certifications,
+      quantity, unit, budget_range, currency,
+      target_delivery, shipping_terms, payment_terms
+    } = req.body;
+
+    let imageUrls = currentRequest.image_urls || [];
+    // If files are uploaded, overwrite the old images
+    if (req.files && req.files.length > 0) {
+      imageUrls = req.files.map(f => `/uploads/${f.filename}`);
+    } else if (req.body.keep_images === 'false') {
+      imageUrls = [];
+    }
+
+    const updated = await client.query(
+      `UPDATE requests SET 
+        product_name = COALESCE($1, product_name),
+        category = COALESCE($2, category),
+        sub_category = COALESCE($3, sub_category),
+        description = COALESCE($4, description),
+        quality_requirements = COALESCE($5, quality_requirements),
+        certifications = COALESCE($6, certifications),
+        quantity = COALESCE($7, quantity),
+        unit = COALESCE($8, unit),
+        budget_range = COALESCE($9, budget_range),
+        currency = COALESCE($10, currency),
+        delivery_timeline = COALESCE($11, delivery_timeline),
+        shipping_terms = COALESCE($12, shipping_terms),
+        payment_terms = COALESCE($13, payment_terms),
+        image_urls = $14,
+        updated_at = NOW()
+       WHERE id = $15 RETURNING *`,
+      [
+        product_name, category, sub_category, description,
+        quality_requirements, certifications,
+        quantity, unit, budget_range, currency,
+        target_delivery, shipping_terms, payment_terms,
+        JSON.stringify(imageUrls), id
+      ]
+    );
+
+    await client.query('COMMIT');
+    res.json(updated.rows[0]);
+  } catch (error) {
+    await client.query('ROLLBACK');
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  } finally {
+    client.release();
+  }
+};
+
 export const updateRequest = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;

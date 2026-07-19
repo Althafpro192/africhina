@@ -16,9 +16,11 @@ const AdminDashboard = () => import('../views/admin/Dashboard.vue');
 const AdminSuppliers = () => import('../views/admin/Suppliers.vue');
 const AdminRequestDetail = () => import('../views/admin/RequestDetail.vue');
 const AdminRatingsModeration = () => import('../views/admin/RatingsModeration.vue');
+const PasswordResets = () => import('../views/admin/PasswordResets.vue');
 
 // Auth Pages
 const Login = () => import('../views/auth/Login.vue');
+const ResetPassword = () => import('../views/auth/ResetPassword.vue');
 
 const LandingPage = () => import('../views/LandingPage.vue');
 
@@ -26,19 +28,29 @@ const routes = [
   { path: '/', component: LandingPage, meta: { public: true } },
   { path: '/login', component: Login },
   { path: '/buyer/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { path: '/buyer/requests', component: Requests, meta: { requiresAuth: true } },
+  { 
+    path: '/buyer/requests', 
+    component: Requests, 
+    meta: { requiresAuth: true },
+    children: [
+      { path: '/buyer/rfq/:id', component: RequestDetail, meta: { requiresAuth: true } }
+    ]
+  },
   { path: '/buyer/orders', component: Orders, meta: { requiresAuth: true } },
   { path: '/buyer/suppliers', component: Suppliers, meta: { requiresAuth: true } },
   { path: '/buyer/logistics', component: Logistics, meta: { requiresAuth: true } },
   { path: '/buyer/settings', component: Settings, meta: { requiresAuth: true } },
   { path: '/buyer/sourcing', component: Sourcing, meta: { requiresAuth: true } },
   { path: '/buyer/rfq/create', component: RFQCreate, meta: { requiresAuth: true } },
-  { path: '/buyer/rfq/:id', component: RequestDetail, meta: { requiresAuth: true } },
   // Admin Routes
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/suppliers', component: AdminSuppliers, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/request/:id', component: AdminRequestDetail, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/admin/ratings', component: AdminRatingsModeration, meta: { requiresAuth: true, requiresAdmin: true } }
+  { path: '/admin/ratings', component: AdminRatingsModeration, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/security/password-resets', component: PasswordResets, meta: { requiresAuth: true, requiresAdmin: true } },
+  
+  // Public Password Reset
+  { path: '/reset-password', component: ResetPassword }
 ];
 
 const router = createRouter({

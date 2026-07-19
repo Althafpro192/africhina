@@ -12,15 +12,22 @@
         
         <div class="p-6 sm:p-8 border-b border-gray-100">
           <div class="flex items-center gap-4 mb-6">
-            <img 
-              class="w-20 h-20 rounded-full object-cover border-4 border-gray-50 shadow-sm"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2RyODKtjBq88GCEOb-L1uA_CtkK3ef6kiw8x2MkcxAyKA5k5exGbISqmxr4ywURFwwn2E-ht7wTlhC6QomyTA7OI1s0-PDO_juQB1o9Y_EIVRHQCec9tT3Jf35QCDiVBsUoMTSR8pyjUaeA_pXveQS2lHoCnAIhUrdxmp3NzyW2mX0hGdg-VV5_6JRD0ZqLdP525IP4hdJjwbgoLP92DyHa5e9kc0AbYCAkLfd0i7pFK4dGb8mzUjQ260snLqXL3uuXW8d18C9ot9" 
-              alt="Profile"
-            />
+            <div class="relative group">
+              <img 
+                class="w-20 h-20 rounded-full object-cover border-4 border-gray-50 shadow-sm"
+                :src="user.avatar_url ? 'http://localhost:5000' + user.avatar_url : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(form.full_name || 'User') + '&background=random'" 
+                alt="Profile"
+              />
+              <div v-if="uploadingAvatar" class="absolute inset-0 bg-white/60 rounded-full flex items-center justify-center">
+                <span class="material-symbols-outlined animate-spin text-[#4f378a]">progress_activity</span>
+              </div>
+            </div>
             <div>
-              <h2 class="text-xl font-bold text-gray-800">{{ form.full_name }}</h2>
+              <h2 class="text-xl font-bold text-gray-800">{{ form.full_name || 'User Name' }}</h2>
               <p class="text-gray-500 text-sm mb-2">{{ user.role === 'admin' ? 'Administrator' : 'Verified Buyer' }}</p>
-              <button class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition-colors">
+              
+              <input type="file" ref="avatarInput" accept="image/png, image/jpeg, image/jpg" class="hidden" @change="handleAvatarChange" />
+              <button @click="$refs.avatarInput.click()" :disabled="uploadingAvatar" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-50">
                 Change Avatar
               </button>
             </div>
@@ -40,7 +47,13 @@
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Phone Number</label>
-              <input v-model="form.phone" type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none" />
+              <div class="flex gap-2">
+                <select v-model="form.country_code" class="w-1/3 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none bg-white">
+                  <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }} ({{ c.country.split(' ')[0] }})</option>
+                </select>
+                <input v-model="form.phone" type="text" class="w-2/3 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#4f378a] outline-none" placeholder="1234567890" />
+              </div>
+              <p v-if="phoneError" class="text-xs text-red-500 mt-1">{{ phoneError }}</p>
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Company Name</label>
@@ -83,20 +96,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import { authService } from '../../api/authService'
+import { countryCodes, validatePhone } from '../../utils/phoneValidation'
+import { useToast } from '../../composables/useToast'
+
+const { showToast } = useToast()
 
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
 const form = ref({
   full_name: '',
   phone: '',
+  country_code: '+62',
   company_name: ''
 })
 
 const saving = ref(false)
 const successMsg = ref('')
 const errorMsg = ref('')
+const phoneError = ref('')
+
+const avatarInput = ref(null)
+const uploadingAvatar = ref(false)
 
 onMounted(async () => {
   try {
@@ -104,13 +126,59 @@ onMounted(async () => {
     user.value = me
     form.value.full_name = me.full_name || ''
     form.value.phone = me.phone || ''
+    form.value.country_code = me.country_code || '+62'
     form.value.company_name = me.company_name || ''
+    
+    // Update local storage just in case avatar was updated elsewhere
+    localStorage.setItem('user', JSON.stringify(me))
   } catch (error) {
     console.error('Failed to load profile', error)
   }
 })
 
+watch(() => form.value.phone, () => {
+  if (form.value.phone) {
+    phoneError.value = validatePhone(form.value.phone, form.value.country_code)
+  } else {
+    phoneError.value = ''
+  }
+})
+
+watch(() => form.value.country_code, () => {
+  if (form.value.phone) {
+    phoneError.value = validatePhone(form.value.phone, form.value.country_code)
+  }
+})
+
+const handleAvatarChange = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+  
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('File is too large. Max size is 2MB.', 'error')
+    return
+  }
+
+  uploadingAvatar.value = true
+  try {
+    const data = await authService.uploadAvatar(file)
+    user.value.avatar_url = data.avatar_url
+    localStorage.setItem('user', JSON.stringify(user.value))
+    showToast('Avatar updated successfully!', 'success')
+  } catch (err) {
+    showToast(err.response?.data?.message || 'Failed to upload avatar', 'error')
+  } finally {
+    uploadingAvatar.value = false
+    if (avatarInput.value) avatarInput.value.value = ''
+  }
+}
+
 const handleUpdateProfile = async () => {
+  if (phoneError.value) {
+    errorMsg.value = 'Please fix the errors before saving.'
+    return
+  }
+  
   saving.value = true
   successMsg.value = ''
   errorMsg.value = ''

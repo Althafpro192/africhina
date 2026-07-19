@@ -90,6 +90,9 @@
 </template>
 
 <script setup>
+import { useToast } from '../../composables/useToast.js';
+const { showToast } = useToast();
+
 import { ref, watch } from 'vue';
 import api from '../api/axios';
 
@@ -141,7 +144,7 @@ const submitUpdate = async () => {
     emit('updated');
     closeModal();
   } catch (error) {
-    alert('Failed to update');
+    showToast('Failed to update');
   } finally {
     isSaving.value = false;
   }
@@ -153,9 +156,9 @@ const sendEmail = async () => {
       subject: `Update regarding request ${props.request.product_name}`,
       body: `Hello,\n\nPlease provide an update regarding the sourcing request for ${props.request.product_name}.\n\nThank you,\nAfriChina Bridge Team.`
     });
-    alert('Email sent to supplier');
+    showToast('Email sent to supplier');
   } catch (error) {
-    alert('Failed to send email');
+    showToast('Failed to send email');
   }
 };
 </script>
