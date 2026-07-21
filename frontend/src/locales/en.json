@@ -140,6 +140,24 @@
       "title": "What Our Users Say"
     },
     "cta_footer": "Ready to start safe trading?",
-    "cta_footer_button": "Sign Up Free"
+    "cta_footer_button": "Sign Up Free",
+    "nav_features": "Features",
+    "nav_how_it_works": "How it Works",
+    "nav_testimonials": "Testimonials",
+    "nav_login": "Login",
+    "nav_register": "Register",
+    "tracking_title": "Live Tracking View",
+    "completed": "Completed seamlessly",
+    "features_title": "Why AfriChina Bridge?",
+    "features_subtitle": "We eliminate friction in cross-continental B2B trade through structured and transparent processes.",
+    "timeline_step1": "Request Placed",
+    "timeline_step2": "Options Quoted",
+    "timeline_step3": "Payment Verified",
+    "timeline_step4": "Production QC",
+    "timeline_step5": "Shipped to Africa",
+    "footer_brand": "AfriChina Bridge",
+    "footer_copyright": "© 2026 AfriChina Bridge. All rights reserved.",
+    "footer_privacy": "Privacy Policy",
+    "footer_terms": "Terms of Service"
   }
 }

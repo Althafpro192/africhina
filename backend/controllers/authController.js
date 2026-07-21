@@ -103,7 +103,7 @@ export const forgotPassword = async (req, res) => {
 export const uploadAvatar = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
   try {
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    const avatarUrl = `/uploads/${req.file.filename}`;
     await pool.query('UPDATE users SET avatar_url = $1 WHERE id = $2', [avatarUrl, req.userId]);
     res.json({ message: 'Avatar updated successfully', avatar_url: avatarUrl });
   } catch (error) {

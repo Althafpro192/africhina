@@ -140,6 +140,24 @@
       "title": "用户评价"
     },
     "cta_footer": "准备好开始安全的贸易了吗？",
-    "cta_footer_button": "免费注册"
+    "cta_footer_button": "免费注册",
+    "nav_features": "功能",
+    "nav_how_it_works": "工作原理",
+    "nav_testimonials": "用户评价",
+    "nav_login": "登录",
+    "nav_register": "注册",
+    "tracking_title": "实时追踪视图",
+    "completed": "顺利完成",
+    "features_title": "为什么选择 AfriChina Bridge？",
+    "features_subtitle": "我们通过结构化和透明的流程消除跨洲 B2B 贸易中的障碍。",
+    "timeline_step1": "已提交需求",
+    "timeline_step2": "已收到报价",
+    "timeline_step3": "已核实付款",
+    "timeline_step4": "生产与质检",
+    "timeline_step5": "已发货至非洲",
+    "footer_brand": "AfriChina Bridge",
+    "footer_copyright": "© 2026 AfriChina Bridge. 保留所有权利。",
+    "footer_privacy": "隐私政策",
+    "footer_terms": "服务条款"
   }
 }

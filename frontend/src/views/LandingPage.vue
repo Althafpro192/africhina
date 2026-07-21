@@ -12,9 +12,9 @@
         </div>
         
         <nav class="hidden md:flex items-center gap-8 font-semibold text-gray-600">
-          <a href="#features" class="hover:text-[#4f46e5] transition-colors">Features</a>
-          <a href="#how-it-works" class="hover:text-[#4f46e5] transition-colors">How it Works</a>
-          <a href="#testimonials" class="hover:text-[#4f46e5] transition-colors">Testimonials</a>
+          <a href="#features" class="hover:text-[#4f46e5] transition-colors">{{ $t('landing.nav_features') }}</a>
+          <a href="#how-it-works" class="hover:text-[#4f46e5] transition-colors">{{ $t('landing.nav_how_it_works') }}</a>
+          <a href="#testimonials" class="hover:text-[#4f46e5] transition-colors">{{ $t('landing.nav_testimonials') }}</a>
         </nav>
         
         <div class="flex items-center gap-3">
@@ -23,13 +23,13 @@
             class="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl border-2 border-[#4f46e5] text-[#4f46e5] hover:bg-[#4f46e5]/10 transition-all duration-200 min-h-[44px]"
             @click="$router.push('/login')"
           >
-            Login
+            {{ $t('landing.nav_login') }}
           </button>
           <button 
             class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#3525cd] text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-200 min-h-[44px]"
             @click="$router.push('/login')"
           >
-            Daftar
+            {{ $t('landing.nav_register') }}
           </button>
         </div>
       </div>
@@ -87,18 +87,18 @@
           <div class="relative transform -rotate-1 bg-slate-900 border border-gray-800 text-white shadow-2xl rounded-3xl p-8 bg-white/10 backdrop-blur-xl">
             <div class="flex items-center gap-3 border-b border-gray-800 pb-4 mb-6">
               <span class="material-symbols-outlined text-green-400">check_circle</span>
-              <span class="font-semibold">Live Tracking View</span>
+              <span class="font-semibold text-white" style="text-shadow: 0 0 2px rgba(0,0,0,0.7);">{{ $t('landing.tracking_title') }}</span>
             </div>
             <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[15px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-700 before:to-transparent">
-              <div v-for="(step, i) in ['Request Placed', 'Options Quoted', 'Payment Verified', 'Production QC', 'Shipped to Africa']" :key="i" class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div class="flex items-center justify-center w-8 h-8 rounded-full border border-white bg-slate-800 text-slate-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+              <div v-for="(step, i) in timelineSteps" :key="i" class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-blue-400 bg-blue-500 text-white shadow-md shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
                   <span class="material-symbols-outlined text-[14px]">
                     {{ i === 0 ? 'request_quote' : i === 1 ? 'list_alt' : i === 2 ? 'payments' : i === 3 ? 'factory' : 'flight_takeoff' }}
                   </span>
                 </div>
-                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-700 bg-slate-800/50 shadow">
-                  <div class="font-bold text-slate-200">{{ step }}</div>
-                  <div class="text-xs text-slate-400">Completed seamlessly</div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-blue-400/30 bg-blue-900/80 shadow-lg backdrop-blur-sm">
+                  <div class="font-bold text-white">{{ $t(`landing.timeline_step${i+1}`) }}</div>
+                  <div class="text-xs text-blue-200">{{ $t('landing.completed') }}</div>
                 </div>
               </div>
             </div>
@@ -111,8 +111,8 @@
     <section id="features" class="py-24 bg-white/50">
       <div class="container mx-auto px-4 max-w-7xl">
         <div class="text-center max-w-3xl mx-auto mb-16">
-          <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Why AfriChina Bridge?</h2>
-          <p class="text-lg text-gray-600">We eliminate friction in cross-continental B2B trade through structured and transparent processes.</p>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">{{ $t('landing.features_title') }}</h2>
+          <p class="text-lg text-gray-600">{{ $t('landing.features_subtitle') }}</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -183,12 +183,12 @@
           <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
             <span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'FILL' 1;">badge</span>
           </div>
-          <span class="text-white font-bold tracking-tight">AfriChina Bridge</span>
+          <span class="text-white font-bold tracking-tight">{{ $t('landing.footer_brand') }}</span>
         </div>
-        <p class="text-sm">© 2026 AfriChina Bridge. All rights reserved.</p>
+        <p class="text-sm">{{ $t('landing.footer_copyright') }}</p>
         <div class="flex gap-4 text-sm">
-          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-white transition-colors">{{ $t('landing.footer_privacy') }}</a>
+          <a href="#" class="hover:text-white transition-colors">{{ $t('landing.footer_terms') }}</a>
         </div>
       </div>
     </footer>
@@ -200,9 +200,7 @@ import { ref } from 'vue';
 
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 
-// ===== KOMPONEN LOKAL (agar tidak bergantung pada file eksternal) =====
-
-// FeatureCard komponen sederhana
+// ===== KOMPONEN LOKAL =====
 const FeatureCard = {
   props: ['icon', 'iconBg', 'iconColor', 'title', 'desc'],
   template: `
@@ -222,6 +220,9 @@ const testimonials = [
   { name: 'Fatoumata Diallo', country: 'Senegal', quote: 'Language barriers are gone. I type my specs, and the platform handles the negotiation. The shipping timeline is perfectly integrated.' },
   { name: 'Emmanuel Kiprono', country: 'Kenya', quote: 'The most reliable B2B platform I have used. I love how I can request a quote without exposing my identity until the deal is finalized.' }
 ];
+
+// ===== TIMELINE STEPS =====
+const timelineSteps = ['step1', 'step2', 'step3', 'step4', 'step5'];
 
 // ===== METHODS =====
 const scrollTo = (selector) => {

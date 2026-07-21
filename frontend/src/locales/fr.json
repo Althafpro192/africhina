@@ -140,6 +140,24 @@
             "title": "Témoignages"
         },
         "cta_footer": "Prêt à commencer à trader en toute sécurité ?",
-        "cta_footer_button": "S'inscrire gratuitement"
+        "cta_footer_button": "S'inscrire gratuitement",
+        "nav_features": "Fonctionnalités",
+        "nav_how_it_works": "Comment ça marche",
+        "nav_testimonials": "Témoignages",
+        "nav_login": "Se connecter",
+        "nav_register": "S'inscrire",
+        "tracking_title": "Suivi en direct",
+        "completed": "Terminé sans problème",
+        "features_title": "Pourquoi AfriChina Bridge ?",
+        "features_subtitle": "Nous éliminons les frictions dans le commerce B2B intercontinental grâce à des processus structurés et transparents.",
+        "timeline_step1": "Demande déposée",
+        "timeline_step2": "Devis envoyés",
+        "timeline_step3": "Paiement vérifié",   
+        "timeline_step4": "Production & QC",
+        "timeline_step5": "Expédié vers l'Afrique",
+        "footer_brand": "AfriChina Bridge",
+        "footer_copyright": "© 2026 AfriChina Bridge. Tous droits réservés.",
+        "footer_privacy": "Politique de confidentialité",
+        "footer_terms": "Conditions d'utilisation"
     }
 }

@@ -83,7 +83,24 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(helmet()); // Add security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: [ 
+        "'self'",
+        "data:",
+        "http://localhost:5000",
+        "https://lh3.googleusercontent.com",
+        "https://ui-avatars.com"  // untuk fallback avatar
+      ],
+      // Opsional: tambahkan directive lain jika diperlukan
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false,  // untuk menghindari masalah jika ada
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

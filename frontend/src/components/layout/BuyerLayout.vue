@@ -36,7 +36,7 @@
         <div class="relative">
           <img 
             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-sm object-cover cursor-pointer" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2RyODKtjBq88GCEOb-L1uA_CtkK3ef6kiw8x2MkcxAyKA5k5exGbISqmxr4ywURFwwn2E-ht7wTlhC6QomyTA7OI1s0-PDO_juQB1o9Y_EIVRHQCec9tT3Jf35QCDiVBsUoMTSR8pyjUaeA_pXveQS2lHoCnAIhUrdxmp3NzyW2mX0hGdg-VV5_6JRD0ZqLdP525IP4hdJjwbgoLP92DyHa5e9kc0AbYCAkLfd0i7pFK4dGb8mzUjQ260snLqXL3uuXW8d18C9ot9"
+            :src="user.avatar_url ? 'http://localhost:5000' + user.avatar_url : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.full_name || 'User') + '&background=random'"
             alt="Profile"
             @click="toggleProfileMenu"
           />
@@ -147,6 +147,8 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../LanguageSwitcher.vue'
 import { authService } from '../../api/authService.js'
+
+const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
 
 const props = defineProps({
   activeRoute: {
