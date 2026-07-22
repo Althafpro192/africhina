@@ -81,13 +81,25 @@ export const adminService = {
     return data;
   },
 
-  async finalizeDeal(id) {
-    const { data } = await api.post(`/admin/requests/${id}/finalize`);
-    return data;
+  async finalizeDeal(id, payload) {
+    if (payload instanceof FormData) {
+      const { data } = await api.post(`/admin/requests/${id}/finalize`, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return data;
+    } else {
+      const { data } = await api.post(`/admin/requests/${id}/finalize`, payload);
+      return data;
+    }
   },
 
   async verifyPayment(id) {
     const { data } = await api.put(`/payments/admin/${id}/verify`);
+    return data;
+  },
+
+  async rejectPayment(id, reason) {
+    const { data } = await api.put(`/payments/admin/${id}/reject`, { reason });
     return data;
   },
 

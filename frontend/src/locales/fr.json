@@ -136,11 +136,28 @@
             "step4": "Recevoir et évaluer",
             "step4_desc": "Confirmez la livraison et laissez un avis pour le fournisseur."
         },
-        "testimonials": {
-            "title": "Témoignages"
+    "testimonials": {
+        "title": "Témoignages",
+        "user1": {
+            "name": "Kwame Osei",
+            "country": "Ghana",
+            "quote": "Trouver des fournisseurs vérifiés était un cauchemar. AfriChina Bridge m'a apporté la transparence dont j'avais besoin. Leurs photos de contrôle qualité depuis l'usine ont sauvé mon entreprise."
         },
+        "user2": {
+            "name": "Fatoumata Diallo",
+            "country": "Sénégal",
+            "quote": "Les barrières linguistiques ont disparu. Saisissez vos spécifications et la plateforme gère la négociation. Le suivi de livraison est parfaitement intégré."
+        },
+        "user3": {
+            "name": "Emmanuel Kiprono",
+            "country": "Kenya",
+            "quote": "La plateforme B2B la plus fiable que j'ai utilisée. J'adore pouvoir demander un devis sans révéler mon identité jusqu'à la finalisation de l'accord."
+        }
+    },
         "cta_footer": "Prêt à commencer à trader en toute sécurité ?",
+        "cta_footer_sub": "Rejoignez des milliers d'entrepreneurs africains qui développent leur entreprise en toute sécurité avec des usines chinoises de confiance.",
         "cta_footer_button": "S'inscrire gratuitement",
+        "cta_footer_secondary": "Planifier une démo",
         "nav_features": "Fonctionnalités",
         "nav_how_it_works": "Comment ça marche",
         "nav_testimonials": "Témoignages",
@@ -156,6 +173,20 @@
         "timeline_step4": "Production & QC",
         "timeline_step5": "Expédié vers l'Afrique",
         "footer_brand": "AfriChina Bridge",
+        "footer_description": "La plateforme B2B de nouvelle génération connectant directement les acheteurs africains et les fabricants chinois avec une transparence totale, une inspection qualité et une logistique sécurisée.",
+        "footer_platform": "Plateforme",
+        "footer_sourcing": "Sourcing Produits",
+        "footer_logistics": "Services Logistiques",
+        "footer_escrow": "Paiement Sécurisé",
+        "footer_api": "Intégration API",
+        "footer_company": "Entreprise",
+        "footer_vision": "Vision & Mission",
+        "footer_intelligence": "Intelligence de Marché",
+        "footer_compliance": "Conformité & Confiance",
+        "footer_support": "Centre d'Assistance",
+        "footer_newsletter": "Bulletin d'information",
+        "footer_newsletter_desc": "Recevez les dernières tendances du commerce B2B Afrique-Chine et les offres d'usines directement dans votre boîte mail.",
+        "footer_email_placeholder": "Entrez votre email...",
         "footer_copyright": "© 2026 AfriChina Bridge. Tous droits réservés.",
         "footer_privacy": "Politique de confidentialité",
         "footer_terms": "Conditions d'utilisation"

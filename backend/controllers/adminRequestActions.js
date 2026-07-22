@@ -104,12 +104,51 @@ export const deleteRequestOption = async (req, res) => {
 
 export const finalizeDeal = async (req, res) => {
   const { id } = req.params;
+  const { 
+    final_price, 
+    quoted_price, 
+    price_breakdown, 
+    bank_name, 
+    bank_account_number, 
+    bank_account_name, 
+    payment_notes 
+  } = req.body;
+
+  let paymentQrUrl = req.file ? `/uploads/${req.file.filename}` : (req.body.payment_qr_url || null);
+
+  const priceToSet = final_price || quoted_price || null;
+
   try {
     const updated = await pool.query(
-      "UPDATE requests SET status = 'menunggu_pembayaran', deal_finalized_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
-      [id]
+      `UPDATE requests 
+       SET status = 'menunggu_pembayaran', 
+           deal_finalized_at = CURRENT_TIMESTAMP, 
+           updated_at = CURRENT_TIMESTAMP,
+           final_price = $1,
+           quoted_price = $1,
+           price_breakdown = $2,
+           bank_name = $3,
+           bank_account_number = $4,
+           bank_account_name = $5,
+           payment_qr_url = $6,
+           payment_notes = $7,
+           payment_rejection_reason = NULL
+       WHERE id = $8 RETURNING *`,
+      [
+        priceToSet,
+        price_breakdown ? (typeof price_breakdown === 'string' ? price_breakdown : JSON.stringify(price_breakdown)) : null,
+        bank_name || null,
+        bank_account_number || null,
+        bank_account_name || null,
+        paymentQrUrl,
+        payment_notes || null,
+        id
+      ]
     );
-    await pool.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_pembayaran', 'Admin finalized deal. Waiting for buyer payment.')", [id]);
+
+    if (updated.rows.length === 0) return res.status(404).json({ message: 'Request not found' });
+
+    await pool.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_pembayaran', $2)", [id, `Admin finalized deal with invoice amount USD ${priceToSet || 0}. Waiting for buyer payment.`]);
     res.json(updated.rows[0]);
   } catch (error) {
     logger.error(error);

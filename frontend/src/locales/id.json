@@ -137,11 +137,28 @@
       "step4_desc": "Konfirmasi kedatangan dan berikan penilaian pada pemasok."
     },
     "testimonials": {
-      "title": "Apa Kata Pengguna Kami"
+      "title": "Apa Kata Pengguna Kami",
+      "user1": {
+        "name": "Kwame Osei",
+        "country": "Ghana",
+        "quote": "Mencari pemasok terverifikasi dulunya sangat sulit. AfriChina Bridge memberikan transparansi yang saya butuhkan. Foto QC langsung dari pabrik menyelamatkan bisnis saya."
+      },
+      "user2": {
+        "name": "Fatoumata Diallo",
+        "country": "Senegal",
+        "quote": "Hambatan bahasa kini telah hilang. Saya ketik spesifikasi saya, dan platform mengelola negosiasi. Linimasa pengiriman terintegrasi dengan sempurna."
+      },
+      "user3": {
+        "name": "Emmanuel Kiprono",
+        "country": "Kenya",
+        "quote": "Platform B2B paling andal yang pernah saya gunakan. Saya suka bagaimana saya bisa meminta penawaran tanpa membuka identitas saya sampai kesepakatan final."
+      }
     },
     "cta_footer": "Siap untuk memulai perdagangan yang aman?",
+    "cta_footer_sub": "Bergabunglah dengan ribuan pengusaha Afrika yang telah memperluas bisnis mereka secara aman bersama pabrik Tiongkok terpercaya.",
     "cta_footer_button": "Daftar Gratis",
-    "nav_features": "Fitur",
+    "cta_footer_secondary": "Jadwalkan Demo",
+    "nav_features": "Fitur Utama",
     "nav_how_it_works": "Cara Kerja",
     "nav_testimonials": "Testimoni",
     "nav_login": "Masuk",
@@ -156,6 +173,20 @@
     "timeline_step4": "Produksi & QC",
     "timeline_step5": "Dikirim ke Afrika",
     "footer_brand": "AfriChina Bridge",
+    "footer_description": "Platform B2B generasi berikutnya yang menghubungkan pembeli Afrika dan produsen Tiongkok secara langsung dengan jaminan transparansi, inspeksi kualitas, dan logistik aman.",
+    "footer_platform": "Platform",
+    "footer_sourcing": "Pencarian Produk",
+    "footer_logistics": "Layanan Logistik",
+    "footer_escrow": "Pembayaran Escrow",
+    "footer_api": "Integrasi API",
+    "footer_company": "Perusahaan",
+    "footer_vision": "Visi & Misi",
+    "footer_intelligence": "Analisis Pasar",
+    "footer_compliance": "Kepatuhan & Kepercayaan",
+    "footer_support": "Pusat Bantuan",
+    "footer_newsletter": "Buletin Berita",
+    "footer_newsletter_desc": "Dapatkan tren pasar B2B Afrika-Tiongkok dan penawaran pabrik terbaru.",
+    "footer_email_placeholder": "Masukkan email Anda...",
     "footer_copyright": "© 2026 AfriChina Bridge. Hak cipta dilindungi.",
     "footer_privacy": "Kebijakan Privasi",
     "footer_terms": "Syarat & Ketentuan"

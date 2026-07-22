@@ -1,106 +1,142 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #e0e7ff 100%);">
+  <div :class="['min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-hidden transition-colors duration-300 font-[\'Inter\',_sans-serif]', isDark ? 'dark bg-[#0b0f19] text-slate-100' : 'bg-[#f8f9ff] text-slate-900']">
     
-    <!-- Background Decorations -->
-    <div class="fixed top-20 right-20 opacity-20 pointer-events-none">
-      <span class="material-symbols-outlined text-purple-400" style="font-size: 120px;">language</span>
-    </div>
-    <div class="fixed bottom-20 left-20 opacity-20 pointer-events-none">
-      <span class="material-symbols-outlined text-gray-400" style="font-size: 96px;">local_shipping</span>
-    </div>
-    <div class="fixed top-1/2 right-32 opacity-20 pointer-events-none">
-      <span class="material-symbols-outlined text-purple-400" style="font-size: 112px;">bridge</span>
-    </div>
+    <!-- Background Animated Blobs -->
+    <div class="fixed top-10 left-10 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full filter blur-3xl pointer-events-none animate-pulse"></div>
+    <div class="fixed bottom-10 right-10 w-96 h-96 bg-purple-500/10 dark:bg-purple-600/15 rounded-full filter blur-3xl pointer-events-none animate-pulse"></div>
 
-    <!-- Language Switcher -->
-    <div class="absolute top-6 right-6 z-50">
+    <!-- Top Right Controls (Theme & Language) -->
+    <div class="absolute top-6 right-6 z-50 flex items-center gap-3">
+      <button 
+        @click="toggleTheme" 
+        class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 shadow-sm flex items-center justify-center cursor-pointer"
+        :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <span class="material-symbols-outlined text-xl">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
+      </button>
       <LanguageSwitcher />
     </div>
 
-    <!-- Login Card --> 
-    <div class="bg-white rounded-2xl shadow-2xl w-full relative z-10" :style="{ maxWidth: isMobile ? '100%' : '448px', padding: isMobile ? '24px' : '32px' }">
+    <!-- Main Card Container --> 
+    <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 rounded-3xl shadow-2xl shadow-indigo-500/10 w-full max-w-md p-6 sm:p-9 relative z-10 transition-all duration-300">
       
-      <!-- Logo & Header -->
+      <!-- Brand Logo & Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style="background: linear-gradient(135deg, #4f46e5 0%, #3525cd 100%); box-shadow: 0 10px 25px rgba(53, 37, 205, 0.3)">
-          <span class="material-symbols-outlined text-white" style="font-size: 32px;">bridge</span>
+        <div 
+          class="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 cursor-pointer hover:scale-105 transition-transform"
+          @click="$router.push('/')"
+        >
+          <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">account_tree</span>
         </div>
-        <h1 class="text-3xl font-bold mb-2" style="background: linear-gradient(135deg, #3525cd 0%, #4f46e5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-2">
           {{ $t('auth.title') }}
         </h1>
-        <p class="text-gray-600">{{ $t('auth.subtitle') }}</p>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+          {{ $t('auth.subtitle') }}
+        </p>
       </div>
 
-      <!-- Error Message -->
-      <div v-if="errorMsg" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
-        <span class="material-symbols-outlined text-red-500" style="font-size: 18px;">error</span>
-        {{ errorMsg }}
+      <!-- Mode Toggle Pills (Login / Register) -->
+      <div class="grid grid-cols-2 p-1 mb-6 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
+        <button 
+          @click="isRegister = false; errorMsg = ''; successMsg = '';" 
+          class="py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200"
+          :class="!isRegister ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
+        >
+          {{ $t('auth.sign_in') }}
+        </button>
+        <button 
+          @click="isRegister = true; errorMsg = ''; successMsg = '';" 
+          class="py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200"
+          :class="isRegister ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
+        >
+          {{ $t('auth.create_account') }}
+        </button>
       </div>
 
-      <!-- Success Message -->
-      <div v-if="successMsg" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
-        <span class="material-symbols-outlined text-green-500" style="font-size: 18px;">check_circle</span>
-        {{ successMsg }}
+      <!-- Error Alert -->
+      <div v-if="errorMsg" class="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-2xl text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
+        <span class="material-symbols-outlined text-rose-500 text-lg shrink-0">error</span>
+        <span>{{ errorMsg }}</span>
       </div>
 
-      <!-- Login Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-6">
+      <!-- Success Alert -->
+      <div v-if="successMsg" class="mb-5 p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
+        <span class="material-symbols-outlined text-emerald-500 text-lg shrink-0">check_circle</span>
+        <span>{{ successMsg }}</span>
+      </div>
+
+      <!-- Auth Form -->
+      <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-5">
         
         <!-- Company Name (Register Only) -->
         <div v-if="isRegister">
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('auth.company_name') }}</label>
+          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ $t('auth.company_name') }}</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">business</span>
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <span class="material-symbols-outlined text-lg">business</span>
             </div>
-            <input v-model="form.company_name" type="text" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" :style="{ fontSize: isMobile ? '14px' : '16px' }" required />
+            <input 
+              v-model="form.company_name" 
+              type="text" 
+              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
+              required 
+            />
           </div>
         </div>
 
-        <div v-if="isRegister" class="grid grid-cols-2 gap-4">
+        <div v-if="isRegister" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Contact Person -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('auth.contact_person') }}</label>
+            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ $t('auth.contact_person') }}</label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">person</span>
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <span class="material-symbols-outlined text-lg">person</span>
               </div>
-              <input v-model="form.contact_person" type="text" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" :style="{ fontSize: isMobile ? '14px' : '16px' }" required />
+              <input 
+                v-model="form.contact_person" 
+                type="text" 
+                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
+                required 
+              />
             </div>
           </div>
+
           <!-- Phone -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('auth.phone') }}</label>
+            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ $t('auth.phone') }}</label>
             <div class="flex gap-2">
-              <select v-model="form.country_code" class="w-1/3 px-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none bg-white">
+              <select v-model="form.country_code" class="w-1/3 px-2 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none text-xs">
                 <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }}</option>
               </select>
               <div class="relative w-2/3">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">phone</span>
-                </div>
-                <input v-model="form.phone" type="text" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" :style="{ fontSize: isMobile ? '14px' : '16px' }" placeholder="1234567890" required />
+                <input 
+                  v-model="form.phone" 
+                  type="text" 
+                  class="w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
+                  placeholder="812345678" 
+                  required 
+                />
               </div>
             </div>
-            <p v-if="phoneError" class="text-xs text-red-500 mt-1">{{ phoneError }}</p>
+            <p v-if="phoneError" class="text-[11px] text-rose-500 mt-1 font-medium">{{ phoneError }}</p>
           </div>
         </div>
 
         <!-- Email Field -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
             {{ $t('auth.email') }}
           </label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">mail</span>
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <span class="material-symbols-outlined text-lg">mail</span>
             </div>
             <input
               v-model="email"
               type="email"
               placeholder="e.g. buyer@example.com"
-              class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
-              :style="{ fontSize: isMobile ? '14px' : '16px' }"
+              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
               required
             />
           </div>
@@ -108,125 +144,116 @@
 
         <!-- Password Field -->
         <div>
-          <div class="flex justify-between items-center mb-2">
-            <label class="block text-sm font-medium text-gray-700">
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
               {{ $t('auth.password') }}
             </label>
             <button
               v-if="!isRegister"
               @click.prevent="handleForgot"
-              class="text-sm text-purple-600 hover:text-purple-700 font-medium"
+              class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
             >
               {{ $t('auth.forgot') }}
             </button>
           </div>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">lock</span>
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <span class="material-symbols-outlined text-lg">lock</span>
             </div>
             <input
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="••••••••"
-              class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
-              :style="{ fontSize: isMobile ? '14px' : '16px' }"
+              class="w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
               required
             />
             <button
               @click.prevent="togglePassword"
               type="button"
-              class="absolute inset-y-0 right-0 pr-3 flex items-center"
+              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
-              <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">
+              <span class="material-symbols-outlined text-lg">
                 {{ showPassword ? 'visibility_off' : 'visibility' }}
               </span>
             </button>
           </div>
         </div>
 
-        <!-- Sign In Button -->
+        <!-- Submit Button (Indigo/Purple Brand Gradient) -->
         <button
           type="submit"
           :disabled="loading"
-          class="w-full text-white font-semibold py-3 px-6 rounded-xl hover:opacity-95 transform hover:scale-[1.02] transition-all duration-200 shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-          :style="{ background: 'linear-gradient(135deg, #4f46e5 0%, #3525cd 100%)', boxShadow: '0 10px 25px rgba(53, 37, 205, 0.3)' }"
+          class="w-full text-white font-bold py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
         >
-          <span v-if="loading" class="material-symbols-outlined animate-spin" style="font-size: 20px;">progress_activity</span>
-          <span v-else>{{ isRegister ? $t('auth.create_account') : $t('auth.sign_in') }}</span>
-          <span v-if="!loading" class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+          <span v-if="loading" class="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+          <span v-else class="text-sm sm:text-base">{{ isRegister ? $t('auth.create_account') : $t('auth.sign_in') }}</span>
+          <span v-if="!loading" class="material-symbols-outlined text-lg">arrow_forward</span>
         </button>
       </form>
 
-      <!-- Divider -->
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-200"></div>
-        </div>
-        <div class="relative flex justify-center text-sm">
-          <span class="px-4 bg-white text-gray-500">{{ $t('auth.or') }}</span>
-        </div>
+      <!-- Footer Text -->
+      <div class="pt-6 mt-6 border-t border-slate-200/80 dark:border-slate-800 text-center">
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          <span v-if="!isRegister">
+            {{ $t('auth.no_account') }}
+            <button @click="toggleMode" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline ml-1">
+              {{ $t('auth.create_one') }}
+            </button>
+          </span>
+          <span v-else>
+            {{ $t('auth.have_account') }}
+            <button @click="toggleMode" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline ml-1">
+              {{ $t('auth.login_now') }}
+            </button>
+          </span>
+        </p>
       </div>
-
-      <!-- Create Account Link -->
-      <p class="text-center text-gray-600" v-if="!isRegister">
-        {{ $t('auth.no_account') }}
-        <button
-          @click="toggleMode"
-          class="text-purple-600 hover:text-purple-700 font-semibold ml-1"
-        >
-          {{ $t('auth.create_one') }}
-        </button>
-      </p>
-      
-      <p class="text-center text-gray-600" v-else>
-        {{ $t('auth.have_account') }}
-        <button
-          @click="toggleMode"
-          class="text-purple-600 hover:text-purple-700 font-semibold ml-1"
-        >
-          {{ $t('auth.login_now') }}
-        </button>
-      </p>
     </div>
 
-    <!-- Footer -->
-    <div class="fixed bottom-4 left-0 right-0 text-center text-gray-400 text-sm z-10">
+    <!-- Bottom Copyright Footer -->
+    <div class="fixed bottom-4 left-0 right-0 text-center text-xs text-slate-400 dark:text-slate-500 z-10">
       <p>{{ $t('auth.footer') }}</p>
     </div>
 
     <!-- Forgot Password Modal -->
-    <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isForgotModalOpen ? 'visible' : 'invisible']">
-      <div class="absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm" @click="closeForgotModal"></div>
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300', isForgotModalOpen ? 'visible' : 'invisible']">
+      <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-md" @click="closeForgotModal"></div>
       
-      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300 max-w-[90vw]', isForgotModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+      <div :class="['bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isForgotModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-[24px] leading-[1.3] font-bold text-[#3525cd]">Reset Password</h3>
-            <p class="text-sm text-gray-500 mt-2">Enter your email address to request a password reset link.</p>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Reset Password</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter your email address to receive a password reset link.</p>
           </div>
-          <button @click="closeForgotModal" class="text-gray-400 hover:text-gray-700 transition-colors">
-            <span class="material-symbols-outlined">close</span>
+          <button @click="closeForgotModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
         <form @submit.prevent="submitForgotPassword" class="space-y-4">
-          <div v-if="forgotSuccessMsg" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+          <div v-if="forgotSuccessMsg" class="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-emerald-700 dark:text-emerald-300 text-xs">
             {{ forgotSuccessMsg }}
           </div>
-          <div v-if="forgotErrorMsg" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+          <div v-if="forgotErrorMsg" class="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-xl text-rose-700 dark:text-rose-300 text-xs">
             {{ forgotErrorMsg }}
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-            <input v-model="forgotEmail" type="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition-all" required placeholder="e.g. buyer@example.com" />
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+            <input 
+              v-model="forgotEmail" 
+              type="email" 
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 outline-none text-xs sm:text-sm" 
+              required 
+              placeholder="e.g. buyer@example.com" 
+            />
           </div>
           
           <div class="flex justify-end gap-3 pt-4">
-            <button type="button" @click="closeForgotModal" class="px-6 py-3 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors">
+            <button type="button" @click="closeForgotModal" class="px-5 py-2.5 rounded-xl font-semibold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               Cancel
             </button>
-            <button type="submit" :disabled="forgotLoading" class="px-6 py-3 rounded-xl bg-[#3525cd] text-white font-bold shadow-lg hover:opacity-95 transition-all disabled:opacity-50 flex items-center gap-2">
+            <button type="submit" :disabled="forgotLoading" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center gap-2 text-xs">
               <span v-if="forgotLoading" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
               Request Reset
             </button>
@@ -242,10 +269,12 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { useTheme } from '../../composables/useTheme'
 import { authService } from '../../api/authService.js'
 import { countryCodes, validatePhone } from '../../utils/phoneValidation.js'
 
 const router = useRouter()
+const { isDark, toggleTheme } = useTheme()
 
 // Form State
 const isRegister = ref(false)
@@ -270,24 +299,6 @@ const forgotEmail = ref('')
 const forgotLoading = ref(false)
 const forgotSuccessMsg = ref('')
 const forgotErrorMsg = ref('')
-
-// Device Detection
-const isMobile = ref(false)
-const windowWidth = ref(0)
-
-const updateDeviceType = () => {
-  windowWidth.value = window.innerWidth
-  isMobile.value = windowWidth.value < 768
-}
-
-onMounted(() => {
-  updateDeviceType()
-  window.addEventListener('resize', updateDeviceType)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateDeviceType)
-})
 
 watch(() => form.value.phone, () => {
   if (isRegister.value && form.value.phone) {
@@ -382,13 +393,3 @@ const togglePassword = () => {
   showPassword.value = !showPassword.value
 }
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  display: inline-block;
-  line-height: 1;
-}
-</style>

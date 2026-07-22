@@ -4,7 +4,7 @@ import logger from '../config/logger.js';
 // Buyer selects options
 export const selectOption = async (req, res) => {
   const { id } = req.params;
-  const { option_ids } = req.body;
+  const { option_ids, buyer_notes } = req.body;
   
   try {
     const requestCheck = await pool.query('SELECT status FROM requests WHERE id = $1 AND user_id = $2', [id, req.userId]);
@@ -23,22 +23,22 @@ export const selectOption = async (req, res) => {
           "UPDATE request_options SET is_selected = true WHERE id = ANY($1)",
           [option_ids]
         );
-        // Update request status to negotiation
+        // Update request status to negotiation and save buyer notes
         const updated = await client.query(
-          "UPDATE requests SET status = 'menunggu_kesepakatan_final', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
-          [id]
+          "UPDATE requests SET status = 'menunggu_kesepakatan_final', buyer_notes = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+          [buyer_notes || null, id]
         );
-        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_kesepakatan_final', 'Buyer has selected product option(s)')", [id]);
+        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_kesepakatan_final', $2)", [id, `Buyer selected ${option_ids.length} option(s). Note: ${buyer_notes || 'None'}`]);
         
         await client.query('COMMIT');
         res.json(updated.rows[0]);
       } else {
-        // Buyer rejected all options
+        // Buyer requested alternative options
         const updated = await client.query(
-          "UPDATE requests SET status = 'menunggu_penawaran_admin', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
-          [id]
+          "UPDATE requests SET status = 'menunggu_penawaran_admin', buyer_notes = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+          [buyer_notes || null, id]
         );
-        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_penawaran_admin', 'Buyer requested alternative options')", [id]);
+        await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_penawaran_admin', $2)", [id, `Buyer requested alternative options. Note: ${buyer_notes || 'None'}`]);
         
         await client.query('COMMIT');
         res.json(updated.rows[0]);

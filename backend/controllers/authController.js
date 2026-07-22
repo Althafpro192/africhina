@@ -62,7 +62,12 @@ export const getMe = async (req, res) => {
   try {
     const user = await pool.query('SELECT id, full_name, email, country, country_code, phone, company_name, role, avatar_url FROM users WHERE id = $1', [req.userId]);
     if (user.rows.length === 0) return res.status(404).json({ message: 'User not found' });
-    res.json(user.rows[0]);
+    const userData = user.rows[0];
+    if (userData.avatar_url && userData.avatar_url.startsWith('/uploads/avatar-')) {
+      userData.avatar_url = userData.avatar_url.replace('/uploads/avatar-', '/uploads/avatars/avatar-');
+      await pool.query('UPDATE users SET avatar_url = $1 WHERE id = $2', [userData.avatar_url, req.userId]);
+    }
+    res.json(userData);
   } catch (error) {
     logger.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -103,7 +108,7 @@ export const forgotPassword = async (req, res) => {
 export const uploadAvatar = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
   try {
-    const avatarUrl = `/uploads/${req.file.filename}`;
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
     await pool.query('UPDATE users SET avatar_url = $1 WHERE id = $2', [avatarUrl, req.userId]);
     res.json({ message: 'Avatar updated successfully', avatar_url: avatarUrl });
   } catch (error) {

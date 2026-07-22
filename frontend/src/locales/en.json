@@ -137,10 +137,27 @@
       "step4_desc": "Confirm arrival and rate the supplier."
     },
     "testimonials": {
-      "title": "What Our Users Say"
+      "title": "What Our Users Say",
+      "user1": {
+        "name": "Kwame Osei",
+        "country": "Ghana",
+        "quote": "Finding verified suppliers used to be a nightmare. AfriChina Bridge gave me the transparency I needed. Their QC photos from the factory floor saved my business."
+      },
+      "user2": {
+        "name": "Fatoumata Diallo",
+        "country": "Senegal",
+        "quote": "Language barriers are gone. I type my specs, and the platform handles the negotiation. The shipping timeline is perfectly integrated."
+      },
+      "user3": {
+        "name": "Emmanuel Kiprono",
+        "country": "Kenya",
+        "quote": "The most reliable B2B platform I have used. I love how I can request a quote without exposing my identity until the deal is finalized."
+      }
     },
     "cta_footer": "Ready to start safe trading?",
+    "cta_footer_sub": "Join thousands of African entrepreneurs scaling their businesses safely with trusted Chinese manufacturers.",
     "cta_footer_button": "Sign Up Free",
+    "cta_footer_secondary": "Schedule a Demo",
     "nav_features": "Features",
     "nav_how_it_works": "How it Works",
     "nav_testimonials": "Testimonials",
@@ -156,6 +173,20 @@
     "timeline_step4": "Production QC",
     "timeline_step5": "Shipped to Africa",
     "footer_brand": "AfriChina Bridge",
+    "footer_description": "The next-generation B2B platform directly connecting African buyers and Chinese manufacturers with total transparency, quality inspection, and secure logistics.",
+    "footer_platform": "Platform",
+    "footer_sourcing": "Product Sourcing",
+    "footer_logistics": "Logistics Services",
+    "footer_escrow": "Escrow Payment",
+    "footer_api": "API Integration",
+    "footer_company": "Company",
+    "footer_vision": "Vision & Mission",
+    "footer_intelligence": "Market Intelligence",
+    "footer_compliance": "Compliance & Trust",
+    "footer_support": "Support Center",
+    "footer_newsletter": "Newsletter",
+    "footer_newsletter_desc": "Get the latest Africa-China B2B trade trends and factory deals straight to your inbox.",
+    "footer_email_placeholder": "Enter your email...",
     "footer_copyright": "© 2026 AfriChina Bridge. All rights reserved.",
     "footer_privacy": "Privacy Policy",
     "footer_terms": "Terms of Service"

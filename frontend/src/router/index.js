@@ -11,12 +11,15 @@ const Sourcing = () => import('../views/buyer/Sourcing.vue');
 const RFQCreate = () => import('../views/buyer/RFQCreate.vue');
 const RequestDetail = () => import('../views/buyer/RequestDetail.vue');
 
+const BuyerMessages = () => import('../views/buyer/Messages.vue');
+
 // Admin Pages
 const AdminDashboard = () => import('../views/admin/Dashboard.vue');
 const AdminSuppliers = () => import('../views/admin/Suppliers.vue');
 const AdminRequestDetail = () => import('../views/admin/RequestDetail.vue');
 const AdminRatingsModeration = () => import('../views/admin/RatingsModeration.vue');
 const PasswordResets = () => import('../views/admin/PasswordResets.vue');
+const AdminMessages = () => import('../views/admin/Messages.vue');
 
 // Auth Pages
 const Login = () => import('../views/auth/Login.vue');
@@ -42,12 +45,14 @@ const routes = [
   { path: '/buyer/settings', component: Settings, meta: { requiresAuth: true } },
   { path: '/buyer/sourcing', component: Sourcing, meta: { requiresAuth: true } },
   { path: '/buyer/rfq/create', component: RFQCreate, meta: { requiresAuth: true } },
+  { path: '/buyer/messages', component: BuyerMessages, meta: { requiresAuth: true } },
   // Admin Routes
   { path: '/admin/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/suppliers', component: AdminSuppliers, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/request/:id', component: AdminRequestDetail, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/ratings', component: AdminRatingsModeration, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/security/password-resets', component: PasswordResets, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/messages', component: AdminMessages, meta: { requiresAuth: true, requiresAdmin: true } },
   
   // Public Password Reset
   { path: '/reset-password', component: ResetPassword }

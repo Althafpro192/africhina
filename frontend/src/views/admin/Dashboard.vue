@@ -1,18 +1,24 @@
 <template>
   <AdminLayout>
-    <main class="flex-1 p-10 max-w-[1600px] mx-auto space-y-10">
+    <main class="w-full max-w-[1600px] mx-auto space-y-8">
+      
       <!-- Header -->
-      <header class="flex justify-between items-end gap-6">
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h2 class="text-[48px] leading-[1.1] tracking-[-0.02em] font-extrabold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">{{ $t('admin.title') }}</h2>
-          <p class="text-[16px] leading-[1.6] font-normal text-[#494551]">{{ $t('admin.subtitle') }}</p>
+          <h2 class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent tracking-tight">
+            {{ $t('admin.title') }}
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {{ $t('admin.subtitle') }}
+          </p>
         </div>
-        <div class="flex gap-4 items-center">
-          <div class="relative w-80">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#7a7582]">search</span>
+        
+        <div class="flex gap-4 items-center w-full sm:w-auto">
+          <div class="relative w-full sm:w-80">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
             <input 
               v-model="searchQuery"
-              class="w-full pl-12 pr-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 text-[#1d1b20] placeholder:text-[#cbc4d2] outline-none" 
+              class="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 outline-none text-xs sm:text-sm shadow-sm transition-all" 
               :placeholder="$t('admin.search_placeholder')" 
               type="text"
             />
@@ -23,57 +29,57 @@
       <!-- STATS GRID -->
       <section v-if="stats" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <!-- Total Card -->
-        <div class="glass-panel p-6 rounded-3xl deep-shadow lift-effect relative overflow-hidden group">
+        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-2xl bg-[#4f378a]/10 flex items-center justify-center border border-[#4f378a]/20">
-              <span class="material-symbols-outlined text-[#4f378a] text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
+              <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
             </div>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.total_requests') }}</h3>
-          <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">{{ stats.total_requests }}</p>
+          <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.total_requests') }}</h3>
+          <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.total_requests }}</p>
         </div>
 
         <!-- Pending Card -->
-        <div class="glass-panel p-6 rounded-3xl deep-shadow lift-effect relative overflow-hidden group">
+        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-              <span class="material-symbols-outlined text-orange-600 text-2xl" style="font-variation-settings: 'FILL' 1;">hourglass_empty</span>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center border border-amber-200 dark:border-amber-800">
+              <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl" style="font-variation-settings: 'FILL' 1;">hourglass_empty</span>
             </div>
-            <span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-lg">High Priority</span>
+            <span class="text-[10px] font-extrabold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-full">Requires Action</span>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.pending_approval') }}</h3>
-          <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">{{ stats.pending_requests }}</p>
+          <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.pending_approval') }}</h3>
+          <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.pending_requests }}</p>
         </div>
 
         <!-- Processing Card -->
-        <div class="glass-panel p-6 rounded-3xl deep-shadow lift-effect relative overflow-hidden group">
+        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-              <span class="material-symbols-outlined text-blue-600 text-2xl" style="font-variation-settings: 'FILL' 1;">conveyor_belt</span>
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center border border-blue-200 dark:border-blue-800">
+              <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-2xl" style="font-variation-settings: 'FILL' 1;">conveyor_belt</span>
             </div>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.in_processing') }}</h3>
-          <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">{{ stats.processing_requests }}</p>
+          <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.in_processing') }}</h3>
+          <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.processing_requests }}</p>
         </div>
 
         <!-- Completed Card -->
-        <div class="glass-panel p-6 rounded-3xl deep-shadow lift-effect relative overflow-hidden group">
+        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
-              <span class="material-symbols-outlined text-green-600 text-2xl" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center border border-emerald-200 dark:border-emerald-800">
+              <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-2xl" style="font-variation-settings: 'FILL' 1;">task_alt</span>
             </div>
           </div>
-          <h3 class="text-[#494551] text-[14px] leading-[1.2] tracking-[0.01em] font-semibold">{{ $t('admin.completed_deals') }}</h3>
-          <p class="text-[40px] leading-none font-extrabold mt-1 text-[#1d1b20]">{{ stats.completed_requests }}</p>
+          <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.completed_deals') }}</h3>
+          <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.completed_requests }}</p>
         </div>
       </section>
 
       <!-- TABLE SECTION -->
-      <section class="glass-panel rounded-3xl deep-shadow overflow-hidden">
-        <div class="p-6 border-b border-[#cbc4d2] flex justify-between items-center bg-white/30">
-          <h4 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.recent_requests') }}</h4>
-          <div class="flex gap-3">
-            <select v-model="filterStatus" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
+      <section class="bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 overflow-hidden transition-colors duration-300">
+        <div class="p-6 border-b border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50 dark:bg-slate-900/50">
+          <h4 class="text-lg font-extrabold text-slate-900 dark:text-white">{{ $t('admin.recent_requests') }}</h4>
+          <div class="flex flex-wrap gap-3">
+            <select v-model="filterStatus" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs font-semibold text-slate-700 dark:text-slate-200">
               <option value="">All Statuses</option>
               <option value="menunggu_penawaran_admin">Pending</option>
               <option value="menunggu_pemilihan_buyer">Quoted</option>
@@ -82,7 +88,7 @@
               <option value="selesai">Completed</option>
               <option value="batal">Rejected</option>
             </select>
-            <select v-model="filterCategory" class="px-4 py-2 rounded-xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-sm text-[#1d1b20]">
+            <select v-model="filterCategory" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs font-semibold text-slate-700 dark:text-slate-200">
               <option value="">All Categories</option>
               <option value="Machinery">Machinery</option>
               <option value="Electronics">Electronics</option>
@@ -96,8 +102,8 @@
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="text-[#7a7582] uppercase text-[11px] font-bold tracking-widest bg-[#f8f2fa]/50">
-                <th class="px-8 py-4">{{ $t('admin.buyer_entity') }}</th>
+              <tr class="text-slate-400 dark:text-slate-500 uppercase text-[10px] font-bold tracking-widest bg-slate-50/80 dark:bg-slate-950/40 border-b border-slate-200/60 dark:border-slate-800">
+                <th class="px-6 py-4">{{ $t('admin.buyer_entity') }}</th>
                 <th class="px-6 py-4">{{ $t('admin.category') }}</th>
                 <th class="px-6 py-4">{{ $t('admin.request_date') }}</th>
                 <th class="px-6 py-4">{{ $t('admin.est_volume') }}</th>
@@ -105,48 +111,63 @@
                 <th class="px-6 py-4 text-right">{{ $t('admin.actions') }}</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#cbc4d2]/30" v-if="!loading">
-              <tr v-for="req in filteredRequests" :key="req.id" class="group hover:bg-gradient-to-r hover:from-[#4f378a]/5 hover:to-transparent transition-all cursor-pointer">
-                <td class="px-8 py-5" @click="router.push(`/admin/request/${req.id}`)">
+            <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800" v-if="!loading">
+              <tr 
+                v-for="req in filteredRequests" 
+                :key="req.id" 
+                class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+              >
+                <td class="px-6 py-4" @click="router.push(`/admin/request/${req.id}`)">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full border-2 border-[#4f378a]/30 p-0.5 flex items-center justify-center bg-gray-100">
-                      <span class="material-symbols-outlined text-[#4f378a]">business</span>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                      <span class="material-symbols-outlined text-xl">business</span>
                     </div>
                     <div>
-                      <p class="font-bold text-[#1d1b20]">{{ req.company_name || req.buyer_name }}</p>
-                      <p class="text-xs text-[#7a7582]">{{ req.product_name }}</p>
+                      <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {{ req.company_name || req.buyer_name }}
+                      </p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">{{ req.product_name }}</p>
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-5">
-                  <span class="bg-[#ece6ee] px-3 py-1 rounded-lg text-[#4f378a] text-xs font-bold border border-white/50 shadow-sm">{{ req.category }}</span>
+                <td class="px-6 py-4">
+                  <span class="bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200/60 dark:border-slate-700">
+                    {{ req.category }}
+                  </span>
                 </td>
-                <td class="px-6 py-5 text-sm text-[#494551]">{{ formatDate(req.created_at) }}</td>
-                <td class="px-6 py-5 font-bold text-[#1d1b20]">{{ req.quoted_price ? '$' + Number(req.quoted_price).toLocaleString() : 'Pending' }}</td>
-                <td class="px-6 py-5">
+                <td class="px-6 py-4 text-xs font-medium text-slate-600 dark:text-slate-400">{{ formatDate(req.created_at) }}</td>
+                <td class="px-6 py-4 font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ req.quoted_price ? '$' + Number(req.quoted_price).toLocaleString() : 'Pending' }}</td>
+                <td class="px-6 py-4">
                   <div :class="getStatusBadgeClass(req.status)">
                     {{ formatStatusLabel(req.status) }}
                   </div>
                 </td>
-                <td class="px-6 py-5 text-right flex justify-end gap-2">
-                  <button @click.stop="openStatusModal(req)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold">
+                <td class="px-6 py-4 text-right flex justify-end gap-2">
+                  <button 
+                    @click.stop="openStatusModal(req)" 
+                    class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-all"
+                  >
                     Edit Status
                   </button>
-                  <button @click.stop="openMediaModal(req)" class="text-[#7a7582] hover:text-[#4f378a] px-3 py-1 rounded-lg hover:bg-gray-100 transition-all text-sm font-semibold" title="Upload QC Media">
-                    <span class="material-symbols-outlined text-[18px]">add_a_photo</span>
+                  <button 
+                    @click.stop="openMediaModal(req)" 
+                    class="p-1.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" 
+                    title="Upload QC Media"
+                  >
+                    <span class="material-symbols-outlined text-lg">add_a_photo</span>
                   </button>
                 </td>
               </tr>
               <tr v-if="filteredRequests.length === 0">
-                <td colspan="6" class="px-8 py-10 text-center text-gray-500">
-                  No requests found.
+                <td colspan="6" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
+                  No sourcing requests match the selected filters.
                 </td>
               </tr>
             </tbody>
             <tbody v-else>
               <tr>
-                <td colspan="6" class="px-8 py-10 text-center text-gray-500">
-                  <span class="material-symbols-outlined animate-spin text-[#3525cd]" style="font-size: 32px;">progress_activity</span>
+                <td colspan="6" class="px-6 py-16 text-center">
+                  <span class="material-symbols-outlined animate-spin text-indigo-600 dark:text-indigo-400 text-3xl">progress_activity</span>
                 </td>
               </tr>
             </tbody>
@@ -156,47 +177,47 @@
     </main>
 
     <!-- STATUS UPDATE MODAL -->
-    <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isModalOpen ? 'visible' : 'invisible']">
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300', isModalOpen ? 'visible' : 'invisible']">
       <!-- Backdrop -->
       <div 
-        :class="['absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm transition-opacity duration-300', isModalOpen ? 'opacity-100' : 'opacity-0']" 
+        :class="['absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300', isModalOpen ? 'opacity-100' : 'opacity-0']" 
         @click="closeStatusModal"
       ></div>
       
       <!-- Modal Content -->
-      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300', isModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+      <div :class="['bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">{{ $t('admin.update_status_title') }}</h3>
-            <p class="text-sm text-[#494551] mt-1">{{ editingRequest?.product_name }}</p>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ $t('admin.update_status_title') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate max-w-xs">{{ editingRequest?.product_name }}</p>
           </div>
-          <button @click="closeStatusModal" class="text-[#7a7582] hover:text-[#4f378a] transition-colors">
-            <span class="material-symbols-outlined">close</span>
+          <button @click="closeStatusModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-5">
           <!-- Status Selection -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.update_status_to') }}</label>
-            <div class="grid grid-cols-2 gap-3">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.update_status_to') }}</label>
+            <div class="grid grid-cols-2 gap-2.5">
               <button 
                 v-for="status in statusOptions" 
                 :key="status.value"
                 @click="selectedStatus = status.value" 
-                :class="['flex items-center gap-3 p-3 rounded-2xl bg-white border transition-all', selectedStatus === status.value ? 'border-[#4f378a] bg-[#4f378a]/5 ring-2 ring-[#4f378a]' : 'border-gray-200 hover:bg-gray-50']"
+                :class="['flex items-center gap-2.5 p-3 rounded-2xl border transition-all text-xs font-bold text-left', selectedStatus === status.value ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 ring-2 ring-indigo-500/50' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300']"
               >
-                <span :class="['material-symbols-outlined', selectedStatus === status.value ? 'text-[#4f378a]' : status.color]">{{ status.icon }}</span>
-                <span :class="['font-bold text-xs', selectedStatus === status.value ? 'text-[#4f378a]' : 'text-[#1d1b20]']">{{ status.label }}</span>
+                <span :class="['material-symbols-outlined text-lg', selectedStatus === status.value ? 'text-indigo-600 dark:text-indigo-400' : status.color]">{{ status.icon }}</span>
+                <span>{{ status.label }}</span>
               </button>
             </div>
           </div>
 
           <!-- Price Quote -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">Price Quote</label>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Price Quote</label>
             <div class="flex gap-2">
-              <select v-model="adminCurrency" class="w-1/3 px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-[#1d1b20] bg-white/70">
+              <select v-model="adminCurrency" class="w-1/3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs font-bold text-slate-900 dark:text-white">
                 <option value="USD">USD ($)</option>
                 <option value="CNY">CNY (¥)</option>
                 <option value="EUR">EUR (€)</option>
@@ -204,7 +225,7 @@
               <input 
                 v-model="adminPrice"
                 type="number"
-                class="w-2/3 px-4 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 outline-none text-[#1d1b20] bg-white/70"
+                class="w-2/3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500"
                 placeholder="e.g. 4500"
               />
             </div>
@@ -212,44 +233,31 @@
 
           <!-- Supplier Assignment -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.assign_supplier') }}</label>
-            <div class="relative">
-              <select v-model="selectedSupplier" class="w-full pl-4 pr-10 py-3 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 appearance-none text-[#1d1b20] outline-none bg-white/70">
-                <option value="">None</option>
-                <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
-                  {{ supplier.company_name }}
-                </option>
-              </select>
-              <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#7a7582]">expand_more</span>
-            </div>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.assign_supplier') }}</label>
+            <select v-model="selectedSupplier" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white">
+              <option value="">None</option>
+              <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
+                {{ supplier.company_name }}
+              </option>
+            </select>
           </div>
 
           <!-- Notes -->
           <div class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551]">{{ $t('admin.internal_notes') }}</label>
-            <textarea v-model="internalNotes" class="w-full p-4 rounded-2xl glass-panel inner-recess border-none focus:ring-4 focus:ring-[#4f378a]/20 h-24 resize-none text-[#1d1b20] outline-none bg-white/70" placeholder="Internal updates (not visible to buyer)..."></textarea>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.internal_notes') }}</label>
+            <textarea 
+              v-model="internalNotes" 
+              class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 h-20 text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 resize-none" 
+              placeholder="Internal updates..."
+            ></textarea>
           </div>
 
-          <!-- Production Progress (Visible when processing/production) -->
-          <div v-if="['processing', 'production', 'inspected'].includes(selectedStatus)" class="space-y-2">
-            <label class="text-[14px] leading-[1.2] tracking-[0.01em] font-semibold text-[#494551] flex justify-between">
-              Production Progress <span>{{ productionProgress }}%</span>
-            </label>
-            <input 
-              v-model="productionProgress" 
-              type="range" 
-              min="0" max="100" step="5"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4f378a]"
-            />
-          </div>
-
-
-          <div class="flex gap-4 pt-4">
-            <button @click="closeStatusModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
+          <div class="flex gap-3 pt-3">
+            <button @click="closeStatusModal" class="flex-1 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               {{ $t('admin.cancel') }}
             </button>
-            <button @click="saveChanges" :disabled="saving" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70 flex items-center justify-center">
-              <span v-if="saving" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+            <button @click="saveChanges" :disabled="saving" class="flex-[2] py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center justify-center">
+              <span v-if="saving" class="material-symbols-outlined animate-spin text-sm mr-2">progress_activity</span>
               {{ $t('admin.save_changes') }}
             </button>
           </div>
@@ -258,59 +266,51 @@
     </div>
 
     <!-- QC MEDIA MODAL -->
-    <div :class="['fixed inset-0 z-50 flex items-center justify-center transition-all duration-300', isMediaModalOpen ? 'visible' : 'invisible']">
-      <!-- Backdrop -->
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300', isMediaModalOpen ? 'visible' : 'invisible']">
       <div 
-        :class="['absolute inset-0 bg-[#322f35]/40 backdrop-blur-sm transition-opacity duration-300', isMediaModalOpen ? 'opacity-100' : 'opacity-0']" 
+        :class="['absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300', isMediaModalOpen ? 'opacity-100' : 'opacity-0']" 
         @click="closeMediaModal"
       ></div>
       
-      <!-- Modal Content -->
-      <div :class="['bg-white w-[500px] rounded-3xl p-8 shadow-2xl relative border border-gray-200 transition-all duration-300', isMediaModalOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0']">
+      <div :class="['bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isMediaModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-[24px] leading-[1.3] font-bold text-[#4f378a]">Upload QC Media</h3>
-            <p class="text-sm text-[#494551] mt-1">{{ editingRequest?.product_name }}</p>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Upload QC Media</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate max-w-xs">{{ editingRequest?.product_name }}</p>
           </div>
-          <button @click="closeMediaModal" class="text-[#7a7582] hover:text-[#4f378a] transition-colors">
-            <span class="material-symbols-outlined">close</span>
+          <button @click="closeMediaModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
-        <div class="space-y-6">
-          <!-- QC Media Upload -->
-          <div class="space-y-2">
-            <div
-              @click="triggerQcUpload"
-              @dragover.prevent
-              @dragenter.prevent
-              @drop.prevent="handleQcDrop"
-              class="border-2 border-dashed border-[#4f378a]/30 bg-[#4f378a]/5 rounded-2xl p-6 text-center cursor-pointer hover:border-[#4f378a]/60 hover:bg-[#4f378a]/10 transition-all"
-            >
-              <input ref="qcFileInput" type="file" multiple accept="image/*,video/*" @change="handleQcSelect" class="hidden" />
-              <span class="material-symbols-outlined text-3xl text-[#4f378a] mb-2">add_a_photo</span>
-              <p class="text-xs text-gray-500 font-medium">Click or drag media here to upload QC updates</p>
-            </div>
-            
-            <div v-if="qcFiles.length > 0" class="flex gap-2 overflow-x-auto py-2 custom-scrollbar">
-              <div v-for="(file, idx) in qcFiles" :key="idx" class="relative shrink-0 w-16 h-16 rounded-xl border border-gray-200 overflow-hidden group">
-                <img v-if="file.type.startsWith('image/')" :src="file.preview" class="w-full h-full object-cover" />
-                <div v-else class="w-full h-full bg-gray-100 flex flex-col items-center justify-center">
-                  <span class="material-symbols-outlined text-gray-400">videocam</span>
-                </div>
-                <button @click.prevent="removeQcFile(idx)" class="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span class="material-symbols-outlined text-[16px]">close</span>
-                </button>
+        <div class="space-y-4">
+          <div
+            @click="triggerQcUpload"
+            class="border-2 border-dashed border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-500 transition-all"
+          >
+            <input ref="qcFileInput" type="file" multiple accept="image/*,video/*" @change="handleQcSelect" class="hidden" />
+            <span class="material-symbols-outlined text-3xl text-indigo-600 dark:text-indigo-400 mb-2">add_a_photo</span>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Click or drag media here to upload QC updates</p>
+          </div>
+          
+          <div v-if="qcFiles.length > 0" class="flex gap-2 overflow-x-auto py-2">
+            <div v-for="(file, idx) in qcFiles" :key="idx" class="relative shrink-0 w-16 h-16 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden group">
+              <img v-if="file.type.startsWith('image/')" :src="file.preview" class="w-full h-full object-cover" />
+              <div v-else class="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <span class="material-symbols-outlined text-slate-400">videocam</span>
               </div>
+              <button @click.prevent="removeQcFile(idx)" class="absolute inset-0 bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
             </div>
           </div>
 
-          <div class="flex gap-4 pt-4">
-            <button @click="closeMediaModal" class="flex-1 py-3 rounded-2xl bg-[#ece6ee] text-[#1d1b20] font-bold hover:bg-[#e6e0e9] transition-all lift-effect">
+          <div class="flex gap-3 pt-4">
+            <button @click="closeMediaModal" class="flex-1 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               Cancel
             </button>
-            <button @click="saveMedia" :disabled="uploadingMedia || qcFiles.length === 0" class="flex-[2] px-8 py-3 rounded-2xl bg-[#4f378a] text-white font-bold shadow-lg shadow-[#4f378a]/20 border-t border-white/30 lift-effect disabled:opacity-70 flex items-center justify-center">
-              <span v-if="uploadingMedia" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+            <button @click="saveMedia" :disabled="uploadingMedia || qcFiles.length === 0" class="flex-[2] py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center justify-center">
+              <span v-if="uploadingMedia" class="material-symbols-outlined animate-spin text-sm mr-2">progress_activity</span>
               Upload Media
             </button>
           </div>
@@ -357,12 +357,12 @@ const qcFiles = ref([])
 const qcFileInput = ref(null)
 
 const statusOptions = [
-  { value: 'menunggu_penawaran_admin', label: 'Pending', icon: 'hourglass_empty', color: 'text-yellow-600' },
-  { value: 'menunggu_pemilihan_buyer', label: 'Quoted', icon: 'request_quote', color: 'text-orange-600' },
-  { value: 'sedang_diproses', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-600' },
-  { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-600' },
-  { value: 'selesai', label: 'Completed', icon: 'task_alt', color: 'text-green-600' },
-  { value: 'batal', label: 'Rejected', icon: 'cancel', color: 'text-red-600' }
+  { value: 'menunggu_penawaran_admin', label: 'Pending', icon: 'hourglass_empty', color: 'text-amber-500' },
+  { value: 'menunggu_pemilihan_buyer', label: 'Quoted', icon: 'request_quote', color: 'text-indigo-500' },
+  { value: 'sedang_diproses', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-500' },
+  { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-500' },
+  { value: 'selesai', label: 'Completed', icon: 'task_alt', color: 'text-emerald-500' },
+  { value: 'batal', label: 'Rejected', icon: 'cancel', color: 'text-rose-500' }
 ]
 
 const filteredRequests = computed(() => {
@@ -405,21 +405,21 @@ onMounted(() => {
 })
 
 const getStatusBadgeClass = (status) => {
-  const base = 'flex items-center justify-center px-3 py-1.5 rounded-full text-[11px] font-bold w-fit shadow-sm'
+  const base = 'inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-extrabold shadow-xs'
   const map = {
-    'menunggu_penawaran_admin': 'text-yellow-700 bg-yellow-100 border border-yellow-200',
-    'menunggu_pemilihan_buyer': 'text-orange-700 bg-orange-100 border border-orange-200',
-    'menunggu_kesepakatan_final': 'text-orange-700 bg-orange-100 border border-orange-200',
-    'menunggu_pembayaran': 'text-blue-700 bg-blue-100 border border-blue-200',
-    'menunggu_verifikasi_pembayaran': 'text-blue-700 bg-blue-100 border border-blue-200',
-    'sedang_diproses': 'text-blue-700 bg-blue-100 border border-blue-200',
-    'dikirim': 'text-purple-700 bg-purple-100 border border-purple-200',
-    'menunggu_verifikasi_admin': 'text-purple-700 bg-purple-100 border border-purple-200',
-    'selesai': 'text-green-700 bg-green-100 border border-green-200',
-    'batal': 'text-red-700 bg-red-100 border border-red-200',
-    'dispute': 'text-red-700 bg-red-100 border border-red-200'
+    'menunggu_penawaran_admin': 'text-amber-700 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
+    'menunggu_pemilihan_buyer': 'text-indigo-700 bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
+    'menunggu_kesepakatan_final': 'text-indigo-700 bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
+    'menunggu_pembayaran': 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+    'menunggu_verifikasi_pembayaran': 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+    'sedang_diproses': 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+    'dikirim': 'text-purple-700 bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
+    'menunggu_verifikasi_admin': 'text-purple-700 bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
+    'selesai': 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800',
+    'batal': 'text-rose-700 bg-rose-100 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800',
+    'dispute': 'text-rose-700 bg-rose-100 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
   }
-  return `${base} ${map[status] || 'text-gray-700 bg-gray-100 border border-gray-200'}`
+  return `${base} ${map[status] || 'text-slate-700 bg-slate-100 dark:bg-slate-800 dark:text-slate-300'}`
 }
 
 const formatStatusLabel = (status) => {
@@ -449,7 +449,7 @@ const openStatusModal = (req) => {
   selectedSupplier.value = req.assigned_supplier_id || ''
   adminPrice.value = req.quoted_price || ''
   adminCurrency.value = req.currency || 'USD'
-  internalNotes.value = '' // Clear previous session notes
+  internalNotes.value = ''
   productionProgress.value = req.production_progress || 0
   qcFiles.value = []
   isModalOpen.value = true
@@ -473,7 +473,6 @@ const closeMediaModal = () => {
 }
 
 const triggerQcUpload = () => qcFileInput.value?.click()
-
 const handleQcSelect = (e) => processQcFiles(Array.from(e.target.files))
 const handleQcDrop = (e) => processQcFiles(Array.from(e.dataTransfer.files))
 
@@ -509,7 +508,7 @@ const saveChanges = async () => {
 
     await adminService.updateRequest(editingRequest.value.id, formData)
     closeStatusModal()
-    await loadData() // Refresh list and stats
+    await loadData()
   } catch (error) {
     showToast(error.response?.data?.message || 'Failed to update')
   } finally {
@@ -533,34 +532,3 @@ const saveMedia = async () => {
   }
 }
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-blur: 20px;
-}
-
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
-  border-top-width: 1.5px;
-}
-
-.deep-shadow { box-shadow: 0 20px 50px rgba(79, 70, 229, 0.15); }
-.lift-effect { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
-.lift-effect:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(79, 70, 229, 0.2); }
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-.inner-recess { box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbc4d2; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #4f378a; }
-</style>

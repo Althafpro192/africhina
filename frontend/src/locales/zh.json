@@ -137,10 +137,27 @@
       "step4_desc": "确认到货并对供应商进行评价。"
     },
     "testimonials": {
-      "title": "用户评价"
+      "title": "用户评价",
+      "user1": {
+        "name": "夸梅·奥塞",
+        "country": "加纳",
+        "quote": "过去寻找经过验证的供应商简直是一场噩梦。AfriChina Bridge 给了我所需的透明度。他们来自工厂车间的质检照片拯救了我的生意。"
+      },
+      "user2": {
+        "name": "法图玛塔·迪亚洛",
+        "country": "塞内加尔",
+        "quote": "语言障碍不复存在。我只需输入规格，平台就会处理谈判。发货时间表集成得非常完美。"
+      },
+      "user3": {
+        "name": "埃马纽埃尔·基普罗诺",
+        "country": "肯尼亚",
+        "quote": "我使用过的最可靠的 B2B 平台。我喜欢在最终敲定交易之前无需暴露身份即可索取报价。"
+      }
     },
     "cta_footer": "准备好开始安全的贸易了吗？",
+    "cta_footer_sub": "加入数千名非洲企业家，与受信赖的中国工厂一起安全扩大业务规模。",
     "cta_footer_button": "免费注册",
+    "cta_footer_secondary": "预约演示",
     "nav_features": "功能",
     "nav_how_it_works": "工作原理",
     "nav_testimonials": "用户评价",
@@ -156,6 +173,20 @@
     "timeline_step4": "生产与质检",
     "timeline_step5": "已发货至非洲",
     "footer_brand": "AfriChina Bridge",
+    "footer_description": "下一代 B2B 平台，将非洲买家与中国制造商直接连接，并提供全透明、质量检查和安全物流保障。",
+    "footer_platform": "平台",
+    "footer_sourcing": "产品采购",
+    "footer_logistics": "物流服务",
+    "footer_escrow": "托管支付",
+    "footer_api": "API 集成",
+    "footer_company": "公司",
+    "footer_vision": "愿景与使命",
+    "footer_intelligence": "市场情报",
+    "footer_compliance": "合规与信任",
+    "footer_support": "支持中心",
+    "footer_newsletter": "电子报",
+    "footer_newsletter_desc": "直接在您的发件箱中获取最新的非中 B2B 贸易趋势和工厂优惠。",
+    "footer_email_placeholder": "输入您的电子邮件...",
     "footer_copyright": "© 2026 AfriChina Bridge. 保留所有权利。",
     "footer_privacy": "隐私政策",
     "footer_terms": "服务条款"

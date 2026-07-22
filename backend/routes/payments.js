@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadPaymentProof, verifyPayment, getBuyerPayments, getAdminPayments } from '../controllers/paymentController.js';
+import { uploadPaymentProof, verifyPayment, rejectPayment, getBuyerPayments, getAdminPayments } from '../controllers/paymentController.js';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 import { upload } from '../controllers/requestController.js';
 
@@ -13,6 +13,7 @@ router.get('/requests/:requestId', getBuyerPayments);
 
 // Admin routes
 router.put('/admin/:id/verify', isAdmin, verifyPayment);
+router.put('/admin/:id/reject', isAdmin, rejectPayment);
 router.get('/admin/requests/:requestId', isAdmin, getAdminPayments);
 
 export default router;

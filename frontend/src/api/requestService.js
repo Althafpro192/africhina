@@ -36,8 +36,8 @@ export const requestService = {
     return data;
   },
 
-  async selectOption(id, option_ids) {
-    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids });
+  async selectOption(id, option_ids, buyer_notes = '') {
+    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids, buyer_notes });
     return data;
   },
 

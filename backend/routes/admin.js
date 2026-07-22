@@ -15,7 +15,7 @@ import { uploadRequestOptions, updateRequestOption, deleteRequestOption, finaliz
 router.post('/requests/:id/options', upload.array('images', 5), uploadRequestOptions);
 router.put('/requests/:id/options/:optionId', upload.array('images', 5), updateRequestOption);
 router.delete('/requests/:id/options/:optionId', deleteRequestOption);
-router.post('/requests/:id/finalize', finalizeDeal);
+router.post('/requests/:id/finalize', upload.single('payment_qr'), finalizeDeal);
 router.post('/requests/:id/ship', shipOrder);
 router.post('/requests/:id/complete', completeOrder);
 router.post('/ratings/:id/toggle-publish', togglePublishRating);

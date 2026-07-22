@@ -91,15 +91,24 @@ app.use(helmet({
         "'self'",
         "data:",
         "http://localhost:5000",
+        "http://localhost:5173",
         "https://lh3.googleusercontent.com",
-        "https://ui-avatars.com"  // untuk fallback avatar
+        "https://ui-avatars.com"
       ],
-      // Opsional: tambahkan directive lain jika diperlukan
       scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com"
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com"
+      ],
+      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173", "ws://localhost:5000", "ws://localhost:5173"],
     },
   },
-  crossOriginEmbedderPolicy: false,  // untuk menghindari masalah jika ada
+  crossOriginEmbedderPolicy: false,
 }));
 
 app.use(express.json());

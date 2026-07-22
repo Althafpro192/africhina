@@ -1,29 +1,34 @@
 <template>
-  <BuyerLayout activeRoute="suppliers" v-model:searchQuery="searchQuery" :notificationCount="notificationCount">
-    <div class="w-full max-w-5xl mx-auto py-4 sm:py-8">
+  <BuyerLayout activeRoute="suppliers" v-model:searchQuery="searchQuery">
+    <div class="w-full max-w-6xl mx-auto py-4 sm:py-6">
       
       <!-- Header Section -->
-      <div class="flex justify-between items-end mb-6 sm:mb-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">{{ $t('nav.suppliers') }}</h1>
-          <p class="text-gray-500 mt-2 text-sm sm:text-base">Your network of verified manufacturers and suppliers.</p>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ $t('nav.suppliers') }}</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Your network of verified Chinese manufacturers and suppliers.</p>
         </div>
       </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <span class="material-symbols-outlined animate-spin text-[#4f378a] mb-4" style="font-size: 48px;">progress_activity</span>
-        <p class="text-gray-500 font-medium">Loading your suppliers...</p>
+        <span class="material-symbols-outlined animate-spin text-indigo-600 dark:text-indigo-400 mb-4 text-4xl">progress_activity</span>
+        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Loading your supplier network...</p>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="filteredSuppliers.length === 0" class="flex flex-col items-center justify-center py-20 bg-white/40 backdrop-blur-md rounded-3xl border border-white/60 shadow-sm">
-        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-gray-300" style="font-size: 48px;">business</span>
+      <div v-else-if="filteredSuppliers.length === 0" class="flex flex-col items-center justify-center py-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 text-center p-6">
+        <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 text-slate-400">
+          <span class="material-symbols-outlined text-4xl">business</span>
         </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">No Connected Suppliers</h3>
-        <p class="text-gray-500 mb-8 text-center max-w-md">You haven't partnered with any suppliers yet. Suppliers will appear here once you accept their quotes.</p>
-        <button @click="$router.push('/buyer/sourcing')" class="px-6 py-3 bg-[#4f378a] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-[#4f378a]/20">
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">No Connected Suppliers</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-md leading-relaxed">
+          You haven't partnered with any suppliers yet. Verified factory profiles will automatically appear here when you accept quotes.
+        </p>
+        <button 
+          @click="$router.push('/buyer/sourcing')" 
+          class="px-6 py-3 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all"
+        >
           Start Sourcing
         </button>
       </div>
@@ -33,41 +38,39 @@
         <div 
           v-for="supplier in filteredSuppliers" 
           :key="supplier.id"
-          class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-sm hover:shadow-xl rounded-2xl p-6 transition-all duration-300 group flex flex-col hover:-translate-y-1 relative overflow-hidden cursor-pointer"
+          class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:shadow-2xl hover:shadow-indigo-500/10 rounded-3xl p-6 transition-all duration-300 group flex flex-col hover:-translate-y-1 relative overflow-hidden cursor-pointer"
         >
-          <div class="absolute inset-0 bg-gradient-to-br from-[#4f378a]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-          
           <div class="flex items-start justify-between mb-4 relative z-10">
-            <div class="w-14 h-14 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-[#4f378a] text-3xl">factory</span>
+            <div class="w-13 h-13 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 rounded-2xl flex items-center justify-center shrink-0 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-2xl">factory</span>
             </div>
-            <div class="flex flex-col items-end">
-              <span class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded-md border border-blue-100">
-                <span class="material-symbols-outlined text-[14px]">verified</span>
-                {{ supplier.level || 'Verified' }}
-              </span>
-            </div>
+            
+            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <span class="material-symbols-outlined text-xs">verified</span>
+              {{ supplier.level || 'Verified' }}
+            </span>
           </div>
 
           <div class="mb-6 relative z-10">
-            <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#4f378a] transition-colors line-clamp-2 leading-tight">{{ supplier.name }}</h3>
-            <p class="text-xs text-gray-500 mt-2 flex items-start gap-1">
-              <span class="material-symbols-outlined text-[14px] mt-0.5">location_on</span>
-              <span class="line-clamp-2">{{ supplier.address || 'Location unavailable' }}</span>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug">
+              {{ supplier.name }}
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-start gap-1.5 leading-relaxed">
+              <span class="material-symbols-outlined text-sm mt-0.5 shrink-0 text-slate-400">location_on</span>
+              <span class="line-clamp-2">{{ supplier.address || 'Guangdong, China' }}</span>
             </p>
           </div>
 
-          <div class="grid grid-cols-2 gap-4 mt-auto border-t border-gray-100 pt-4 relative z-10">
+          <div class="grid grid-cols-2 gap-4 mt-auto border-t border-slate-100 dark:border-slate-800 pt-4 relative z-10">
             <div>
-              <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Orders</span>
-              <span class="text-lg font-bold text-gray-800">{{ supplier.orderCount }}</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Orders</span>
+              <span class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{{ supplier.orderCount }}</span>
             </div>
             <div>
-              <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Volume</span>
-              <span class="text-lg font-black text-[#4f378a]">${{ supplier.totalVolume.toLocaleString() }}</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Volume</span>
+              <span class="text-base sm:text-lg font-black text-indigo-600 dark:text-indigo-400">${{ supplier.totalVolume.toLocaleString() }}</span>
             </div>
           </div>
-          
         </div>
       </div>
 
@@ -82,13 +85,10 @@ import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import { requestService } from '../../api/requestService.js'
 
 const router = useRouter()
-
 const searchQuery = ref('')
-const notificationCount = ref(0)
 const requests = ref([])
 const loading = ref(true)
 
-// Extract unique suppliers from requests
 const uniqueSuppliers = computed(() => {
   const map = new Map();
   requests.value.forEach(r => {
@@ -112,7 +112,6 @@ const uniqueSuppliers = computed(() => {
   return Array.from(map.values())
 })
 
-// Filter suppliers by search query
 const filteredSuppliers = computed(() => {
   let filtered = uniqueSuppliers.value
   if (searchQuery.value) {
@@ -129,7 +128,6 @@ const fetchData = async () => {
   loading.value = true
   try {
     requests.value = await requestService.getRequests()
-    notificationCount.value = requests.value.filter(r => r.status === 'quoted').length
   } catch (err) {
     console.error('Failed to fetch suppliers:', err)
   } finally {

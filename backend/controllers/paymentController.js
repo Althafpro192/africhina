@@ -75,11 +75,55 @@ export const verifyPayment = async (req, res) => {
 
       // Update request
       const updated = await client.query(
-        "UPDATE requests SET status = 'sedang_diproses', updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
+        "UPDATE requests SET status = 'sedang_diproses', payment_rejection_reason = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *",
         [requestId]
       );
 
-      await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'sedang_diproses', 'Payment verified. Order is now processing.')", [requestId]);
+      await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'sedang_diproses', 'Payment verified by Admin. Order is now in production/processing.')", [requestId]);
+
+      await client.query('COMMIT');
+      res.json(updated.rows[0]);
+    } catch (e) {
+      await client.query('ROLLBACK');
+      throw e;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+export const rejectPayment = async (req, res) => {
+  const { id: requestId } = req.params;
+  const { reason } = req.body;
+
+  if (!reason) return res.status(400).json({ message: 'Rejection reason is required' });
+
+  try {
+    const requestCheck = await pool.query('SELECT status FROM requests WHERE id = $1', [requestId]);
+    if (requestCheck.rows.length === 0 || requestCheck.rows[0].status !== 'menunggu_verifikasi_pembayaran') {
+       return res.status(400).json({ message: 'Request is not waiting for payment verification' });
+    }
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Update latest pending payment if exists
+      await client.query(
+        "UPDATE payments SET status = 'rejected' WHERE request_id = $1 AND status = 'pending'",
+        [requestId]
+      );
+
+      // Reset request status back to Waiting Payment and store rejection reason
+      const updated = await client.query(
+        "UPDATE requests SET status = 'menunggu_pembayaran', payment_rejection_reason = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *",
+        [reason, requestId]
+      );
+
+      await client.query("INSERT INTO tracking_logs (request_id, status, notes) VALUES ($1, 'menunggu_pembayaran', $2)", [requestId, `Payment proof rejected by Admin: ${reason}`]);
 
       await client.query('COMMIT');
       res.json(updated.rows[0]);
