@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-[#191c1e] font-sans antialiased;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white rounded-lg h-12 px-6 font-semibold shadow-[0_10px_20px_rgba(53,37,205,0.3)] border-t border-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_15px_25px_rgba(53,37,205,0.4)] active:translate-y-1 active:shadow-md;
+  }
+  
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl rounded-xl border-t border-white/50 shadow-deep transition-all duration-300;
+  }
+  
+  .glass-card-hover {
+    @apply hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(79,70,229,0.2)];
+  }
+
+  .input-3d {
+    @apply bg-white border border-border rounded-lg h-12 px-4 shadow-inner-input transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary;
+  }
+}
