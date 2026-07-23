@@ -23,8 +23,9 @@ export const authService = {
     return response.data
   },
   
-  async forgotPassword(email) {
-    const response = await api.post('/auth/forgot-password', { email })
+  // [FIX Issue 2] Buyer: Request password reset from Admin (replaces legacy forgotPassword)
+  async requestPasswordReset(email) {
+    const response = await api.post('/auth/request-password-reset', { email })
     return response.data
   },
 
@@ -37,18 +38,15 @@ export const authService = {
     return response.data
   },
 
-  async executeResetPassword(token, newPassword) {
-    const response = await api.post('/auth/reset-password', { token, newPassword })
-    return response.data
-  },
-
+  // [FIX Issue 1] Admin: Get pending password reset requests
   async getResetRequests() {
-    const response = await api.get('/auth/admin/reset-requests')
+    const response = await api.get('/admin/reset-requests')
     return response.data
   },
 
-  async generateResetLink(id) {
-    const response = await api.post(`/auth/admin/reset-requests/${id}/generate`)
+  // [FIX Issue 1] Admin: Process a password reset request (generates real temp password)
+  async processResetRequest(requestId) {
+    const response = await api.post(`/admin/reset-requests/${requestId}/process`)
     return response.data
   }
 };

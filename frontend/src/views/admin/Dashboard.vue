@@ -28,8 +28,7 @@
 
       <!-- STATS GRID -->
       <section v-if="stats" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <!-- Total Card -->
-        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
               <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
@@ -39,8 +38,7 @@
           <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.total_requests }}</p>
         </div>
 
-        <!-- Pending Card -->
-        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
             <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center border border-amber-200 dark:border-amber-800">
               <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl" style="font-variation-settings: 'FILL' 1;">hourglass_empty</span>
@@ -51,8 +49,7 @@
           <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.pending_requests }}</p>
         </div>
 
-        <!-- Processing Card -->
-        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
             <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center border border-blue-200 dark:border-blue-800">
               <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-2xl" style="font-variation-settings: 'FILL' 1;">conveyor_belt</span>
@@ -62,8 +59,7 @@
           <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.processing_requests }}</p>
         </div>
 
-        <!-- Completed Card -->
-        <div class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
             <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center border border-emerald-200 dark:border-emerald-800">
               <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-2xl" style="font-variation-settings: 'FILL' 1;">task_alt</span>
@@ -114,7 +110,8 @@
             <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800" v-if="!loading">
               <tr 
                 v-for="req in filteredRequests" 
-                :key="req.id" 
+                :key="req.id"
+                v-lazy-render
                 class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
               >
                 <td class="px-6 py-4" @click="router.push(`/admin/request/${req.id}`)">
@@ -143,6 +140,13 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 text-right flex justify-end gap-2">
+                  <button 
+                    @click.stop="openTempPasswordModal(req)"
+                    class="p-1.5 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/60 rounded-xl transition-colors"
+                    title="Generate Temporary Password for Buyer"
+                  >
+                    <span class="material-symbols-outlined text-lg">key</span>
+                  </button>
                   <button 
                     @click.stop="openStatusModal(req)" 
                     class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-all"
@@ -176,15 +180,55 @@
       </section>
     </main>
 
+    <!-- TEMP PASSWORD MODAL -->
+    <div :class="['fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300', isTempPassModalOpen ? 'visible' : 'invisible']">
+      <div :class="['absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300', isTempPassModalOpen ? 'opacity-100' : 'opacity-0']" @click="closeTempPasswordModal"></div>
+      <div :class="['bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isTempPassModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Generate Temporary Password</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Buyer: {{ targetUserForPass?.buyer_name || targetUserForPass?.company_name }}</p>
+          </div>
+          <button @click="closeTempPasswordModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+
+        <div v-if="generatedTempPassword" class="space-y-4">
+          <div class="p-4 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/80 rounded-2xl text-center">
+            <p class="text-xs text-amber-800 dark:text-amber-300 font-medium mb-1">Temporary Password (Valid 24h)</p>
+            <p class="text-2xl font-mono font-bold tracking-widest text-slate-900 dark:text-white select-all my-2">
+              {{ generatedTempPassword }}
+            </p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Share this code with the buyer through a secure channel.</p>
+          </div>
+
+          <button @click="copyTempPassword" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-sm">content_copy</span>
+            Copy Temporary Password
+          </button>
+        </div>
+
+        <div v-else class="space-y-4">
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Clicking generate will create a secure 12-character temporary password expiring in 24 hours. The buyer will be required to set a new password upon login.
+          </p>
+          <button @click="confirmGenerateTempPassword" :disabled="generatingTempPass" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+            <span v-if="generatingTempPass" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+            <span class="material-symbols-outlined text-sm" v-else>key</span>
+            Generate Temporary Password
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- STATUS UPDATE MODAL -->
     <div :class="['fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300', isModalOpen ? 'visible' : 'invisible']">
-      <!-- Backdrop -->
       <div 
         :class="['absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300', isModalOpen ? 'opacity-100' : 'opacity-0']" 
         @click="closeStatusModal"
       ></div>
       
-      <!-- Modal Content -->
       <div :class="['bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
@@ -197,7 +241,6 @@
         </div>
 
         <div class="space-y-5">
-          <!-- Status Selection -->
           <div class="space-y-2">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.update_status_to') }}</label>
             <div class="grid grid-cols-2 gap-2.5">
@@ -213,7 +256,6 @@
             </div>
           </div>
 
-          <!-- Price Quote -->
           <div class="space-y-2">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Price Quote</label>
             <div class="flex gap-2">
@@ -231,7 +273,6 @@
             </div>
           </div>
 
-          <!-- Supplier Assignment -->
           <div class="space-y-2">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.assign_supplier') }}</label>
             <select v-model="selectedSupplier" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white">
@@ -242,7 +283,6 @@
             </select>
           </div>
 
-          <!-- Notes -->
           <div class="space-y-2">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.internal_notes') }}</label>
             <textarea 
@@ -321,19 +361,18 @@
 </template>
 
 <script setup>
-import { useToast } from '../../composables/useToast.js';
-const { showToast } = useToast();
-
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { adminService } from '../../api/adminService.js'
 import { supplierService } from '../../api/supplierService.js'
+import vLazyRender from '../../directives/vLazyRender.js'
+import { useToast } from '../../composables/useToast.js'
 
+const { showToast } = useToast()
 const router = useRouter()
 
-// Reactive State
-const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
 const searchQuery = ref('')
 const filterStatus = ref('')
 const filterCategory = ref('')
@@ -345,6 +384,11 @@ const saving = ref(false)
 
 const isModalOpen = ref(false)
 const isMediaModalOpen = ref(false)
+const isTempPassModalOpen = ref(false)
+const generatingTempPass = ref(false)
+const targetUserForPass = ref(null)
+const generatedTempPassword = ref('')
+
 const uploadingMedia = ref(false)
 const editingRequest = ref(null)
 const selectedStatus = ref('pending')
@@ -367,30 +411,28 @@ const statusOptions = [
 
 const filteredRequests = computed(() => {
   let result = requests.value
-
   if (filterStatus.value) {
     result = result.filter(r => r.status === filterStatus.value)
   }
-
   if (filterCategory.value) {
     result = result.filter(r => r.category && r.category.toLowerCase() === filterCategory.value.toLowerCase())
   }
-
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
     result = result.filter(r => 
-      r.product_name.toLowerCase().includes(q) || 
-      r.company_name?.toLowerCase().includes(q)
+      r.product_name?.toLowerCase().includes(q) || 
+      r.company_name?.toLowerCase().includes(q) ||
+      r.buyer_name?.toLowerCase().includes(q)
     )
   }
-  
   return result
 })
 
 const loadData = async () => {
   loading.value = true
   try {
-    requests.value = await adminService.getAdminRequests()
+    const data = await adminService.getAdminRequests()
+    requests.value = Array.isArray(data) ? data : (data.data || [])
     stats.value = await adminService.getStatistics()
     suppliers.value = await supplierService.getAll()
   } catch (error) {
@@ -403,6 +445,45 @@ const loadData = async () => {
 onMounted(() => {
   loadData()
 })
+
+const openTempPasswordModal = (req) => {
+  targetUserForPass.value = req
+  generatedTempPassword.value = ''
+  isTempPassModalOpen.value = true
+}
+
+const closeTempPasswordModal = () => {
+  isTempPassModalOpen.value = false
+  targetUserForPass.value = null
+  generatedTempPassword.value = ''
+}
+
+const confirmGenerateTempPassword = async () => {
+  if (!targetUserForPass.value?.user_id) {
+    showToast('Invalid buyer user ID');
+    return;
+  }
+  generatingTempPass.value = true
+  try {
+    const token = localStorage.getItem('token')
+    const res = await axios.post(`/api/v1/admin/users/${targetUserForPass.value.user_id}/generate-temp-password`, {}, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
+    generatedTempPassword.value = res.data.tempPassword
+    showToast('Temporary password generated!')
+  } catch (err) {
+    showToast(err.response?.data?.message || 'Failed to generate temporary password')
+  } finally {
+    generatingTempPass.value = false
+  }
+}
+
+const copyTempPassword = () => {
+  if (generatedTempPassword.value) {
+    navigator.clipboard.writeText(generatedTempPassword.value)
+    showToast('Temporary password copied to clipboard!')
+  }
+}
 
 const getStatusBadgeClass = (status) => {
   const base = 'inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-extrabold shadow-xs'
@@ -440,6 +521,7 @@ const formatStatusLabel = (status) => {
 }
 
 const formatDate = (dateStr) => {
+  if (!dateStr) return 'N/A'
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
@@ -474,7 +556,6 @@ const closeMediaModal = () => {
 
 const triggerQcUpload = () => qcFileInput.value?.click()
 const handleQcSelect = (e) => processQcFiles(Array.from(e.target.files))
-const handleQcDrop = (e) => processQcFiles(Array.from(e.dataTransfer.files))
 
 const processQcFiles = (files) => {
   files.forEach(file => {

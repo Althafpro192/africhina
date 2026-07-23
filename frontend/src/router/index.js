@@ -10,7 +10,6 @@ const Settings = () => import('../views/buyer/Settings.vue');
 const Sourcing = () => import('../views/buyer/Sourcing.vue');
 const RFQCreate = () => import('../views/buyer/RFQCreate.vue');
 const RequestDetail = () => import('../views/buyer/RequestDetail.vue');
-
 const BuyerMessages = () => import('../views/buyer/Messages.vue');
 
 // Admin Pages
@@ -23,13 +22,13 @@ const AdminMessages = () => import('../views/admin/Messages.vue');
 
 // Auth Pages
 const Login = () => import('../views/auth/Login.vue');
-const ResetPassword = () => import('../views/auth/ResetPassword.vue');
-
+const SetNewPassword = () => import('../views/auth/SetNewPassword.vue');
 const LandingPage = () => import('../views/LandingPage.vue');
 
 const routes = [
   { path: '/', component: LandingPage, meta: { public: true } },
   { path: '/login', component: Login },
+  { path: '/set-new-password', component: SetNewPassword, meta: { requiresAuth: true } },
   { path: '/buyer/dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { 
     path: '/buyer/requests', 
@@ -52,10 +51,7 @@ const routes = [
   { path: '/admin/request/:id', component: AdminRequestDetail, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/ratings', component: AdminRatingsModeration, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/security/password-resets', component: PasswordResets, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/admin/messages', component: AdminMessages, meta: { requiresAuth: true, requiresAdmin: true } },
-  
-  // Public Password Reset
-  { path: '/reset-password', component: ResetPassword }
+  { path: '/admin/messages', component: AdminMessages, meta: { requiresAuth: true, requiresAdmin: true } }
 ];
 
 const router = createRouter({
@@ -67,16 +63,28 @@ router.beforeEach((to, from, next) => {
   const userString = localStorage.getItem('user');
   const user = userString ? JSON.parse(userString) : null;
   const isAuthenticated = !!user;
-  
+
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login');
-  } else if (to.meta.requiresAdmin && user?.role !== 'admin') {
-    next('/buyer/dashboard');
-  } else if (to.path === '/login' && isAuthenticated) {
-    next(user.role === 'admin' ? '/admin/dashboard' : '/buyer/dashboard');
-  } else {
-    next();
+    return next('/login');
   }
+
+  // Force Change Password Guard
+  if (isAuthenticated && user.mustChangePassword && to.path !== '/set-new-password') {
+    return next('/set-new-password');
+  }
+  
+  if (to.meta.requiresAdmin && user?.role !== 'admin') {
+    return next('/buyer/dashboard');
+  }
+  
+  if (to.path === '/login' && isAuthenticated) {
+    if (user.mustChangePassword) {
+      return next('/set-new-password');
+    }
+    return next(user.role === 'admin' ? '/admin/dashboard' : '/buyer/dashboard');
+  }
+
+  next();
 });
 
 export default router;

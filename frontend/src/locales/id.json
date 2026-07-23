@@ -1,4 +1,18 @@
 {
+  "common": {
+    "loading": "Memuat...",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "confirm": "Konfirmasi",
+    "success": "Sukses",
+    "error": "Galat",
+    "view": "Lihat",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "back": "Kembali",
+    "submit": "Kirim"
+  },
   "auth": {
     "title": "AfriChina Bridge",
     "subtitle": "Pusat Rantai Pasok B2B Premium",
@@ -15,7 +29,7 @@
     "company_name": "Nama Perusahaan",
     "contact_person": "Nama Kontak",
     "phone": "Nomor Telepon",
-    "footer": "© 2024 AfriChina Bridge"
+    "footer": "© 2026 AfriChina Bridge"
   },
   "nav": {
     "dashboard": "Dasbor",
@@ -29,7 +43,70 @@
     "new_request": "Permintaan Baru",
     "help": "Pusat Bantuan",
     "logout": "Keluar",
-    "admin_terminal": "Terminal Admin"
+    "admin_terminal": "Terminal Admin",
+    "chat_admin": "Chat Admin",
+    "buyer_messages": "Pesan Buyer",
+    "ratings_moderation": "Moderasi Rating",
+    "password_resets": "Reset Password",
+    "security_audit": "Keamanan & Audit",
+    "notifications": "Notifikasi",
+    "mark_all_read": "Tandai dibaca",
+    "new": "baru",
+    "mode_light": "Mode Terang",
+    "mode_dark": "Mode Gelap",
+    "buyer_workspace": "Ruang Kerja Buyer",
+    "create_new_request": "Buat Request Baru"
+  },
+  "chat": {
+    "title": "Chat Negosiasi",
+    "subtitle": "Komunikasi langsung dengan {role}",
+    "role_buyer": "Buyer",
+    "role_admin": "Admin",
+    "no_messages": "Belum ada pesan. Mulai percakapan!",
+    "deleted": "Pesan ini telah dihapus",
+    "view_attachment": "Lihat Lampiran",
+    "show_original": "Tampilkan Asli",
+    "translate": "Terjemahkan",
+    "editing": "Mengedit pesan...",
+    "voice_note": "Pesan Suara",
+    "recording": "Merekam Pesan Suara...",
+    "finish": "Selesai",
+    "type_placeholder": "Ketik pesan Anda..."
+  },
+  "buyer_messages": {
+    "title": "Chat Admin Support",
+    "sub": "Komunikasi langsung dengan Admin AfriChina Bridge",
+    "topics": "Threading / Topik Chat",
+    "general_support": "General Customer Support",
+    "general_desc": "Bantuan umum & konsultasi",
+    "my_requests": "Request Sourcing Saya",
+    "no_requests": "Belum ada request sourcing."
+  },
+  "admin_messages": {
+    "workspace_title": "Buyer Messages Workspace",
+    "workspace_sub": "Pusat pesan & negosiasi langsung dengan Buyer verified",
+    "search_buyer_placeholder": "Cari nama buyer atau email...",
+    "tab_buyers": "Daftar Buyer (Direct)",
+    "tab_rfqs": "Percakapan RFQ",
+    "buyers_total": "Buyer Total",
+    "no_buyers_found": "Tidak ada buyer ditemukan.",
+    "rfq_list_title": "Daftar Percakapan RFQ",
+    "no_conv_found": "Tidak ada percakapan ditemukan.",
+    "select_conv_title": "Pilih Percakapan",
+    "select_conv_desc": "Klik salah satu buyer atau percakapan RFQ dari daftar di sebelah kiri untuk mengirim pesan langsung.",
+    "blocked": "Diblokir",
+    "direct_support_chat": "Chat Dukungan Langsung",
+    "profile": "Profil",
+    "detail_rfq": "Detail RFQ"
+  },
+  "buyer_profile": {
+    "total_orders": "Total Pesanan",
+    "total_spent": "Total Belanja",
+    "joined": "Bergabung",
+    "contact_details": "Detail Kontak",
+    "recent_activity": "Aktivitas Terbaru",
+    "unblock_user": "Buka Blokir User",
+    "block_user": "Blokir User"
   },
   "dashboard": {
     "title": "Permintaan Saya",
@@ -67,6 +144,52 @@
     "internal_notes": "Catatan Internal:",
     "cancel": "Batal",
     "save_changes": "Simpan Perubahan"
+  },
+  "ratings": {
+    "title": "Moderasi Ulasan & Rating",
+    "sub": "Tinjau umpan balik buyer dan kelola visibilitas rating pemasok.",
+    "published": "Diterbitkan",
+    "unpublished": "Disembunyikan",
+    "publish": "Terbitkan",
+    "unpublish": "Sembunyikan",
+    "supplier": "Pemasok",
+    "buyer": "Pembeli",
+    "rating": "Rating",
+    "comment": "Komentar",
+    "date": "Tanggal",
+    "status": "Status",
+    "actions": "Aksi"
+  },
+  "resets": {
+    "title": "Permintaan Reset Password",
+    "sub": "Kelola permintaan reset password buyer dan terbitkan kredensial sementara.",
+    "active_requests": "Permintaan Reset Aktif",
+    "buyer_info": "Info Buyer",
+    "request_date": "Tanggal Permintaan",
+    "status": "Status",
+    "temp_credential": "Kredensial Sementara",
+    "actions": "Aksi",
+    "create_temp_pass": "Buat Password Sementara",
+    "no_requests": "Tidak ada permintaan reset password ditemukan.",
+    "pending": "Menunggu",
+    "processed": "Diproses",
+    "no_temp": "Belum ada password sementara",
+    "modal_title": "Password Sementara Dibuat",
+    "modal_sub": "Kredensial login sementara siap",
+    "copy": "Salin",
+    "expires_in": "Kadaluarsa dalam:",
+    "instruction": "Instruksikan buyer untuk segera mengganti password di Pengaturan Akun setelah berhasil login menggunakan password sementara ini.",
+    "finish_close": "Selesai & Tutup"
+  },
+  "suppliers_page": {
+    "title": "Pemasok Pabrik Terverifikasi",
+    "sub": "Akses langsung ke manufaktur Tiongkok tingkat atas dengan kapabilitas produksi terverifikasi.",
+    "search_placeholder": "Cari nama pemasok, kategori, atau lokasi...",
+    "verified": "Pabrik Terverifikasi",
+    "category": "Kategori",
+    "location": "Lokasi",
+    "contact": "Hubungi Pemasok",
+    "no_suppliers": "Tidak ada pemasok ditemukan."
   },
   "request_details": {
     "title": "Permintaan Pencarian Baru",

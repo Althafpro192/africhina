@@ -5,10 +5,10 @@
       <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
           <h2 class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent tracking-tight">
-            Ratings & Reviews Moderation
+            {{ $t('ratings.title') }}
           </h2>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Review and publish buyer feedback and testimonials for the landing page.
+            {{ $t('ratings.sub') }}
           </p>
         </div>
       </header>
@@ -16,7 +16,7 @@
       <!-- Table Section -->
       <section class="bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-slate-200/80 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-          <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Customer Reviews</h3>
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-white">{{ $t('landing.testimonials.title') }}</h3>
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ ratings.length }} reviews</span>
         </div>
 
@@ -24,12 +24,12 @@
           <table class="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr class="text-slate-400 dark:text-slate-500 uppercase text-[10px] font-bold tracking-widest bg-slate-50/80 dark:bg-slate-950/40 border-b border-slate-200/60 dark:border-slate-800">
-                <th class="px-6 py-4">Date</th>
-                <th class="px-6 py-4">Buyer</th>
-                <th class="px-6 py-4">Score</th>
-                <th class="px-6 py-4">Review Content</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4 text-right">Actions</th>
+                <th class="px-6 py-4">{{ $t('ratings.date') }}</th>
+                <th class="px-6 py-4">{{ $t('ratings.buyer') }}</th>
+                <th class="px-6 py-4">{{ $t('ratings.rating') }}</th>
+                <th class="px-6 py-4">{{ $t('ratings.comment') }}</th>
+                <th class="px-6 py-4">{{ $t('ratings.status') }}</th>
+                <th class="px-6 py-4 text-right">{{ $t('ratings.actions') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800" v-if="!loading">
@@ -67,7 +67,7 @@
                     :class="['px-3 py-1 rounded-full text-[10px] font-extrabold border shadow-xs inline-flex items-center gap-1', rating.is_published ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800']"
                   >
                     <span class="w-1.5 h-1.5 rounded-full" :class="rating.is_published ? 'bg-emerald-500' : 'bg-amber-500'"></span>
-                    {{ rating.is_published ? 'Published' : 'Pending Review' }}
+                    {{ rating.is_published ? $t('ratings.published') : $t('ratings.unpublished') }}
                   </span>
                 </td>
 
@@ -77,7 +77,7 @@
                     class="px-4 py-1.5 text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
                     :class="rating.is_published ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 hover:bg-rose-200' : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90'"
                   >
-                    {{ rating.is_published ? 'Unpublish' : 'Publish' }}
+                    {{ rating.is_published ? $t('ratings.unpublish') : $t('ratings.publish') }}
                   </button>
                 </td>
               </tr>

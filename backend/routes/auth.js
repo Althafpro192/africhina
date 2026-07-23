@@ -8,17 +8,15 @@ import {
   getMe, 
   updateProfile, 
   uploadAvatar,
-  forgotPassword,
-  getResetRequests,
-  generateResetLink,
-  executeResetPassword
+  changePassword
 } from '../controllers/authController.js';
-import { verifyToken, isAdmin } from '../middleware/auth.js';
+import { requestPasswordReset } from '../controllers/passwordResetController.js';
+import { verifyToken, ensurePasswordChanged } from '../middleware/auth.js';
 import { registerValidation, loginValidation } from '../middleware/validation.js';
+import { validateUploadedFiles } from '../utils/fileTypeVerifier.js';
 
 const router = express.Router();
 
-// Multer setup for avatar uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/avatars/');
@@ -43,14 +41,17 @@ const upload = multer({
 router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
 router.post('/logout', logout);
-router.get('/me', verifyToken, getMe);
-router.put('/profile', verifyToken, updateProfile);
-router.post('/profile/avatar', verifyToken, upload.single('avatar'), uploadAvatar);
 
-// Password Reset Routes
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', executeResetPassword);
-router.get('/admin/reset-requests', verifyToken, isAdmin, getResetRequests);
-router.post('/admin/reset-requests/:id/generate', verifyToken, isAdmin, generateResetLink);
+// [FIX Issue 2] Buyer: Request password reset (replaces legacy forgot-password)
+// Public endpoint — no auth required, buyer submits email
+router.post('/request-password-reset', requestPasswordReset);
+
+// Protected routes requiring authentication & password change check
+router.get('/me', verifyToken, ensurePasswordChanged, getMe);
+router.put('/profile', verifyToken, ensurePasswordChanged, updateProfile);
+router.post('/profile/avatar', verifyToken, ensurePasswordChanged, upload.single('avatar'), validateUploadedFiles, uploadAvatar);
+
+// [NEW] Change / set permanent password (available when mustChangePassword flag is true or false)
+router.post('/change-password', verifyToken, changePassword);
 
 export default router;

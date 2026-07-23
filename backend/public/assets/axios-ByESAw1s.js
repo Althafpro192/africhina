@@ -1,0 +1,1 @@
+import{t as e}from"./axios-CoIYrMZo.js";var t=e.create({baseURL:`/api`,withCredentials:!0,headers:{"Content-Type":`application/json`}});t.interceptors.request.use(e=>e,e=>Promise.reject(e)),t.interceptors.response.use(e=>e,e=>(e.response&&e.response.status===401&&(localStorage.removeItem(`user`),window.location.href=`/login`),Promise.reject(e)));export{t};

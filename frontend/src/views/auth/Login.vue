@@ -222,8 +222,8 @@
       <div :class="['bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isForgotModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Reset Password</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enter your email address to receive a password reset link.</p>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Request Temporary Password</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">Submit a request to the Admin. They will generate a secure temporary password for you. You will be required to change it upon first login.</p>
           </div>
           <button @click="closeForgotModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <span class="material-symbols-outlined text-lg">close</span>
@@ -231,7 +231,8 @@
         </div>
 
         <form @submit.prevent="submitForgotPassword" class="space-y-4">
-          <div v-if="forgotSuccessMsg" class="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-emerald-700 dark:text-emerald-300 text-xs">
+          <div v-if="forgotSuccessMsg" class="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-emerald-700 dark:text-emerald-300 text-xs flex items-start gap-2">
+            <span class="material-symbols-outlined text-emerald-500 text-sm shrink-0 mt-0.5">check_circle</span>
             {{ forgotSuccessMsg }}
           </div>
           <div v-if="forgotErrorMsg" class="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-xl text-rose-700 dark:text-rose-300 text-xs">
@@ -255,7 +256,7 @@
             </button>
             <button type="submit" :disabled="forgotLoading" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center gap-2 text-xs">
               <span v-if="forgotLoading" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-              Request Reset
+              Submit Request to Admin
             </button>
           </div>
         </form>
@@ -374,8 +375,8 @@ const submitForgotPassword = async () => {
   forgotErrorMsg.value = ''
   forgotSuccessMsg.value = ''
   try {
-    const data = await authService.forgotPassword(forgotEmail.value)
-    forgotSuccessMsg.value = data.message || 'Request sent successfully.'
+    const data = await authService.requestPasswordReset(forgotEmail.value)
+    forgotSuccessMsg.value = data.message || 'Request sent! Admin will process it shortly. Check back later or contact support.'
   } catch (err) {
     forgotErrorMsg.value = err.response?.data?.message || 'Failed to send request.'
   } finally {

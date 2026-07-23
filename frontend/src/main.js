@@ -9,9 +9,11 @@ import id from './locales/id.json';
 import zh from './locales/zh.json';
 import fr from './locales/fr.json';
 
+const savedLocale = localStorage.getItem('locale') || 'en';
+
 const i18n = createI18n({
   legacy: false,
-  locale: 'en',
+  locale: savedLocale,
   fallbackLocale: 'en',
   messages: { en, id, zh, fr }
 });

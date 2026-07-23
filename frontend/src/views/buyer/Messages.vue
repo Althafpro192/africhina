@@ -9,8 +9,8 @@
             <span class="material-symbols-outlined text-xl">forum</span>
           </div>
           <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Chat Admin Support</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Komunikasi langsung dengan Admin AfriChina Bridge</p>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{{ $t('buyer_messages.title') }}</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('buyer_messages.sub') }}</p>
           </div>
         </div>
       </div>
@@ -18,7 +18,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[600px]">
         <!-- Left: Requests selector -->
         <div class="bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 rounded-3xl p-4 shadow-sm flex flex-col h-[650px]">
-          <h2 class="text-xs font-black uppercase text-slate-400 dark:text-slate-500 tracking-wider mb-3 px-2">Threading / Topik Chat</h2>
+          <h2 class="text-xs font-black uppercase text-slate-400 dark:text-slate-500 tracking-wider mb-3 px-2">{{ $t('buyer_messages.topics') }}</h2>
           
           <div class="space-y-2 overflow-y-auto flex-1 pr-1">
             <!-- General Support Thread -->
@@ -30,20 +30,20 @@
                 <span class="material-symbols-outlined text-lg">headset_mic</span>
               </div>
               <div class="flex-1 overflow-hidden">
-                <h4 class="text-xs font-bold truncate">General Customer Support</h4>
-                <p :class="['text-[11px] truncate mt-0.5', selectedRequestId === null ? 'text-indigo-100' : 'text-slate-500 dark:text-slate-400']">Bantuan umum & konsultasi</p>
+                <h4 class="text-xs font-bold truncate">{{ $t('buyer_messages.general_support') }}</h4>
+                <p :class="['text-[11px] truncate mt-0.5', selectedRequestId === null ? 'text-indigo-100' : 'text-slate-500 dark:text-slate-400']">{{ $t('buyer_messages.general_desc') }}</p>
               </div>
             </button>
 
             <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
-              <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase px-2 mb-2 block">Request Sourcing Saya</span>
+              <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase px-2 mb-2 block">{{ $t('buyer_messages.my_requests') }}</span>
               
               <div v-if="loadingRequests" class="text-center py-6">
                 <span class="material-symbols-outlined animate-spin text-indigo-500">progress_activity</span>
               </div>
 
               <div v-else-if="requests.length === 0" class="text-center py-6 text-xs text-slate-400 italic">
-                Belum ada request sourcing.
+                {{ $t('buyer_messages.no_requests') }}
               </div>
 
               <div v-else class="space-y-1.5">

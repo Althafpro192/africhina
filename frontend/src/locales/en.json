@@ -1,4 +1,18 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "view": "View",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "submit": "Submit"
+  },
   "auth": {
     "title": "AfriChina Bridge",
     "subtitle": "Premium B2B Supply Chain Hub",
@@ -15,7 +29,7 @@
     "company_name": "Company Name",
     "contact_person": "Contact Person",
     "phone": "Phone Number",
-    "footer": "© 2024 AfriChina Bridge"
+    "footer": "© 2026 AfriChina Bridge"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -29,7 +43,70 @@
     "new_request": "New Request",
     "help": "Help Center",
     "logout": "Sign Out",
-    "admin_terminal": "Admin Terminal"
+    "admin_terminal": "Admin Terminal",
+    "chat_admin": "Chat Admin",
+    "buyer_messages": "Buyer Messages",
+    "ratings_moderation": "Ratings Moderation",
+    "password_resets": "Password Resets",
+    "security_audit": "Security & Audit",
+    "notifications": "Notifications",
+    "mark_all_read": "Mark all read",
+    "new": "new",
+    "mode_light": "Light Mode",
+    "mode_dark": "Dark Mode",
+    "buyer_workspace": "Buyer Workspace",
+    "create_new_request": "Create New Request"
+  },
+  "chat": {
+    "title": "Negotiation Chat",
+    "subtitle": "Live communication with {role}",
+    "role_buyer": "Buyer",
+    "role_admin": "Admin",
+    "no_messages": "No messages yet. Start the conversation!",
+    "deleted": "This message was deleted",
+    "view_attachment": "View Attachment",
+    "show_original": "Show Original",
+    "translate": "Translate",
+    "editing": "Editing message...",
+    "voice_note": "Voice Note",
+    "recording": "Recording Voice Note...",
+    "finish": "Finish",
+    "type_placeholder": "Type your message..."
+  },
+  "buyer_messages": {
+    "title": "Chat Admin Support",
+    "sub": "Direct communication with AfriChina Bridge Admin",
+    "topics": "Threading / Chat Topics",
+    "general_support": "General Customer Support",
+    "general_desc": "General help & consultation",
+    "my_requests": "My Sourcing Requests",
+    "no_requests": "No sourcing requests yet."
+  },
+  "admin_messages": {
+    "workspace_title": "Buyer Messages Workspace",
+    "workspace_sub": "Message center & direct negotiations with verified Buyers",
+    "search_buyer_placeholder": "Search buyer name or email...",
+    "tab_buyers": "Buyer List (Direct)",
+    "tab_rfqs": "RFQ Conversations",
+    "buyers_total": "Buyers Total",
+    "no_buyers_found": "No buyers found.",
+    "rfq_list_title": "RFQ Conversations List",
+    "no_conv_found": "No conversations found.",
+    "select_conv_title": "Select a Conversation",
+    "select_conv_desc": "Click a buyer or RFQ conversation from the left sidebar to send direct messages.",
+    "blocked": "Blocked",
+    "direct_support_chat": "Direct Support Chat",
+    "profile": "Profile",
+    "detail_rfq": "RFQ Details"
+  },
+  "buyer_profile": {
+    "total_orders": "Total Orders",
+    "total_spent": "Total Spent",
+    "joined": "Joined",
+    "contact_details": "Contact Details",
+    "recent_activity": "Recent Activity",
+    "unblock_user": "Unblock User",
+    "block_user": "Block User"
   },
   "dashboard": {
     "title": "My Requests",
@@ -67,6 +144,52 @@
     "internal_notes": "Internal Notes:",
     "cancel": "Cancel",
     "save_changes": "Save Changes"
+  },
+  "ratings": {
+    "title": "Ratings & Reviews Moderation",
+    "sub": "Review buyer feedback and manage supplier rating visibility.",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "supplier": "Supplier",
+    "buyer": "Buyer",
+    "rating": "Rating",
+    "comment": "Comment",
+    "date": "Date",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "resets": {
+    "title": "Password Reset Requests",
+    "sub": "Manage buyer password reset requests and issue secure temporary login credentials.",
+    "active_requests": "Active Reset Requests",
+    "buyer_info": "Buyer Info",
+    "request_date": "Request Date",
+    "status": "Status",
+    "temp_credential": "Temporary Credential",
+    "actions": "Actions",
+    "create_temp_pass": "Generate Temp Password",
+    "no_requests": "No password reset requests found.",
+    "pending": "Pending",
+    "processed": "Processed",
+    "no_temp": "No temporary password issued",
+    "modal_title": "Temporary Password Created",
+    "modal_sub": "Temporary login credential ready",
+    "copy": "Copy",
+    "expires_in": "Expires in:",
+    "instruction": "Instruct buyer to change password immediately in Account Settings after logging in with this temporary password.",
+    "finish_close": "Finish & Close"
+  },
+  "suppliers_page": {
+    "title": "Verified Factory Suppliers",
+    "sub": "Direct access to top-tier Chinese manufacturers with verified production capabilities.",
+    "search_placeholder": "Search supplier name, category, or location...",
+    "verified": "Verified Factory",
+    "category": "Category",
+    "location": "Location",
+    "contact": "Contact Supplier",
+    "no_suppliers": "No suppliers found."
   },
   "request_details": {
     "title": "New Sourcing Request",

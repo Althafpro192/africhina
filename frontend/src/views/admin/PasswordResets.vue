@@ -5,10 +5,10 @@
       <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
           <h2 class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent tracking-tight">
-            Password Reset Requests
+            {{ $t('resets.title') }}
           </h2>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Manage buyer password reset requests and issue secure temporary login credentials.
+            {{ $t('resets.sub') }}
           </p>
         </div>
       </header>
@@ -16,7 +16,7 @@
       <!-- Request Table Card -->
       <section class="bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center">
-          <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Active Reset Requests</h3>
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-white">{{ $t('resets.active_requests') }}</h3>
           <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ requests.length }} requests total</span>
         </div>
 
@@ -24,11 +24,11 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="text-slate-400 dark:text-slate-500 uppercase text-[10px] font-bold tracking-widest bg-slate-50/80 dark:bg-slate-950/40 border-b border-slate-200/60 dark:border-slate-800">
-                <th class="px-6 py-4">Buyer Info</th>
-                <th class="px-6 py-4">Request Date</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">Temporary Credential</th>
-                <th class="px-6 py-4 text-right">Actions</th>
+                <th class="px-6 py-4">{{ $t('resets.buyer_info') }}</th>
+                <th class="px-6 py-4">{{ $t('resets.request_date') }}</th>
+                <th class="px-6 py-4">{{ $t('resets.status') }}</th>
+                <th class="px-6 py-4">{{ $t('resets.temp_credential') }}</th>
+                <th class="px-6 py-4 text-right">{{ $t('resets.actions') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800" v-if="!loading">
@@ -40,7 +40,7 @@
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-sm">
-                      {{ request.full_name.charAt(0) }}
+                      {{ request.full_name?.charAt(0) || '?' }}
                     </div>
                     <div>
                       <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ request.full_name }}</p>
@@ -56,11 +56,11 @@
                 <td class="px-6 py-4">
                   <span v-if="request.status === 'pending'" class="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-full text-[10px] font-extrabold">
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    Pending
+                    {{ $t('resets.pending') }}
                   </span>
                   <span v-else class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-full text-[10px] font-extrabold">
                     <span class="material-symbols-outlined text-xs">check_circle</span>
-                    Temp Password Created
+                    {{ $t('resets.processed') }}
                   </span>
                 </td>
 
@@ -71,13 +71,13 @@
                     </code>
                     <button 
                       @click="copyToClipboard(request.temp_password)" 
-                      class="p-1.5 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
+                      class="p-1.5 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" 
                       title="Copy Temporary Password"
                     >
                       <span class="material-symbols-outlined text-base">content_copy</span>
                     </button>
                   </div>
-                  <span v-else class="text-xs text-slate-400 italic">No temporary password issued</span>
+                  <span v-else class="text-xs text-slate-400 italic">{{ $t('resets.no_temp') }}</span>
                 </td>
 
                 <td class="px-6 py-4 text-right">
@@ -88,14 +88,14 @@
                   >
                     <span v-if="generating === request.id" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                     <span v-else class="material-symbols-outlined text-sm">key</span>
-                    <span>Buat Password Sementara</span>
+                    <span>{{ $t('resets.create_temp_pass') }}</span>
                   </button>
                 </td>
               </tr>
 
               <tr v-if="requests.length === 0">
                 <td colspan="5" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
-                  No password reset requests found.
+                  {{ $t('resets.no_requests') }}
                 </td>
               </tr>
             </tbody>
@@ -123,18 +123,18 @@
               <span class="material-symbols-outlined text-xl">key</span>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Password Sementara Created</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Temporary login credential ready</p>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $t('resets.modal_title') }}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('resets.modal_sub') }}</p>
             </div>
           </div>
-          <button @click="isTempModalOpen = false" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button @click="isTempModalOpen = false" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
             <span class="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
         <div class="space-y-4">
           <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            Password sementara berikut telah dikonfigurasi untuk akun <strong class="text-indigo-600 dark:text-indigo-400">{{ activeBuyer?.email }}</strong>:
+            Password sementara: <strong class="text-indigo-600 dark:text-indigo-400">{{ activeBuyer?.email }}</strong>:
           </p>
 
           <!-- Password Display Card -->
@@ -144,27 +144,32 @@
             </code>
             <button 
               @click="copyToClipboard(generatedTempPassword)" 
-              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md hover:bg-indigo-500 transition-all"
+              class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md hover:bg-indigo-500 transition-all cursor-pointer"
             >
               <span class="material-symbols-outlined text-sm">content_copy</span>
-              <span>Copy</span>
+              <span>{{ $t('resets.copy') }}</span>
             </button>
+          </div>
+
+          <!-- Expiry Info -->
+          <div v-if="generatedExpiry" class="text-xs text-slate-500 dark:text-slate-400 text-center">
+            {{ $t('resets.expires_in') }} <strong class="text-indigo-600 dark:text-indigo-400">{{ generatedExpiry }}</strong>
           </div>
 
           <!-- Important Note -->
           <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
             <span class="material-symbols-outlined text-amber-500 text-lg shrink-0 mt-0.5">info</span>
             <p class="leading-relaxed">
-              Instruksikan buyer untuk segera <strong>mengganti password</strong> di menu <em>Pengaturan Akun</em> setelah berhasil login menggunakan password sementara ini.
+              {{ $t('resets.instruction') }}
             </p>
           </div>
 
           <div class="pt-2">
             <button 
               @click="isTempModalOpen = false" 
-              class="w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs hover:bg-slate-800 transition-colors"
+              class="w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs hover:bg-slate-800 transition-colors cursor-pointer"
             >
-              Selesai & Tutup
+              {{ $t('resets.finish_close') }}
             </button>
           </div>
         </div>
@@ -187,14 +192,12 @@ const generating = ref(null)
 const isTempModalOpen = ref(false)
 const activeBuyer = ref(null)
 const generatedTempPassword = ref('')
+const generatedExpiry = ref('')
 
 const loadRequests = async () => {
   try {
     const data = await authService.getResetRequests()
-    requests.value = data.map(r => ({
-      ...r,
-      temp_password: r.temp_password || (r.status === 'approved' ? 'TempPass#2026!' : null)
-    }))
+    requests.value = data || []
   } catch (error) {
     showToast('Failed to load password reset requests', 'error')
   } finally {
@@ -215,25 +218,24 @@ const copyToClipboard = async (text) => {
   }
 }
 
+// [FIX Issue 1] Use the real admin processResetRequest endpoint
+// which generates a cryptographically secure temp password on the server
 const createTempPassword = async (request) => {
   generating.value = request.id
   try {
-    // Generate secure temporary password
-    const randNum = Math.floor(1000 + Math.random() * 9000)
-    const tempPass = `TempPass#${randNum}!`
+    const result = await authService.processResetRequest(request.id)
     
-    // Call generate reset link or update endpoint
-    await authService.generateResetLink(request.id)
-    
-    request.temp_password = tempPass
-    request.status = 'approved'
-    activeBuyer.value = request
-    generatedTempPassword.value = tempPass
+    // Use the REAL server-generated temp password
+    request.temp_password = result.tempPassword
+    request.status = 'processed'
+    activeBuyer.value = { ...request, email: result.userEmail || request.email }
+    generatedTempPassword.value = result.tempPassword
+    generatedExpiry.value = result.expiresIn || ''
     isTempModalOpen.value = true
     
     showToast('Temporary password created successfully!', 'success')
   } catch (error) {
-    showToast('Failed to create temporary password', 'error')
+    showToast(error.response?.data?.message || 'Failed to create temporary password', 'error')
   } finally {
     generating.value = null
   }

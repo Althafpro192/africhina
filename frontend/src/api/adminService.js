@@ -116,5 +116,29 @@ export const adminService = {
   async togglePublishRating(ratingId, is_published) {
     const { data } = await api.post(`/admin/ratings/${ratingId}/toggle-publish`, { is_published });
     return data;
+  },
+
+  // [NEW Issue 3] Buyer User Management
+  async getBuyerList(search = '') {
+    const params = search ? { search } : {};
+    const { data } = await api.get('/admin/users', { params });
+    return data;
+  },
+
+  async getBuyerProfile(userId) {
+    const { data } = await api.get(`/admin/users/${userId}`);
+    return data;
+  },
+
+  // [NEW Issue 4] Block / Unblock Buyer
+  async toggleBlockUser(userId) {
+    const { data } = await api.post(`/admin/users/${userId}/toggle-block`);
+    return data;
+  },
+
+  // Helper: Get all requests for conversation list
+  async getAllRequests() {
+    const { data } = await api.get('/admin/requests');
+    return data?.data || data || [];
   }
 };

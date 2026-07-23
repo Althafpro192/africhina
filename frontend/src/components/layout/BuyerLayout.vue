@@ -35,7 +35,7 @@
           :class="['font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
         >
           <span class="material-symbols-outlined text-lg">forum</span>
-          <span>Chat Admin</span>
+          <span>{{ $t('nav.chat_admin') }}</span>
         </button>
       </nav>
 
@@ -88,9 +88,9 @@
             >
               <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
                 <div class="flex items-center gap-2">
-                  <h4 class="text-sm font-black text-slate-900 dark:text-white">Notifications</h4>
+                  <h4 class="text-sm font-black text-slate-900 dark:text-white">{{ $t('nav.notifications') }}</h4>
                   <span v-if="unreadCount > 0" class="px-2 py-0.5 text-[10px] font-extrabold bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 rounded-full border border-indigo-200 dark:border-indigo-800">
-                    {{ unreadCount }} new
+                    {{ unreadCount }} {{ $t('nav.new') }}
                   </span>
                 </div>
                 <button 
@@ -98,7 +98,7 @@
                   @click="markAllAsRead" 
                   class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
                 >
-                  Mark all read
+                  {{ $t('nav.mark_all_read') }}
                 </button>
               </div>
 
@@ -146,7 +146,7 @@
             >
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg text-amber-500 dark:text-amber-400">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
-                <span>{{ isDark ? 'Mode Terang' : 'Mode Gelap' }}</span>
+                <span>{{ isDark ? $t('nav.mode_light') : $t('nav.mode_dark') }}</span>
               </div>
               <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
                 {{ isDark ? 'Dark' : 'Light' }}
@@ -176,7 +176,7 @@
       :style="{ top: '72px', left: '0px', height: 'calc(100vh - 72px)' }"
     >
       <div class="p-5 border-b border-slate-100 dark:border-slate-800/80">
-        <h2 class="text-base font-black text-slate-900 dark:text-white">Buyer Workspace</h2>
+        <h2 class="text-base font-black text-slate-900 dark:text-white">{{ $t('nav.buyer_workspace') }}</h2>
         <span class="inline-block mt-1 px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
           {{ $t('dashboard.verified_buyer') }}
         </span>
@@ -212,7 +212,7 @@
           :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'messages' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">forum</span>
-          <span>Chat Admin</span>
+          <span>{{ $t('nav.chat_admin') }}</span>
         </button>
 
         <button 
@@ -239,7 +239,7 @@
           class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-xs sm:text-sm py-3 px-4 rounded-2xl hover:opacity-95 transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 cursor-pointer"
         >
           <span class="material-symbols-outlined text-lg">add_circle</span>
-          <span>Buat Request Baru</span>
+          <span>{{ $t('nav.create_new_request') }}</span>
         </button>
       </div>
 

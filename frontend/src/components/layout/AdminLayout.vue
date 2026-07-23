@@ -53,7 +53,7 @@
           :class="isActive('/admin/ratings') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">stars</span>
-          <span>Ratings Moderation</span>
+          <span>{{ $t('nav.ratings_moderation') }}</span>
         </router-link>
 
         <router-link 
@@ -62,18 +62,18 @@
           :class="isActive('/admin/messages') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">forum</span>
-          <span>Buyer Messages</span>
+          <span>{{ $t('nav.buyer_messages') }}</span>
         </router-link>
 
         <div class="pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800">
-          <p class="px-4 mb-2 text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Security & Audit</p>
+          <p class="px-4 mb-2 text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('nav.security_audit') }}</p>
           <router-link 
             to="/admin/security/password-resets" 
             class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
             :class="isActive('/admin/security/password-resets') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
           >
             <span class="material-symbols-outlined text-xl">lock_reset</span>
-            <span>Password Resets</span>
+            <span>{{ $t('nav.password_resets') }}</span>
           </router-link>
         </div>
       </nav>
