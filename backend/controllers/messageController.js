@@ -152,16 +152,14 @@ export const sendMessage = catchAsync(async (req, res) => {
   const messagePayload = messageDetails.rows[0];
 
   if (req.io) {
-    // Broadcast to real-time rooms
-    if (buyerId) {
-      req.io.to(`room:buyer-${buyerId}`).emit('new-message', messagePayload);
-    }
-    if (requestId) {
-      req.io.to(`room:nego-${requestId}`).to(`request_${requestId}`).emit('new-message', messagePayload);
-    } else {
-      req.io.to('room:nego-general-support').to(`room:nego-buyer-${buyerId}`).emit('new-message', messagePayload);
-    }
+  if (buyerId) {
+    req.io.to(`room:buyer-${buyerId}`).emit('new-message', messagePayload);
   }
+  if (requestId) {
+    req.io.to(`room:nego-${requestId}`).to(`request_${requestId}`).emit('new-message', messagePayload);
+  }
+  // ✅ Hapus else block yang salah
+}
   
   res.status(201).json(messagePayload);
 });
