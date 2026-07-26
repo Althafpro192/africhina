@@ -11,7 +11,7 @@ export const requestService = {
 
   async getRequests() {
     const { data } = await api.get('/requests');
-    return data;
+    return data.data || data;
   },
 
   async getRequestById(id) {

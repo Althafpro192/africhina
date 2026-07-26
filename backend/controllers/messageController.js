@@ -1,12 +1,44 @@
-// [FIX] Support Direct Buyer-Admin Chat & General Support Threads + RFQ Negotiation
 import pool from '../config/db.js';
 import logger from '../config/logger.js';
-import translate from 'google-translate-api-x';
+import { getTranslations, getCachedTranslations } from '../utils/translator.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import storageService from '../config/storage.js';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Asynchronously process translation in background and broadcast socket event upon completion.
+ */
+async function processBackgroundTranslation(msgId, content, io, buyerId, requestId) {
+  try {
+    const translations = await getTranslations(content);
+    await pool.query(
+      "UPDATE messages SET translations = $1 WHERE id = $2",
+      [JSON.stringify(translations), msgId]
+    );
+
+    const messageDetails = await pool.query(
+      `SELECT m.*, u.full_name as sender_name, u.role as sender_role 
+       FROM messages m 
+       JOIN users u ON m.sender_id = u.id 
+       WHERE m.id = $1`,
+      [msgId]
+    );
+
+    if (messageDetails.rows.length > 0 && io) {
+      const msgData = messageDetails.rows[0];
+      if (buyerId) {
+        io.to(`room:buyer-${buyerId}`).emit('message-edited', msgData);
+      }
+      if (requestId) {
+        io.to(`room:nego-${requestId}`).to(`request_${requestId}`).emit('message-edited', msgData);
+      }
+    }
+  } catch (err) {
+    logger.error(`Failed background translation for msg ${msgId}: ${err.message}`);
+  }
+}
 
 /**
  * Resolves thread identifiers (requestId vs buyerId) flexibly.
@@ -112,28 +144,8 @@ export const sendMessage = catchAsync(async (req, res) => {
   }
 
   const safeContent = content || '';
-  let translations = {};
-
-  if (safeContent) {
-    try {
-      const targets = ['en', 'id', 'zh-cn', 'fr'];
-      const translationPromises = targets.map(async (lang) => {
-        try {
-          const result = await translate(safeContent, { to: lang, autoCorrect: true });
-          return { lang: lang === 'zh-cn' ? 'zh' : lang, text: result.text };
-        } catch (err) {
-          logger.warn(`Translation to ${lang} failed: ${err.message}`);
-          return { lang: lang === 'zh-cn' ? 'zh' : lang, text: safeContent };
-        }
-      });
-      const results = await Promise.all(translationPromises);
-      results.forEach(res => {
-        translations[res.lang] = res.text;
-      });
-    } catch (e) {
-      logger.error(`Bulk translation error: ${e.message}`);
-    }
-  }
+  const cachedTranslations = getCachedTranslations(safeContent);
+  const translations = cachedTranslations || {};
 
   const newMessage = await pool.query(
     `INSERT INTO messages (request_id, buyer_id, sender_id, content, translations, media_url, media_type) 
@@ -152,16 +164,22 @@ export const sendMessage = catchAsync(async (req, res) => {
   const messagePayload = messageDetails.rows[0];
 
   if (req.io) {
-  if (buyerId) {
-    req.io.to(`room:buyer-${buyerId}`).emit('new-message', messagePayload);
+    if (buyerId) {
+      req.io.to(`room:buyer-${buyerId}`).emit('new-message', messagePayload);
+    }
+    if (requestId) {
+      req.io.to(`room:nego-${requestId}`).to(`request_${requestId}`).emit('new-message', messagePayload);
+    }
   }
-  if (requestId) {
-    req.io.to(`room:nego-${requestId}`).to(`request_${requestId}`).emit('new-message', messagePayload);
-  }
-  // ✅ Hapus else block yang salah
-}
   
   res.status(201).json(messagePayload);
+
+  // Trigger background translation if not cached
+  if (safeContent && !cachedTranslations) {
+    processBackgroundTranslation(messagePayload.id, safeContent, req.io, buyerId, requestId).catch(err => {
+      logger.error(`Background translation error for message ${messagePayload.id}: ${err.message}`);
+    });
+  }
 });
 
 export const editMessage = catchAsync(async (req, res) => {
@@ -172,28 +190,13 @@ export const editMessage = catchAsync(async (req, res) => {
   if (checkMsg.rows.length === 0) throw new AppError('Message not found', 404);
   if (checkMsg.rows[0].sender_id !== req.userId) throw new AppError('Unauthorized to edit this message', 403);
 
-  let translations = {};
-  if (content) {
-    try {
-      const targets = ['en', 'id', 'zh-cn', 'fr'];
-      const translationPromises = targets.map(async (lang) => {
-        try {
-          const result = await translate(content, { to: lang, autoCorrect: true });
-          return { lang: lang === 'zh-cn' ? 'zh' : lang, text: result.text };
-        } catch (err) {
-          return { lang: lang === 'zh-cn' ? 'zh' : lang, text: content };
-        }
-      });
-      const results = await Promise.all(translationPromises);
-      results.forEach(res => { translations[res.lang] = res.text; });
-    } catch (e) {
-      logger.error(`Bulk translation error on edit: ${e.message}`);
-    }
-  }
+  const safeContent = content || '';
+  const cachedTranslations = getCachedTranslations(safeContent);
+  const translations = cachedTranslations || {};
 
   await pool.query(
     "UPDATE messages SET content = $1, translations = $2, is_edited = true WHERE id = $3",
-    [content, JSON.stringify(translations), msgId]
+    [safeContent, JSON.stringify(translations), msgId]
   );
 
   const messageDetails = await pool.query(
@@ -214,6 +217,13 @@ export const editMessage = catchAsync(async (req, res) => {
   }
 
   res.json(msgData);
+
+  // Trigger background translation if not cached
+  if (safeContent && !cachedTranslations) {
+    processBackgroundTranslation(msgId, safeContent, req.io, msgData.buyer_id, msgData.request_id).catch(err => {
+      logger.error(`Background translation error for edited message ${msgId}: ${err.message}`);
+    });
+  }
 });
 
 export const deleteMessage = catchAsync(async (req, res) => {

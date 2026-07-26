@@ -17,11 +17,14 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf'];
-  if (allowedTypes.includes(file.mimetype)) {
+  const allowedTypes = [
+    'image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'application/pdf',
+    'audio/webm', 'audio/ogg', 'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/mp4', 'video/webm', 'video/mp4'
+  ];
+  if (allowedTypes.includes(file.mimetype) || file.mimetype.startsWith('audio/') || file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, WEBP, and PDF are allowed.'), false);
+    cb(new Error('Invalid file type. Only JPEG, PNG, WEBP, PDF, and audio/video files are allowed.'), false);
   }
 };
 

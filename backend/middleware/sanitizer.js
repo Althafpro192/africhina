@@ -34,7 +34,13 @@ export const globalSanitizer = (req, res, next) => {
     req.body = sanitizeValue(req.body);
   }
   if (req.query && typeof req.query === 'object') {
-    req.query = sanitizeValue(req.query);
+    const sanitizedQuery = sanitizeValue(req.query);
+    Object.defineProperty(req, 'query', {
+      value: sanitizedQuery,
+      writable: true,
+      configurable: true,
+      enumerable: true
+    });
   }
   if (req.params && typeof req.params === 'object') {
     req.params = sanitizeValue(req.params);

@@ -46,6 +46,37 @@ export const verifyMagicBytes = async (filePath) => {
     return { mime: 'application/pdf', ext: '.pdf' };
   }
 
+  // WebM / Matroska: 1A 45 DF A3 (EBML container used for WebM voice notes)
+  if (buffer[0] === 0x1A && buffer[1] === 0x45 && buffer[2] === 0xDF && buffer[3] === 0xA3) {
+    return { mime: 'audio/webm', ext: '.webm' };
+  }
+
+  // OGG Audio: 4F 67 67 53 (OggS)
+  if (buffer[0] === 0x4F && buffer[1] === 0x67 && buffer[2] === 0x67 && buffer[3] === 0x53) {
+    return { mime: 'audio/ogg', ext: '.ogg' };
+  }
+
+  // MP3 Audio: ID3 header (49 44 33) or MPEG sync frame (FF FB / FF FA / FF F3)
+  if (
+    (buffer[0] === 0x49 && buffer[1] === 0x44 && buffer[2] === 0x33) ||
+    (buffer[0] === 0xFF && (buffer[1] === 0xFB || buffer[1] === 0xFA || buffer[1] === 0xF3))
+  ) {
+    return { mime: 'audio/mpeg', ext: '.mp3' };
+  }
+
+  // WAV Audio: RIFF ... WAVE (bytes 0-3: 52 49 46 46, bytes 8-11: 57 41 56 45)
+  if (
+    buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+    buffer[8] === 0x57 && buffer[9] === 0x41 && buffer[10] === 0x56 && buffer[11] === 0x45
+  ) {
+    return { mime: 'audio/wav', ext: '.wav' };
+  }
+
+  // MP4 / M4A Audio: ftyp box at offset 4 (66 74 79 70)
+  if (buffer[4] === 0x66 && buffer[5] === 0x74 && buffer[6] === 0x79 && buffer[7] === 0x70) {
+    return { mime: 'audio/mp4', ext: '.mp4' };
+  }
+
   return null;
 };
 
@@ -80,7 +111,12 @@ export const validateUploadedFiles = async (req, res, next) => {
         'image/png': ['.png'],
         'image/gif': ['.gif'],
         'image/webp': ['.webp'],
-        'application/pdf': ['.pdf']
+        'application/pdf': ['.pdf'],
+        'audio/webm': ['.webm', '.mkv'],
+        'audio/ogg': ['.ogg', '.oga', '.opus'],
+        'audio/mpeg': ['.mp3'],
+        'audio/wav': ['.wav'],
+        'audio/mp4': ['.mp4', '.m4a', '.aac']
       };
 
       const allowedExts = validExtensions[detected.mime] || [];

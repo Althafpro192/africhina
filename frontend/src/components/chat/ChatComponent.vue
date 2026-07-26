@@ -259,13 +259,16 @@ const scrollToBottom = () => {
   })
 }
 
+import { compressImage } from '../../utils/imageCompressor.js'
+
 // File Handling
-const handleFileSelect = (e) => {
+const handleFileSelect = async (e) => {
   const file = e.target.files[0]
   if (!file) return
-  selectedFile.value = file
-  previewType.value = file.type.startsWith('image/') ? 'image' : 'audio'
-  previewUrl.value = URL.createObjectURL(file)
+  const fileToUse = file.type.startsWith('image/') ? await compressImage(file) : file
+  selectedFile.value = fileToUse
+  previewType.value = fileToUse.type.startsWith('image/') ? 'image' : 'audio'
+  previewUrl.value = URL.createObjectURL(fileToUse)
 }
 
 const clearFile = () => {
