@@ -1,4 +1,6 @@
+# ==========================================
 # Logs
+# ==========================================
 logs
 *.log
 npm-debug.log*
@@ -7,12 +9,42 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# ==========================================
+# Dependencies & Build Outputs
+# ==========================================
 node_modules
+**/node_modules
+
+# Output folder untuk Vite (Frontend) dan build backend (jika ada)
 dist
 dist-ssr
+build
+**/dist
+**/build
+
+# ==========================================
+# Environment & Secrets (SANGAT PENTING)
+# ==========================================
+# File .env lokal (JANGAN di-push ke GitHub)
+.env
+.env.local
+.env.*.local
 *.local
 
+# File kunci/sertifikat privat (jika nanti ditambahkan)
+*.pem
+*.key
+*.p12
+
+# ==========================================
+# Testing & Coverage
+# ==========================================
+coverage/
+*.lcov
+
+# ==========================================
 # Editor directories and files
+# ==========================================
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,3 +54,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.tsbuildinfo
+
+# ==========================================
+# Docker (Opsional)
+# ==========================================
+# Jika Anda membuat file compose khusus untuk lokal yang berisi secret
+docker-compose.override.yml
