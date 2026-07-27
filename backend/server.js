@@ -22,8 +22,62 @@ import adminRoutes from './routes/admin.js';
 import supplierRoutes from './routes/suppliers.js';
 import ratingRoutes from './routes/ratings.js';
 import paymentRoutes from './routes/payments.js';
+import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
+
+import pool from './config/db.js';
+
+// Asynchronously verify or create notifications table
+pool.query(`
+  CREATE TABLE IF NOT EXISTS notifications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    icon VARCHAR(50) DEFAULT 'notifications',
+    path VARCHAR(200),
+    read BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+`).then(async () => {
+  logger.info('[DB] Notifications table verified/created successfully');
+  try {
+    const countRes = await pool.query('SELECT COUNT(*) FROM notifications');
+    if (parseInt(countRes.rows[0].count, 10) === 0) {
+      logger.info('[DB] Seeding default notifications...');
+      const adminRes = await pool.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+      const buyerRes = await pool.query("SELECT id FROM users WHERE role = 'buyer' LIMIT 1");
+      
+      if (buyerRes.rows.length > 0) {
+        const bId = buyerRes.rows[0].id;
+        await pool.query(
+          `INSERT INTO notifications (user_id, title, message, icon, path, read, created_at) VALUES 
+           ($1, 'New Supplier Quote Received', 'RFQ #9402 has received a verified factory quotation from Ningbo Tech.', 'request_quote', '/buyer/requests', false, NOW() - INTERVAL '10 minutes'),
+           ($1, 'Logistics Update', 'Shipment #AF-8840 has passed customs inspection at Mombasa Port.', 'local_shipping', '/buyer/requests', false, NOW() - INTERVAL '2 hours'),
+           ($1, 'Account Verified', 'Your business license verification is completed successfully.', 'verified', '/buyer/settings', true, NOW() - INTERVAL '1 day')`,
+          [bId]
+        );
+      }
+      
+      if (adminRes.rows.length > 0) {
+        const aId = adminRes.rows[0].id;
+        await pool.query(
+          `INSERT INTO notifications (user_id, title, message, icon, path, read, created_at) VALUES 
+           ($1, 'New RFQ Submitted', 'Buyer Kwame Osei submitted RFQ #9402 for Solar Panels (500 units).', 'request_quote', '/admin/dashboard', false, NOW() - INTERVAL '15 minutes'),
+           ($1, 'Password Reset Requested', 'User Fatoumata Diallo requested a temporary password reset.', 'lock_reset', '/admin/security/password-resets', false, NOW() - INTERVAL '1 hour'),
+           ($1, 'New Rating Submitted', 'Buyer Emmanuel Kiprono rated Supplier Guangzhou Machinery 5 stars.', 'stars', '/admin/ratings', true, NOW() - INTERVAL '3 hours')`,
+          [aId]
+        );
+      }
+      logger.info('[DB] Default notifications seeded successfully');
+    }
+  } catch (err) {
+    logger.warn(`Failed to seed default notifications: ${err.message}`);
+  }
+}).catch(err => {
+  logger.error(`[DB] Error verifying/creating notifications table: ${err.message}`);
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +86,8 @@ const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['http://localhost:5173', 'http://localhost:5000', 'http://127.0.0.1:5000'];
+const rawOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ['http://localhost:5173', 'http://localhost:5000', 'http://127.0.0.1:5000', 'https://africhina.saktiku.my.id'];
+const allowedOrigins = rawOrigins.map(o => o.trim().replace(/\/$/, ''));
 
 // Setup Socket.IO
 const io = new Server(httpServer, {
@@ -65,6 +120,10 @@ io.on('connection', async (socket) => {
   // Automatically join personal buyer room for direct messaging
   if (socket.userId) {
     socket.join(`room:buyer-${socket.userId}`);
+    if (socket.userRole === 'admin') {
+      socket.join('room:admin');
+      logger.info(`[Socket] Admin ${socket.userId} joined room: room:admin`);
+    }
   }
 
   // [FIX Issue 4] Check if user is blocked on connection
@@ -152,6 +211,8 @@ app.use(helmet({
         "blob:",
         "http://localhost:5000",
         "http://localhost:5173",
+        "http://192.168.20.95:5000",
+        "https://africhina.saktiku.my.id",
         "https://lh3.googleusercontent.com",
         "https://ui-avatars.com",
         "https://*.amazonaws.com"
@@ -159,7 +220,8 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173", "ws://localhost:5000", "ws://localhost:5173"],
+      connectSrc: ["'self'", "http://localhost:5000", "http://localhost:5173", "ws://localhost:5000", "ws://localhost:5173", "http://192.168.20.95:5000", "ws://192.168.20.95:5000","https://africhina.saktiku.my.id","ws://africhina.saktiku.my.id","wss://africhina.saktiku.my.id"],
+      upgradeInsecureRequests: null,
     },
   },
   crossOriginEmbedderPolicy: false,
@@ -212,6 +274,7 @@ apiV1Router.use('/admin', adminRoutes);
 apiV1Router.use('/admin/suppliers', supplierRoutes);
 apiV1Router.use('/ratings', ratingRoutes);
 apiV1Router.use('/payments', paymentRoutes);
+apiV1Router.use('/notifications', notificationRoutes);
 
 app.use('/api/v1', apiV1Router);
 // Fallback / legacy route mapping to v1
