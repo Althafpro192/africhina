@@ -24,7 +24,7 @@
 
 - PHP 8.3+ with extensions: `pdo_mysql`, `openssl`, `mbstring`, ` tokenizer`, `xml`, `ctype`, `json`
 - Composer 2.x
-- Node.js 20+ & npm
+- laravel
 - MySQL 8+ (or MariaDB 10.6+)
 - Git
 
