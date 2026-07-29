@@ -277,8 +277,8 @@
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">{{ $t('admin.assign_supplier') }}</label>
             <select v-model="selectedSupplier" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white">
               <option value="">None</option>
-              <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
-                {{ supplier.company_name }}
+              <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id" :disabled="supplier.is_blocked">
+                {{ supplier.company_name }} {{ supplier.is_blocked ? '(Blocked)' : '' }}
               </option>
             </select>
           </div>
@@ -363,6 +363,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import { adminService } from '../../api/adminService.js'
@@ -371,6 +372,7 @@ import vLazyRender from '../../directives/vLazyRender.js'
 import { useToast } from '../../composables/useToast.js'
 
 const { showToast } = useToast()
+const { t } = useI18n()
 const router = useRouter()
 
 const searchQuery = ref('')
@@ -400,14 +402,14 @@ const productionProgress = ref(0)
 const qcFiles = ref([])
 const qcFileInput = ref(null)
 
-const statusOptions = [
-  { value: 'menunggu_penawaran_admin', label: 'Pending', icon: 'hourglass_empty', color: 'text-amber-500' },
-  { value: 'menunggu_pemilihan_buyer', label: 'Quoted', icon: 'request_quote', color: 'text-indigo-500' },
-  { value: 'sedang_diproses', label: 'Processing', icon: 'conveyor_belt', color: 'text-blue-500' },
-  { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', color: 'text-purple-500' },
-  { value: 'selesai', label: 'Completed', icon: 'task_alt', color: 'text-emerald-500' },
-  { value: 'batal', label: 'Rejected', icon: 'cancel', color: 'text-rose-500' }
-]
+const statusOptions = computed(() => [
+  { value: 'menunggu_penawaran_admin', label: t('status.menunggu_penawaran_admin'), icon: 'hourglass_empty', color: 'text-amber-500' },
+  { value: 'menunggu_pemilihan_buyer', label: t('status.menunggu_pemilihan_buyer'), icon: 'request_quote', color: 'text-indigo-500' },
+  { value: 'sedang_diproses', label: t('status.processing'), icon: 'conveyor_belt', color: 'text-blue-500' },
+  { value: 'dikirim', label: t('status.dikirim'), icon: 'local_shipping', color: 'text-purple-500' },
+  { value: 'selesai', label: t('status.selesai'), icon: 'task_alt', color: 'text-emerald-500' },
+  { value: 'batal', label: t('status.batal'), icon: 'cancel', color: 'text-rose-500' }
+])
 
 const filteredRequests = computed(() => {
   let result = requests.value
@@ -504,20 +506,7 @@ const getStatusBadgeClass = (status) => {
 }
 
 const formatStatusLabel = (status) => {
-  const map = {
-    'menunggu_penawaran_admin': 'PENDING',
-    'menunggu_pemilihan_buyer': 'QUOTED',
-    'menunggu_kesepakatan_final': 'QUOTED',
-    'menunggu_pembayaran': 'PROCESSING',
-    'menunggu_verifikasi_pembayaran': 'PROCESSING',
-    'sedang_diproses': 'PROCESSING',
-    'dikirim': 'SHIPPED',
-    'menunggu_verifikasi_admin': 'SHIPPED',
-    'selesai': 'COMPLETED',
-    'batal': 'REJECTED',
-    'dispute': 'DISPUTE'
-  }
-  return map[status] || status.toUpperCase()
+  return t(`status.${status.toLowerCase()}`) || status.toUpperCase()
 }
 
 const formatDate = (dateStr) => {

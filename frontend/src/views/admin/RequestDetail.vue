@@ -6,12 +6,12 @@
       <!-- Header Area inside Main -->
       <header class="flex justify-between items-end gap-6 mb-8">
         <div>
-         <button @click="goBack" class="flex items-center gap-2 text-[#4f378a] dark:text-white hover:underline mb-2 font-semibold transition-colors duration-200">
-  <span class="material-symbols-outlined text-[#4f378a] dark:text-white">arrow_back</span>
-  Back
-</button>
-<h2 class="text-[40px] leading-[1.1] tracking-[-0.02em] font-extrabold text-slate-900 dark:text-white">Request Detail</h2>
-<p class="text-[16px] leading-[1.6] font-normal text-[#494551] dark:text-white">Manage options and timeline</p>
+          <button @click="goBack" class="flex items-center gap-2 text-[#4f378a] dark:text-white hover:underline mb-2 font-semibold transition-colors duration-200">
+            <span class="material-symbols-outlined text-[#4f378a] dark:text-white">arrow_back</span>
+            {{ $t('common.back') }}
+          </button>
+          <h2 class="text-[40px] leading-[1.1] tracking-[-0.02em] font-extrabold text-slate-900 dark:text-white">{{ $t('order_detail.title') }}</h2>
+          <p class="text-[16px] leading-[1.6] font-normal text-[#494551] dark:text-white">{{ $t('order_detail.manage_desc') }}</p>
         </div>
         <div class="flex gap-4 items-center">
           <LanguageSwitcher />
@@ -37,7 +37,7 @@
               <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">{{ request.product_name }}</h1>
             </div>
             <span :class="['font-extrabold text-xs px-3.5 py-1.5 rounded-full text-white self-start shadow-xs', getStatusClass(request.status)]">
-              {{ request.status.replace(/_/g, ' ').toUpperCase() }}
+              {{ $t(`status.${request.status.toLowerCase()}`) }}
             </span>
           </div>
         </div>
@@ -71,19 +71,19 @@
                 <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">person</span>
                 </div>
-                <h2 class="text-lg font-black text-slate-900 dark:text-white">Buyer Information</h2>
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.buyer_info') }}</h2>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">Name</p>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">{{ $t('order_detail.name') }}</p>
                   <p class="font-bold text-sm text-slate-900 dark:text-white">{{ request.buyer_name }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">Company</p>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">{{ $t('order_detail.company') }}</p>
                   <p class="font-bold text-sm text-slate-900 dark:text-white">{{ request.buyer_company }}</p>
                 </div>
                 <div class="sm:col-span-2">
-                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">Email</p>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">{{ $t('order_detail.email') }}</p>
                   <p class="font-bold text-sm text-indigo-600 dark:text-indigo-400 font-mono">{{ request.buyer_email }}</p>
                 </div>
               </div>
@@ -95,7 +95,7 @@
                 <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">inventory_2</span>
                 </div>
-                <h2 class="text-lg font-black text-slate-900 dark:text-white">INFORMASI PRODUK</h2>
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.product_info') }}</h2>
               </div>
               <div class="space-y-4">
                 <div>
@@ -105,7 +105,7 @@
                   </p>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/60 dark:border-slate-700/60">
-                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Deskripsi & Spesifikasi Teknis:</h4>
+                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ $t('order_detail.desc_spec') }}</h4>
                   <p class="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed font-medium">{{ request.specifications || '-' }}</p>
                 </div>
               </div>
@@ -117,24 +117,24 @@
                 <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">verified</span>
                 </div>
-                <h2 class="text-lg font-black text-slate-900 dark:text-white">KUALITAS & SERTIFIKASI</h2>
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.quality_cert') }}</h2>
               </div>
               <div class="space-y-4">
                 <div>
-                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Persyaratan Kualitas:</h4>
+                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ $t('order_detail.quality_reqs') }}</h4>
                   <div class="flex gap-2 items-start bg-emerald-50 dark:bg-emerald-950/40 p-3.5 rounded-2xl border border-emerald-100 dark:border-emerald-900/50">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[18px] mt-0.5">task_alt</span>
-                    <p class="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium">{{ request.quality_requirements || 'Tidak ada persyaratan khusus' }}</p>
+                    <p class="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-line font-medium">{{ request.quality_requirements || $t('order_detail.no_special_reqs') }}</p>
                   </div>
                 </div>
                 <div>
-                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Sertifikasi Dibutuhkan:</h4>
+                  <h4 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ $t('order_detail.cert_needed') }}</h4>
                   <div v-if="request.certifications" class="flex flex-wrap gap-2">
                     <span v-for="cert in request.certifications.split(',')" :key="cert" class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-full border border-indigo-200 dark:border-indigo-900/50">
                       {{ cert.trim() }}
                     </span>
                   </div>
-                  <p v-else class="text-sm text-slate-400 dark:text-slate-500 italic">Tidak ada</p>
+                  <p v-else class="text-sm text-slate-400 dark:text-slate-500 italic">{{ $t('order_detail.none') }}</p>
                 </div>
               </div>
             </div>
@@ -145,27 +145,27 @@
                 <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">local_shipping</span>
                 </div>
-                <h2 class="text-lg font-black text-slate-900 dark:text-white">BUDGET & LOGISTIK</h2>
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.budget_logistics') }}</h2>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                 <div class="py-2 border-b border-slate-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Quantity</span>
+                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{{ $t('order_detail.quantity') }}</span>
                   <span class="text-sm font-bold text-slate-900 dark:text-white">{{ request.quantity }} {{ request.unit || 'units' }}</span>
                 </div>
                 <div class="py-2 border-b border-slate-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Target Delivery</span>
+                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{{ $t('order_detail.target_delivery') }}</span>
                   <span class="text-sm font-bold text-slate-900 dark:text-white">{{ request.delivery_timeline ? formatDate(request.delivery_timeline).split(',')[0] : '-' }}</span>
                 </div>
                 <div class="py-2 border-b border-slate-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Budget Range</span>
+                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{{ $t('order_detail.budget_range') }}</span>
                   <span class="text-sm font-black text-indigo-600 dark:text-indigo-400">{{ request.currency || 'USD' }} {{ request.budget_range }}</span>
                 </div>
                 <div class="py-2 border-b border-slate-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Shipping</span>
+                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{{ $t('order_detail.shipping') }}</span>
                   <span class="text-sm font-bold text-slate-900 dark:text-white">{{ request.shipping_terms || '-' }}</span>
                 </div>
                 <div class="py-2 sm:col-span-2">
-                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Payment</span>
+                  <span class="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{{ $t('order_detail.payment') }}</span>
                   <span class="text-sm font-bold text-slate-900 dark:text-white">{{ request.payment_terms || '-' }}</span>
                 </div>
               </div>
@@ -177,7 +177,11 @@
                 <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                   <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">attach_file</span>
                 </div>
-                <h2 class="text-lg font-black text-slate-900 dark:text-white">LAMPIRAN ({{ request.image_urls ? request.image_urls.length : 0 }} file)</h2>
+                <h2 class="text-lg font-black text-slate-900 dark:text-white">
+                  {{ request.image_urls && request.image_urls.length === 1 
+                     ? $t('order_detail.attachments_count', { count: request.image_urls.length })
+                     : $t('order_detail.attachments_count_plural', { count: request.image_urls ? request.image_urls.length : 0 }) }}
+                </h2>
               </div>
               <div v-if="request.image_urls && request.image_urls.length > 0" class="flex flex-col gap-3">
                 <a v-for="(file, idx) in request.image_urls" :key="idx" :href="getMediaUrl(file)" target="_blank" class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
@@ -186,13 +190,13 @@
                   </div>
                   <div class="flex-1 overflow-hidden">
                     <p class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
-                    <p class="text-xs text-slate-400">Click to view</p>
+                    <p class="text-xs text-slate-400">{{ $t('order_detail.click_view') }}</p>
                   </div>
                   <span class="material-symbols-outlined text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">open_in_new</span>
                 </a>
               </div>
               <div v-else class="text-center py-6 text-slate-400 dark:text-slate-500 text-sm italic">
-                Tidak ada lampiran
+                {{ $t('order_detail.no_attachments') }}
               </div>
             </div>
 
@@ -203,10 +207,10 @@
                   <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">list_alt</span>
                   </div>
-                  <h2 class="text-lg font-black text-slate-900 dark:text-white">Product Options</h2>
+                  <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.product_options') }}</h2>
                 </div>
                 <button v-if="['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer'].includes(request.status)" @click="showOptionsModal = true" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
-                  <span class="material-symbols-outlined text-base">add</span> + Add Option
+                  <span class="material-symbols-outlined text-base">add</span> + {{ $t('order_detail.add_option') }}
                 </button>
               </div>
               
@@ -243,24 +247,24 @@
                     
                     <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 rounded-2xl p-3.5 mb-3">
                       <div class="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-extrabold text-xs mb-1">
-                        <span class="material-symbols-outlined text-base">stars</span> Admin's Recommendation
+                        <span class="material-symbols-outlined text-base">stars</span> {{ $t('order_detail.admin_recommendation') }}
                       </div>
                       <p class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium">{{ opt.admin_reason }}</p>
                     </div>
                     
                     <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs sm:text-sm">
                       <div>
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">Price</span>
+                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.price') }}</span>
                         <span class="font-black text-indigo-600 dark:text-indigo-400">
                           {{ opt.is_fixed_price ? 'USD ' + opt.price_min + ' (Fixed)' : 'USD ' + opt.price_min + ' - ' + opt.price_max + ' (Range)' }}
                         </span>
                       </div>
                       <div v-if="opt.target_delivery">
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">Target</span>
+                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.target') }}</span>
                         <span class="font-bold text-slate-800 dark:text-slate-200">{{ formatDate(opt.target_delivery).split(',')[0] }}</span>
                       </div>
                       <div v-if="opt.shipping_method">
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">Shipping</span>
+                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.shipping') }}</span>
                         <div class="flex items-center gap-3">
                           <span v-if="['sea', 'both'].includes(opt.shipping_method)" class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1"><span class="material-symbols-outlined text-base text-blue-500">directions_boat</span> {{ opt.est_time_sea }}</span>
                           <span v-if="['air', 'both'].includes(opt.shipping_method)" class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1"><span class="material-symbols-outlined text-base text-cyan-500">flight</span> {{ opt.est_time_air }}</span>
@@ -271,7 +275,7 @@
                 </div>
               </div>
               <div v-else class="text-center py-6 text-slate-400 dark:text-slate-500 text-sm">
-                No options added yet. Please source from suppliers and add options for the buyer.
+                {{ $t('order_detail.no_options_admin') }}
               </div>
             </div>
 
@@ -289,7 +293,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
               <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                 <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">admin_panel_settings</span>
-                Admin Operations
+                {{ $t('order_detail.admin_ops') }}
               </h3>
               <div class="space-y-3">
                 
@@ -317,10 +321,90 @@
                   </div>
                 </div>
 
+                <!-- Driver Assignment Section -->
+                <div v-if="['menunggu_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin'].includes(request.status)" class="bg-gradient-to-br from-indigo-50/80 to-purple-50/40 dark:from-indigo-950/30 dark:to-purple-950/20 border border-indigo-200/60 dark:border-indigo-800/60 rounded-2xl p-4 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-lg text-indigo-600 dark:text-indigo-400">local_shipping</span>
+                      <h4 class="text-xs font-extrabold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">Driver Assignment</h4>
+                    </div>
+                  </div>
+
+                  <!-- Currently assigned driver info -->
+                  <div v-if="request.assigned_driver" class="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-900/60 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-lg">person</span>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                      <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ request.assigned_driver.name }}</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">{{ request.assigned_driver.email }}</p>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase">
+                      {{ request.delivery_method === 'sea' ? 'Sea' : request.delivery_method === 'air' ? 'Air' : 'Trusted Provider' }}
+                    </span>
+                  </div>
+                  <div v-else-if="request.delivery_method === 'trusted_provider'" class="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-900/60 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+                    <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-lg">verified_user</span>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-xs font-bold text-slate-900 dark:text-white">Trusted Provider</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400">Delivery handled by our trusted provider (no driver assigned)</p>
+                    </div>
+                  </div>
+
+                  <!-- Driver selection form -->
+                  <div class="space-y-2">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Delivery Method</label>
+                    <div class="grid grid-cols-3 gap-2">
+                      <label :class="['flex items-center justify-center gap-1.5 px-3 py-2 border rounded-xl cursor-pointer text-xs font-bold transition-all', driverForm.delivery_method === 'sea' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300']">
+                        <input type="radio" v-model="driverForm.delivery_method" value="sea" class="sr-only" />
+                        <span class="material-symbols-outlined text-base">directions_boat</span>
+                        Sea
+                      </label>
+                      <label :class="['flex items-center justify-center gap-1.5 px-3 py-2 border rounded-xl cursor-pointer text-xs font-bold transition-all', driverForm.delivery_method === 'air' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300']">
+                        <input type="radio" v-model="driverForm.delivery_method" value="air" class="sr-only" />
+                        <span class="material-symbols-outlined text-base">flight</span>
+                        Air
+                      </label>
+                      <label :class="['flex items-center justify-center gap-1.5 px-3 py-2 border rounded-xl cursor-pointer text-xs font-bold transition-all', driverForm.delivery_method === 'trusted_provider' ? 'bg-purple-600 text-white border-purple-600' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300']">
+                        <input type="radio" v-model="driverForm.delivery_method" value="trusted_provider" class="sr-only" />
+                        <span class="material-symbols-outlined text-base">verified_user</span>
+                        Trusted
+                      </label>
+                    </div>
+
+                    <div v-if="driverForm.delivery_method !== 'trusted_provider'">
+                      <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Select Driver</label>
+                      <select v-model="driverForm.assigned_driver_id" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/30">
+                        <option value="">-- Select a driver --</option>
+                        <option v-for="d in availableDrivers" :key="d.id" :value="d.id">{{ d.name }} ({{ d.email }})</option>
+                      </select>
+                      <p v-if="availableDrivers.length === 0" class="text-[10px] text-amber-600 dark:text-amber-400 mt-1">No active drivers available. Create one in the Drivers page or use "Trusted Provider".</p>
+                    </div>
+
+                    <button @click="assignDriver" :disabled="loadingDriver || (driverForm.delivery_method !== 'trusted_provider' && !driverForm.assigned_driver_id)" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors font-bold text-xs cursor-pointer disabled:opacity-50">
+                      <span v-if="loadingDriver" class="material-symbols-outlined animate-spin text-base">progress_activity</span>
+                      <span v-else class="material-symbols-outlined text-base">local_shipping</span>
+                      {{ request.assigned_driver_id || request.delivery_method === 'trusted_provider' ? 'Reassign Driver' : 'Assign Driver' }}
+                    </button>
+                  </div>
+                </div>
+
                 <button v-if="request.status === 'sedang_diproses'" @click="shipOrder" :disabled="loadingAction" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-2xl transition-colors font-bold text-xs sm:text-sm cursor-pointer disabled:opacity-50">
                   <span class="material-symbols-outlined text-lg">local_shipping</span>
                   Kirim Barang (Ship)
                 </button>
+
+                <div v-if="request.status === 'menunggu_penawaran_admin'" class="space-y-3">
+                  <div class="text-xs text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-2xl border border-indigo-200 dark:border-indigo-900/50">
+                    {{ $t('order_detail.proceed_choice_hint') }}
+                  </div>
+                  <button @click="proceedToNegotiate" :disabled="loadingAction" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white rounded-2xl transition-all font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50">
+                    <span class="material-symbols-outlined text-lg">forward_to_inbox</span>
+                    {{ $t('order_detail.proceed_to_negotiate') }}
+                  </button>
+                </div>
 
                 <div v-if="request.status === 'menunggu_verifikasi_admin'" class="space-y-3">
                   <div class="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200 dark:border-amber-900/50">
@@ -333,7 +417,7 @@
                 </div>
                 
                 <div v-if="['selesai', 'batal', 'dispute', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_pembayaran'].includes(request.status)" class="text-xs text-slate-400 italic text-center py-2">
-                  No action required at this stage or waiting for buyer.
+                  {{ $t('order_detail.no_action_required') }}
                 </div>
 
               </div>
@@ -359,7 +443,7 @@
                   </div>
                   <div class="flex-1 pb-4">
                     <p :class="['font-bold text-xs sm:text-sm', idx === trackingLogs.length - 1 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-800 dark:text-slate-200']">
-                      {{ log.status.replace(/_/g, ' ').toUpperCase() }}
+                      {{ $t(`status.${log.status.toLowerCase()}`) }}
                     </p>
                     <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{{ formatDate(log.created_at) }}</p>
                     <p v-if="log.notes" class="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{{ log.notes }}</p>
@@ -639,7 +723,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import ChatComponent from '../../components/chat/ChatComponent.vue'
@@ -787,7 +871,8 @@ const getOptionImages = (opt) => {
     if (!img) return ''
     if (typeof img !== 'string') return ''
     if (img.startsWith('http')) return img
-    return `${window.location.protocol}//${window.location.hostname}:5000${img.startsWith('/') ? '' : '/'}${img}`
+    // Use relative path so it resolves through Vite dev server / Nginx proxy
+    return img.startsWith('/') ? img : `/${img}`
   }).filter(Boolean)
 }
 
@@ -839,7 +924,21 @@ onMounted(() => {
   updateDeviceType()
   window.addEventListener('resize', updateDeviceType)
   loadData()
+  loadAvailableDrivers()
 })
+
+// Watch for request load to refresh driver info in form
+watch(request, (newReq) => {
+  if (newReq) {
+    // Pre-fill driver form with existing assignment if any
+    if (newReq.delivery_method) {
+      driverForm.value.delivery_method = newReq.delivery_method
+    }
+    if (newReq.assigned_driver_id) {
+      driverForm.value.assigned_driver_id = newReq.assigned_driver_id
+    }
+  }
+}, { deep: true })
 onUnmounted(() => window.removeEventListener('resize', updateDeviceType))
 
 const addToPending = () => {
@@ -1008,8 +1107,8 @@ const finalizeForm = ref({
 const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
-  const backendUrl = window.location.origin.replace('5173', '5000')
-  return `${backendUrl}${path.startsWith('/') ? '' : '/'}${path}`
+  // Use relative path so it resolves through Vite dev server / Nginx proxy
+  return path.startsWith('/') ? path : `/${path}`
 }
 
 const handleQrSelect = (e) => {
@@ -1111,6 +1210,60 @@ const completeOrder = async () => {
     showToast(e.response?.data?.message || 'Failed');
   } finally {
     loadingAction.value = false;
+  }
+}
+
+const proceedToNegotiate = async () => {
+  if (!confirm('Lanjut langsung ke fase negosiasi tanpa memberikan opsi terpisah?')) return;
+  loadingAction.value = true;
+  try {
+    await adminService.proceedToNegotiate(request.value.id);
+    showToast('Status berubah ke fase negosiasi', 'success');
+    await loadData();
+  } catch (e) {
+    showToast(e.response?.data?.message || 'Failed to proceed');
+  } finally {
+    loadingAction.value = false;
+  }
+}
+
+// [NEW Driver Role] Driver Assignment
+const driverForm = ref({
+  delivery_method: 'sea',
+  assigned_driver_id: ''
+})
+const availableDrivers = ref([])
+const loadingDriver = ref(false)
+
+const loadAvailableDrivers = async () => {
+  try {
+    availableDrivers.value = await adminService.getAvailableDrivers()
+  } catch (e) {
+    console.error('Failed to load drivers:', e)
+  }
+}
+
+const assignDriver = async () => {
+  if (driverForm.value.delivery_method !== 'trusted_provider' && !driverForm.value.assigned_driver_id) {
+    return showToast('Please select a driver')
+  }
+  if (!confirm(`Konfirmasi: ${driverForm.value.delivery_method === 'trusted_provider' ? 'Kirim via Trusted Provider' : 'Tugaskan driver ini'}?`)) return
+  loadingDriver.value = true
+  try {
+    const payload = {
+      delivery_method: driverForm.value.delivery_method,
+      assigned_driver_id: driverForm.value.delivery_method === 'trusted_provider' ? null : driverForm.value.assigned_driver_id
+    }
+    const updated = await adminService.assignDriver(request.value.id, payload)
+    // Refresh full request to get assigned_driver nested object
+    await loadData()
+    showToast(driverForm.value.delivery_method === 'trusted_provider' 
+      ? 'Pengiriman dialihkan ke Trusted Provider' 
+      : 'Driver berhasil ditugaskan!', 'success')
+  } catch (e) {
+    showToast(e.response?.data?.message || 'Failed to assign driver')
+  } finally {
+    loadingDriver.value = false
   }
 }
 

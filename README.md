@@ -1,117 +1,236 @@
-# 🌍 AfriChina Bridge - Web Platform
+# 🌍 AfriChina Bridge — Web Platform
 
-**Digital Supply Chain & Sourcing Platform between Africa and China**
+**Digital Supply Chain & Sourcing Platform connecting Africa and China**
 
 ![Status](https://img.shields.io/badge/status-Active-brightgreen?style=flat-square)
 ![Version](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)
-![Architecture](https://img.shields.io/badge/architecture-Node.js%20%7C%20Express%20%7C%20Vue%203%20%7C%20PostgreSQL-indigo?style=flat-square)
+![Architecture](https://img.shields.io/badge/architecture-Laravel%2013%20%7C%20Vue%203%20%7C%20MySQL-indigo?style=flat-square)
 
 ---
 
-## 🛠️ Technical Stack & Architecture
+## 🛠️ Technical Stack
 
-- **Backend**: Node.js ES Modules, Express.js 5.x, PostgreSQL 14+ via `pg` pool (strictly parameterized queries).
-- **Frontend**: Vue 3 Composition API (`<script setup>`), Vite 8, Vue Router, TailwindCSS.
-- **Real-time Engine**: `socket.io` v4.8.3 with Room Isolation (`room:nego-{negotiationId}`) and JWT handshake authentication.
-- **Cloud Storage Abstraction**: `StorageService` supporting `LocalStorageDriver` and `S3StorageDriver` (configurable via `.env`).
-- **Icons**: Local offline `Material Symbols Outlined` variable font (`.woff2`) to optimize FCP and eliminate CDN latency.
+| Layer | Technology |
+|---|---|
+| **Backend** | Laravel 13 (PHP 8.3), MySQL 8+, Sanctum (SPA auth) |
+| **Frontend** | Vue 3 Composition API, Vite, TailwindCSS, Vue Router |
+| **Real-time** | Laravel Reverb (WebSocket) |
+| **Auth** | Sanctum token-based; temp-password forced-reset flow |
+| **Icons** | Local Material Symbols (offline `.woff2`) |
 
 ---
 
-## 🔑 Environment Variables Setup
+## ⚙️ Prerequisites
 
-Create `.env` in the `backend/` directory:
+- PHP 8.3+ with extensions: `pdo_mysql`, `openssl`, `mbstring`, ` tokenizer`, `xml`, `ctype`, `json`
+- Composer 2.x
+- Node.js 20+ & npm
+- MySQL 8+ (or MariaDB 10.6+)
+- Git
+
+---
+
+## � Local Setup
+
+### 1. Clone & install backend dependencies
+
+```bash
+cd backend
+composer install
+cp .env.example .env
+# Edit .env — set DB_* credentials for your local MySQL instance
+php artisan key:generate
+php artisan migrate --force
+```
+
+> **Database:** The `DB_*` vars in `backend/.env` must point to your MySQL server.
+> Example for a local MySQL on the default port with user `root` and password `secret`:
+> ```
+> DB_CONNECTION=mysql
+> DB_HOST=127.0.0.1
+> DB_PORT=3306
+> DB_DATABASE=africhina
+> DB_USERNAME=root
+> DB_PASSWORD=secret
+> ```
+
+### 2. (Optional) Run database seeders
+
+```bash
+php artisan db:seed
+```
+
+### 3. Install frontend dependencies
+
+```bash
+cd ../frontend
+npm install
+cp .env.production.example .env
+# Set VITE_API_BASE_URL if your Laravel API runs on a non-default port.
+# Default: http://localhost:8000/api
+```
+
+### 4. Run the development servers
+
+```bash
+# Terminal 1 — Laravel API + Reverb (WebSocket)
+cd backend
+php artisan serve --port=8000
+
+# Terminal 2 — Vite dev server (frontend)
+cd frontend
+npm run dev
+```
+
+The frontend is served at `http://localhost:5173` and proxies API calls to
+`http://localhost:8000`. All requests are forced to `Accept: application/json`
+so no HTML error pages are ever returned.
+
+---
+
+## 🔐 Authentication Flow
+
+The platform uses **Laravel Sanctum** with bearer tokens. The flow:
+
+1. **Login** — `POST /api/auth/login` → returns `{ user, token }`.
+   - The token is stored in `localStorage` (`auth_token`) and sent as an
+     `Authorization: Bearer <token>` header.
+   - If the user has a temporary password, `mustChangePassword: true` is
+     returned and the token ability is scoped to `must-change-password`.
+2. **Forced password change** — users with `mustChangePassword: true` are
+   redirected to `/set-new-password` on the frontend and can only call
+   `POST /api/auth/change-password`.
+3. **Logout** — `POST /api/auth/logout` revokes the current token.
+
+### Temporary Password (Admin-Managed Reset)
+
+> [!IMPORTANT]
+> This app does **NOT** send automated password-reset emails.
+> All resets go through the admin.
+
+| Actor | Action |
+|---|---|
+| Buyer | Contacts admin offline; requests password reset. |
+| Admin | Logs in → Buyer profile → **Generate Temporary Password** |
+| Admin | Sends the 12-char code to the buyer via a secure channel. |
+| Buyer | Logs in at `/login` → redirected to `/set-new-password` → sets new password. |
+
+---
+
+## 🌐 Environment Variables
+
+### Backend (`backend/.env`)
 
 ```env
-PORT=5000
-NODE_ENV=production
-JWT_SECRET=your_super_secret_jwt_key_here
+# Application
+APP_KEY=base64:<your-key>
+APP_ENV=local          # production for deployment
+APP_DEBUG=true         # false in production
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=africhina
+DB_USERNAME=root
+DB_PASSWORD=<your-password>
+
+# CORS — comma-separated list of trusted origins (no trailing slash)
 CORS_ORIGINS=http://localhost:5173,http://localhost:5000
 
-# Database Configuration
-DATABASE_URL=postgres://postgres:password@localhost:5432/africhina
+# Sanctum / Auth
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
 
-# Cloud Storage Abstraction (local or s3)
-STORAGE_DRIVER=local
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_REGION=us-east-1
-AWS_S3_BUCKET=africhina-bucket
+# Temporary password expiry (hours)
+TEMP_PASSWORD_EXPIRY_HOURS=24
+```
+
+### Frontend (`frontend/.env`)
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
 ---
 
-## 🗄️ PostgreSQL Database Migrations
+## 🗄️ Migrations
 
-Apply performance indexes, check constraints, and temporary password schema fields:
+Laravel migrations create the complete schema. Run after each `git pull`:
 
 ```bash
-# Execute migration 001 for indexes & CHECK constraints
-psql $DATABASE_URL -f backend/migrations/001_add_indexes_and_constraints.sql
-
-# Execute migration 002 for temporary password fields
-psql $DATABASE_URL -f backend/migrations/002_add_temp_password_fields.sql
+cd backend
+php artisan migrate --force
 ```
+
+Additional SQL migrations in the root `migrations/` folder are **legacy**
+PostgreSQL scripts for the old Node.js backend and are not needed for the
+current Laravel backend.
 
 ---
 
-## 🎨 Local Material Symbols Icon Download
+## 🎨 Icons
 
-To eliminate Google Fonts CDN latency and ensure complete offline functionality:
+Material Symbols are bundled locally to eliminate Google Fonts CDN latency:
 
 ```bash
-# Download .woff2 font file and generate local CSS
+cd frontend
 npm run icons:download
 ```
 
-This populates `frontend/public/fonts/material-symbols.woff2` and `frontend/public/css/material-icons-local.css`.
-
 ---
 
-## 🧹 Maintenance & Cleanup
-
-Recursively delete obsolete `.bak` and `.tmp` files:
+## 🧪 Running Tests
 
 ```bash
-chmod +x cleanup.sh
-./cleanup.sh
+# Backend (PHPUnit)
+cd backend
+php artisan test
+
+# Frontend (Vitest)
+cd frontend
+npm run test
 ```
 
 ---
 
-## 📘 Admin Manual: Temporary Password Flow
+## 📁 Project Structure (key paths)
 
-> [!IMPORTANT]
-> **Mandatory Workflow**: This application does **NOT** use automated email password reset links.
+```
+backend/
+  app/Http/
+    Controllers/          # API controllers
+    Middleware/           # ForceJsonResponse, EnsurePasswordChanged, CheckAdminRole
+  config/
+    cors.php              # CORS settings
+  database/
+    migrations/           # Laravel migrations (authoritative schema)
+    factories/            # Test factories
+  routes/
+    api.php               # All API routes
+    web.php               # SPA fallback + file serving
 
-### Workflow Steps:
-1. **Buyer Request**: Buyer contacts Admin offline (via phone, WhatsApp, or email) stating they forgot their password.
-2. **Admin Action**:
-   - Log into the Admin Dashboard (`/admin/dashboard`).
-   - Locate the Buyer's sourcing request row or profile in the table.
-   - Click the **"Generate Temporary Password"** key icon (`key`).
-3. **Password Generation**:
-   - Click **"Generate Temporary Password"** in the modal.
-   - The server creates a cryptographically secure 12-character alphanumeric code, hashes it with bcrypt, and sets a strict 24-hour expiration (`temp_password_expires_at`).
-   - The plaintext code is returned in the API response **only once** for the Admin to copy.
-4. **Secure Communication**:
-   - Admin copies the temporary password and sends it directly to the Buyer via a secure communication channel.
-5. **Buyer First Login & Forced Password Change**:
-   - Buyer logs in at `/login` using their email and the temporary password.
-   - The system sets `mustChangePassword: true` in the JWT session.
-   - Buyer is automatically redirected to `/set-new-password`.
-   - Upon submitting a new permanent password, `temp_password_hash` and `temp_password_expires_at` are cleared to `NULL`.
-
----
-
-## 🧪 Running Unit Tests
-
-Run Vitest test suite for backend controllers, `StorageService`, and `useChat` composable:
-
-```bash
-npx vitest run
+frontend/
+  src/
+    api/                  # Axios + service modules (authService, requestService, …)
+    views/
+      buyer/              # Buyer-facing pages
+      admin/              # Admin-facing pages
+      auth/               # Login, SetNewPassword
+    router/index.js       # Vue Router with auth guards
+    locales/              # i18n (en, fr, zh, id)
 ```
 
 ---
 
-**© 2026 AfriChina Bridge – Building Cross-Continental Digital Trust**
+## 🔒 Security Notes
+
+- `Authorization: Bearer <token>` header is required on all protected routes.
+- CORS origins are validated strictly — wildcard (`*`) is never used.
+- HTML error pages are disabled for all `/api/*` routes.
+- Temporary passwords expire after 24 h and are hashed with bcrypt.
+- Token revocation on logout (`tokens()->delete()`).
+
+---
+
+**© 2026 AfriChina Bridge — Building Cross-Continental Digital Trust**

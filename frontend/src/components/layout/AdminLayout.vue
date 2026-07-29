@@ -31,49 +31,64 @@
       <nav class="flex-1 space-y-2 overflow-y-auto">
         <router-link 
           to="/admin/dashboard" 
-          class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+          class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
           :class="isActive('/admin/dashboard') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">dashboard</span>
           <span>{{ $t('nav.dashboard') }}</span>
+          <span v-if="hasNotifForRoute('dashboard')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </router-link>
 
         <router-link 
           to="/admin/suppliers" 
-          class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+          class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
           :class="isActive('/admin/suppliers') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">factory</span>
           <span>{{ $t('nav.suppliers') }}</span>
+          <span v-if="hasNotifForRoute('suppliers')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
+        </router-link>
+
+        <router-link 
+          to="/admin/drivers" 
+          class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+          :class="isActive('/admin/drivers') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+        >
+          <span class="material-symbols-outlined text-xl">local_shipping</span>
+          <span>{{ $t('nav.drivers') }}</span>
+          <span v-if="hasNotifForRoute('drivers')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </router-link>
 
         <router-link 
           to="/admin/ratings" 
-          class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+          class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
           :class="isActive('/admin/ratings') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">stars</span>
           <span>{{ $t('nav.ratings_moderation') }}</span>
+          <span v-if="hasNotifForRoute('ratings')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </router-link>
 
         <router-link 
           to="/admin/messages" 
-          class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+          class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
           :class="isActive('/admin/messages') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
         >
           <span class="material-symbols-outlined text-xl">forum</span>
           <span>{{ $t('nav.buyer_messages') }}</span>
+          <span v-if="hasNotifForRoute('messages')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </router-link>
 
         <div class="pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800">
           <p class="px-4 mb-2 text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ $t('nav.security_audit') }}</p>
           <router-link 
             to="/admin/security/password-resets" 
-            class="flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
+            class="relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200"
             :class="isActive('/admin/security/password-resets') ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
           >
             <span class="material-symbols-outlined text-xl">lock_reset</span>
             <span>{{ $t('nav.password_resets') }}</span>
+            <span v-if="hasNotifForRoute('password-resets')" class="absolute top-3.5 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
           </router-link>
         </div>
       </nav>
@@ -183,7 +198,7 @@
                     <div class="flex-1 overflow-hidden">
                       <p class="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">{{ notif.title }}</p>
                       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">{{ notif.message }}</p>
-                      <span class="text-[10px] text-slate-400 font-medium mt-1 block">{{ notif.time }}</span>
+                      <span class="text-[10px] text-slate-400 font-medium mt-1 block">{{ formatTimeAgo(notif.created_at) }}</span>
                     </div>
                     <span v-if="!notif.read" class="w-2 h-2 rounded-full bg-rose-500 shrink-0 mt-1"></span>
                   </div>
@@ -207,9 +222,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { io } from 'socket.io-client';
 import { useTheme } from '../../composables/useTheme';
 import { authService } from '../../api/authService';
 import LanguageSwitcher from '../LanguageSwitcher.vue';
+import { notificationService } from '../../api/notificationService';
 
 const route = useRoute();
 const router = useRouter();
@@ -222,25 +239,69 @@ const isDesktop = ref(window.innerWidth >= 1024);
 // Notifications state
 const isNotificationOpen = ref(false);
 const notifRef = ref(null);
-const notifications = ref([
-  { id: 1, title: 'New RFQ Submitted', message: 'Buyer Kwame Osei submitted RFQ #9402 for Solar Panels (500 units).', icon: 'request_quote', time: '15m ago', read: false },
-  { id: 2, title: 'Password Reset Requested', message: 'User Fatoumata Diallo requested a temporary password reset.', icon: 'lock_reset', time: '1h ago', read: false },
-  { id: 3, title: 'New Rating Submitted', message: 'Buyer Emmanuel Kiprono rated Supplier Guangzhou Machinery 5 stars.', icon: 'stars', time: '3h ago', read: true }
-]);
+const notifications = ref([]);
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.read).length);
+
+const fetchNotifications = async () => {
+  try {
+    notifications.value = await notificationService.getNotifications();
+  } catch (err) {
+    console.error('Failed to fetch notifications:', err);
+  }
+};
 
 const toggleNotifications = () => {
   isNotificationOpen.value = !isNotificationOpen.value;
 };
 
-const markAllAsRead = () => {
-  notifications.value.forEach(n => n.read = true);
+const markAllAsRead = async () => {
+  try {
+    await notificationService.markAllRead();
+    notifications.value.forEach(n => n.read = true);
+  } catch (err) {
+    console.error('Failed to mark all notifications as read:', err);
+  }
 };
 
-const readNotif = (notif) => {
-  notif.read = true;
+const readNotif = async (notif) => {
+  try {
+    await notificationService.markRead(notif.id);
+    notif.read = true;
+  } catch (err) {
+    console.error('Failed to mark notification as read:', err);
+  }
   isNotificationOpen.value = false;
+  if (notif.path) {
+    router.push(notif.path);
+  }
+};
+
+const hasNotifForRoute = (routeKey) => {
+  return notifications.value.some(n => !n.read && n.path && n.path.includes(routeKey));
+};
+
+const formatTimeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const seconds = Math.floor((new Date() - date) / 1000);
+  
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + ' yrs ago';
+  
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + ' mos ago';
+  
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + ' days ago';
+  
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + 'h ago';
+  
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + 'm ago';
+  
+  return seconds < 10 ? 'just now' : Math.floor(seconds) + 's ago';
 };
 
 const handleClickOutside = (e) => {
@@ -262,14 +323,49 @@ const handleResize = () => {
   }
 };
 
+let socketConnection = null;
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
   window.addEventListener('resize', handleResize);
+
+  fetchNotifications();
+
+  // Initialize Socket Connection
+  const token = localStorage.getItem('token') || '';
+  socketConnection = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+    auth: { token },
+    transports: ['websocket', 'polling']
+  });
+
+  // Listen to new-notification event
+  socketConnection.on('new-notification', (notif) => {
+    if (notif) {
+      if (notif.path === '/admin/messages' && route.path === '/admin/messages') {
+        notificationService.markRead(notif.id).catch(() => {});
+        return;
+      }
+      notifications.value.unshift(notif);
+    }
+  });
+
+  socketConnection.on('new-message', (msg) => {
+    const adminUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (msg && msg.sender_id !== adminUser.id && route.path !== '/admin/messages') {
+      const hasNotif = notifications.value.some(n => n.path === '/admin/messages' && !n.read);
+      if (!hasNotif) {
+        fetchNotifications();
+      }
+    }
+  });
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
   window.removeEventListener('resize', handleResize);
+  if (socketConnection) {
+    socketConnection.disconnect();
+  }
 });
 
 // Admin name

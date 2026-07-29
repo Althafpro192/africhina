@@ -6,14 +6,14 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ $t('nav.suppliers') }}</h1>
-          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Your network of verified Chinese manufacturers and suppliers.</p>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $t('buyer_suppliers.subtitle') }}</p>
         </div>
       </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
         <span class="material-symbols-outlined animate-spin text-indigo-600 dark:text-indigo-400 mb-4 text-4xl">progress_activity</span>
-        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Loading your supplier network...</p>
+        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $t('buyer_suppliers.loading') }}</p>
       </div>
 
       <!-- Empty State -->
@@ -21,15 +21,15 @@
         <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 text-slate-400">
           <span class="material-symbols-outlined text-4xl">business</span>
         </div>
-        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">No Connected Suppliers</h3>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">{{ $t('buyer_suppliers.no_suppliers_title') }}</h3>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-md leading-relaxed">
-          You haven't partnered with any suppliers yet. Verified factory profiles will automatically appear here when you accept quotes.
+          {{ $t('buyer_suppliers.no_suppliers_desc') }}
         </p>
         <button 
           @click="$router.push('/buyer/sourcing')" 
           class="px-6 py-3 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all"
         >
-          Start Sourcing
+          {{ $t('buyer_suppliers.start_sourcing') }}
         </button>
       </div>
 
@@ -47,7 +47,7 @@
             
             <span class="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
               <span class="material-symbols-outlined text-xs">verified</span>
-              {{ supplier.level || 'Verified' }}
+              {{ supplier.level || $t('buyer_suppliers.verified') }}
             </span>
           </div>
 
@@ -63,11 +63,11 @@
 
           <div class="grid grid-cols-2 gap-4 mt-auto border-t border-slate-100 dark:border-slate-800 pt-4 relative z-10">
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Orders</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">{{ $t('buyer_suppliers.total_orders') }}</span>
               <span class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{{ supplier.orderCount }}</span>
             </div>
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Total Volume</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">{{ $t('buyer_suppliers.total_volume') }}</span>
               <span class="text-base sm:text-lg font-black text-indigo-600 dark:text-indigo-400">${{ supplier.totalVolume.toLocaleString() }}</span>
             </div>
           </div>

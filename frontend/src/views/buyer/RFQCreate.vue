@@ -9,7 +9,7 @@
         </button>
         <div>
           <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{{ $t('request_details.title') }}</h1>
-          <p class="text-gray-500 dark:text-slate-400 mt-1 text-sm">Fill out the details below to receive quotes from verified suppliers.</p>
+          <p class="text-gray-500 dark:text-slate-400 mt-1 text-sm">{{ $t('rfq_create.subtitle') }}</p>
         </div>
       </div>
 
@@ -49,13 +49,13 @@
                   class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
                   required
                 >
-                  <option value="" disabled selected class="dark:bg-slate-900">Select category</option>
-                  <option value="electronics" class="dark:bg-slate-900">Electronics & Electrical</option>
-                  <option value="machinery" class="dark:bg-slate-900">Machinery & Equipment</option>
-                  <option value="textiles" class="dark:bg-slate-900">Textiles & Apparel</option>
-                  <option value="building" class="dark:bg-slate-900">Building Materials</option>
-                  <option value="automotive" class="dark:bg-slate-900">Automotive</option>
-                  <option value="chemicals" class="dark:bg-slate-900">Chemicals & Pharma</option>
+                  <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_category') }}</option>
+                  <option value="electronics" class="dark:bg-slate-900">{{ $t('rfq_create.categories.electronics') }}</option>
+                  <option value="machinery" class="dark:bg-slate-900">{{ $t('rfq_create.categories.machinery') }}</option>
+                  <option value="textiles" class="dark:bg-slate-900">{{ $t('rfq_create.categories.textiles') }}</option>
+                  <option value="building" class="dark:bg-slate-900">{{ $t('rfq_create.categories.building') }}</option>
+                  <option value="automotive" class="dark:bg-slate-900">{{ $t('rfq_create.categories.automotive') }}</option>
+                  <option value="chemicals" class="dark:bg-slate-900">{{ $t('rfq_create.categories.chemicals') }}</option>
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
@@ -63,7 +63,7 @@
 
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Sub-category
+                {{ $t('rfq_create.sub_category') }}
               </label>
               <input
                 v-model="form.subCategory"
@@ -101,7 +101,7 @@
             
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Quality Requirements
+                {{ $t('rfq_create.quality_requirements') }}
               </label>
               <textarea
                 v-model="form.qualityRequirements"
@@ -113,7 +113,7 @@
 
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Required Certifications
+                {{ $t('rfq_create.certifications') }}
               </label>
               <input
                 v-model="form.certifications"
@@ -131,7 +131,7 @@
             <div class="w-12 h-12 bg-gradient-to-br from-[#4f378a]/10 to-[#4f378a]/5 dark:from-indigo-500/20 dark:to-purple-500/20 rounded-xl flex items-center justify-center border border-[#4f378a]/10 dark:border-indigo-500/30">
               <span class="material-symbols-outlined text-[#4f378a] dark:text-indigo-400">payments</span>
             </div>
-            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Quantity, Budget & Logistics</h2>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ $t('rfq_create.qty_budget_logistics') }}</h2>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -153,10 +153,10 @@
                     class="w-full h-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
                     required
                   >
-                    <option value="pcs" class="dark:bg-slate-900">Pieces</option>
-                    <option value="kg" class="dark:bg-slate-900">Kg</option>
-                    <option value="ton" class="dark:bg-slate-900">Tons</option>
-                    <option value="m" class="dark:bg-slate-900">Meters</option>
+                    <option value="pcs" class="dark:bg-slate-900">{{ $t('rfq_create.units.pcs') }}</option>
+                    <option value="kg" class="dark:bg-slate-900">{{ $t('rfq_create.units.kg') }}</option>
+                    <option value="ton" class="dark:bg-slate-900">{{ $t('rfq_create.units.ton') }}</option>
+                    <option value="m" class="dark:bg-slate-900">{{ $t('rfq_create.units.m') }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
                 </div>
@@ -165,7 +165,7 @@
 
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Currency
+                {{ $t('rfq_create.currency') }}
               </label>
               <div class="relative">
                 <select
@@ -185,7 +185,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Target Budget Range
+                {{ $t('rfq_create.budget_range') }}
               </label>
               <div class="relative">
                 <select
@@ -193,7 +193,7 @@
                   class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
                   required
                 >
-                  <option value="" disabled selected class="dark:bg-slate-900">Select budget range</option>
+                  <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_budget') }}</option>
                   <option value="1k-5k" class="dark:bg-slate-900">1,000 - 5,000</option>
                   <option value="5k-20k" class="dark:bg-slate-900">5,000 - 20,000</option>
                   <option value="20k-100k" class="dark:bg-slate-900">20,000 - 100,000</option>
@@ -205,11 +205,12 @@
             
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Target Delivery Date
+                {{ $t('rfq_create.delivery_date') }}
               </label>
               <input
                 v-model="form.deliveryTimeline"
                 type="date"
+                :min="minDeliveryDate"
                 class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium"
                 required
               />
@@ -219,7 +220,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Shipping Terms
+                {{ $t('rfq_create.shipping_terms') }}
               </label>
               <div class="relative">
                 <select
@@ -227,7 +228,7 @@
                   class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
                   required
                 >
-                  <option value="" disabled selected class="dark:bg-slate-900">Select terms</option>
+                  <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_shipping') }}</option>
                   <option value="FOB" class="dark:bg-slate-900">FOB (Free on Board)</option>
                   <option value="CIF" class="dark:bg-slate-900">CIF (Cost, Insurance, Freight)</option>
                   <option value="EXW" class="dark:bg-slate-900">EXW (Ex Works)</option>
@@ -238,7 +239,7 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
-                Payment Terms
+                {{ $t('rfq_create.payment_terms') }}
               </label>
               <div class="relative">
                 <select
@@ -246,7 +247,7 @@
                   class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
                   required
                 >
-                  <option value="" disabled selected class="dark:bg-slate-900">Select payment</option>
+                  <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_payment') }}</option>
                   <option value="TT" class="dark:bg-slate-900">T/T (Telegraphic Transfer)</option>
                   <option value="LC" class="dark:bg-slate-900">L/C (Letter of Credit)</option>
                   <option value="DP" class="dark:bg-slate-900">D/P (Documents against Payment)</option>
@@ -288,7 +289,7 @@
             <p class="text-base text-gray-700 dark:text-slate-200 font-bold mb-1">
               {{ $t('request_details.upload_desc') }}
             </p>
-            <p class="text-sm text-gray-500 dark:text-slate-400">{{ $t('request_details.upload_hint') }} (Max 3 files, 10MB each)</p>
+            <p class="text-sm text-gray-500 dark:text-slate-400">{{ $t('request_details.upload_hint') }} {{ $t('rfq_create.max_files_hint') }}</p>
           </div>
 
           <!-- Uploaded Files Preview -->
@@ -357,7 +358,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
@@ -384,6 +385,13 @@ const form = ref({
 
 const uploadedFiles = ref([])
 const fileInput = ref(null)
+
+// Computed: minimum date is tomorrow
+const minDeliveryDate = computed(() => {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  return tomorrow.toISOString().split('T')[0]
+})
 
 // Methods
 const goBack = () => {
@@ -417,16 +425,36 @@ const processFiles = (files) => {
       return
     }
 
+    // Add the file immediately (synchronously) so it is available when
+    // the user submits, even if the preview hasn't finished rendering yet.
+    const entry = {
+      file: file,
+      name: file.name,
+      type: file.type,
+      preview: null
+    }
+    uploadedFiles.value.push(entry)
+
+    // Asynchronously generate the preview. If the read fails, we still
+    // keep the file because submitRequest uses entry.file, not the preview.
     const reader = new FileReader()
     reader.onload = (e) => {
-      uploadedFiles.value.push({
-        file: file,
-        name: file.name,
-        type: file.type,
-        preview: e.target.result
-      })
+      // Only update the preview slot; do not push again.
+      const idx = uploadedFiles.value.indexOf(entry)
+      if (idx !== -1) {
+        uploadedFiles.value[idx].preview = e.target.result
+      }
     }
-    reader.readAsDataURL(file)
+    reader.onerror = () => {
+      // Leave preview as null; non-image files (e.g. PDF) won't have a preview.
+      const idx = uploadedFiles.value.indexOf(entry)
+      if (idx !== -1) {
+        uploadedFiles.value[idx].preview = null
+      }
+    }
+    if (file.type.startsWith('image/')) {
+      reader.readAsDataURL(file)
+    }
   })
 }
 
@@ -460,7 +488,7 @@ const submitRequest = async () => {
 
     // Append up to 3 images as requested by backend route
     uploadedFiles.value.slice(0, 3).forEach(f => {
-      formData.append('images', f.file);
+      formData.append('images[]', f.file);
     });
 
     await requestService.createRequest(formData);

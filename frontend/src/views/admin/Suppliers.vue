@@ -5,10 +5,10 @@
       <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
           <h2 class="text-3xl sm:text-4xl font-black bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent tracking-tight">
-            Supplier Management
+            {{ $t('admin_suppliers.title') }}
           </h2>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Manage and verify your global Chinese manufacturing network.
+            {{ $t('admin_suppliers.subtitle') }}
           </p>
         </div>
         
@@ -18,7 +18,7 @@
             <input 
               v-model="searchQuery"
               class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 outline-none text-xs sm:text-sm shadow-sm transition-all" 
-              placeholder="Search suppliers..." 
+              :placeholder="$t('admin_suppliers.search_placeholder')" 
               type="text"
             />
           </div>
@@ -28,7 +28,7 @@
             class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all cursor-pointer"
           >
             <span class="material-symbols-outlined text-lg">add_business</span>
-            <span>Add Supplier</span>
+            <span>{{ $t('admin_suppliers.add_supplier') }}</span>
           </button>
         </div>
       </header>
@@ -36,35 +36,38 @@
       <!-- SUPPLIER TABLE SECTION -->
       <section class="bg-white/80 dark:bg-slate-900/80 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-slate-200/80 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-          <h4 class="text-base font-extrabold text-slate-900 dark:text-white">All Verified Suppliers</h4>
-          <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ filteredSuppliers.length }} suppliers</span>
+          <h4 class="text-base font-extrabold text-slate-900 dark:text-white">{{ $t('admin_suppliers.all_suppliers') }}</h4>
+          <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ filteredSuppliers.length }} {{ $t('admin_suppliers.count_suffix') }}</span>
         </div>
         
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="text-slate-400 dark:text-slate-500 uppercase text-[10px] font-bold tracking-widest bg-slate-50/80 dark:bg-slate-950/40 border-b border-slate-200/60 dark:border-slate-800">
-                <th class="px-6 py-4">Company Name</th>
-                <th class="px-6 py-4">Category</th>
-                <th class="px-6 py-4">Contact</th>
-                <th class="px-6 py-4">Verification</th>
-                <th class="px-6 py-4">Rating</th>
-                <th class="px-6 py-4 text-right">Actions</th>
+                <th class="px-6 py-4">{{ $t('admin_suppliers.company_name') }}</th>
+                <th class="px-6 py-4">{{ $t('admin_suppliers.category') }}</th>
+                <th class="px-6 py-4">{{ $t('admin_suppliers.contact') }}</th>
+                <th class="px-6 py-4">{{ $t('admin_suppliers.status') }}</th>
+                <th class="px-6 py-4">{{ $t('admin_suppliers.rating') }}</th>
+                <th class="px-6 py-4 text-right">{{ $t('admin_suppliers.actions') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800" v-if="!loading">
               <tr 
                 v-for="supplier in filteredSuppliers" 
                 :key="supplier.id" 
-                class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                :class="['group transition-colors', supplier.is_blocked ? 'bg-rose-50/40 dark:bg-rose-950/10 hover:bg-rose-50/70 dark:hover:bg-rose-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50']"
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                      <span class="material-symbols-outlined text-xl">business</span>
+                    <div :class="['w-10 h-10 rounded-xl border flex items-center justify-center shrink-0', supplier.is_blocked ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400' : 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400']">
+                      <span class="material-symbols-outlined text-xl">{{ supplier.is_blocked ? 'block' : 'business' }}</span>
                     </div>
                     <div>
-                      <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ supplier.company_name }}</p>
+                      <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        {{ supplier.company_name }}
+                        <span v-if="supplier.is_blocked" class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 uppercase">{{ $t('admin_suppliers.blocked') }}</span>
+                      </p>
                       <p class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">{{ supplier.factory_address }}</p>
                     </div>
                   </div>
@@ -82,11 +85,14 @@
                 </td>
 
                 <td class="px-6 py-4">
-                  <span v-if="supplier.verification_level?.includes('Verified') || supplier.verification_level === 'verified'" class="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center w-fit gap-1">
-                    <span class="material-symbols-outlined text-xs">verified</span> Verified
+                  <span v-if="supplier.is_blocked" class="bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center w-fit gap-1">
+                    <span class="material-symbols-outlined text-xs">block</span> {{ $t('admin_suppliers.blocked') }}
+                  </span>
+                  <span v-else-if="supplier.verification_level?.includes('Verified') || supplier.verification_level === 'verified'" class="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center w-fit gap-1">
+                    <span class="material-symbols-outlined text-xs">verified</span> {{ $t('admin_suppliers.active') }}
                   </span>
                   <span v-else class="bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center w-fit gap-1">
-                    <span class="material-symbols-outlined text-xs">pending</span> Basic
+                    <span class="material-symbols-outlined text-xs">pending</span> {{ $t('admin_suppliers.basic') }}
                   </span>
                 </td>
 
@@ -97,22 +103,31 @@
                   </div>
                 </td>
 
-                <td class="px-6 py-4 text-right flex justify-end gap-2">
-                  <button @click="openViewModal(supplier)" class="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                    View
+                <td class="px-6 py-4 text-right flex justify-end items-center gap-1.5">
+                  <button @click="openViewModal(supplier)" class="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    {{ $t('admin_suppliers.view') }}
                   </button>
-                  <button @click="openEditModal(supplier)" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline px-2.5 py-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors">
-                    Edit
+                  <button @click="openEditModal(supplier)" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline px-2 py-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors">
+                    {{ $t('admin_suppliers.edit') }}
                   </button>
-                  <button @click="deleteSupplierItem(supplier.id)" class="text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 px-2.5 py-1 rounded-lg transition-colors">
-                    Delete
+                  <button 
+                    @click="toggleBlockSupplierItem(supplier)" 
+                    :class="['text-xs font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer', supplier.is_blocked ? 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40' : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40']"
+                  >
+                    {{ supplier.is_blocked ? $t('admin_suppliers.unblock') : $t('admin_suppliers.block') }}
+                  </button>
+                  <button 
+                    @click="deleteSupplierItem(supplier)" 
+                    class="text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+                  >
+                    {{ $t('admin_suppliers.delete') }}
                   </button>
                 </td>
               </tr>
 
               <tr v-if="filteredSuppliers.length === 0">
                 <td colspan="6" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
-                  No suppliers found matching your query.
+                  {{ $t('admin_suppliers.no_suppliers') }}
                 </td>
               </tr>
             </tbody>
@@ -135,8 +150,8 @@
         <div :class="['bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
           <div class="flex justify-between items-start mb-6">
             <div>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ isViewing ? 'Supplier Details' : (isEditing ? 'Edit Supplier' : 'Add New Supplier') }}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Configure supplier verification and factory info</p>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ isViewing ? $t('admin_suppliers.supplier_details') : (isEditing ? $t('admin_suppliers.edit_supplier') : $t('admin_suppliers.add_new_supplier')) }}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $t('admin_suppliers.modal_subtitle') }}</p>
             </div>
             <button @click="closeModal" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
               <span class="material-symbols-outlined text-lg">close</span>
@@ -146,31 +161,31 @@
           <form @submit.prevent="saveSupplier" class="space-y-4 max-h-[65vh] overflow-y-auto pr-2 custom-scrollbar">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Company Name</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.company_name') }}</label>
                 <input v-model="form.company_name" required :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div>
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Category</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.category') }}</label>
                 <input v-model="form.category" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div>
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Contact Person</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.contact') }}</label>
                 <input v-model="form.contact_person" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div>
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Phone</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.phone') }}</label>
                 <input v-model="form.phone_china" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div class="col-span-1 sm:col-span-2">
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Email</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.email') }}</label>
                 <input v-model="form.email" type="email" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div class="col-span-1 sm:col-span-2">
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Factory Address</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.factory_address') }}</label>
                 <input v-model="form.factory_address" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
               </div>
               <div class="col-span-1 sm:col-span-2">
-                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Verification Level</label>
+                <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_suppliers.verification_level') }}</label>
                 <select v-model="form.verification_level" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60">
                   <option value="Level 1 - Basic">Level 1 - Basic</option>
                   <option value="Level 2 - Advanced">Level 2 - Advanced</option>
@@ -182,11 +197,11 @@
 
             <div class="flex justify-end gap-3 pt-4">
               <button type="button" @click="closeModal" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                {{ isViewing ? 'Close' : 'Cancel' }}
+                {{ isViewing ? $t('common.close') : $t('common.cancel') }}
               </button>
               <button v-if="!isViewing" type="submit" :disabled="saving" class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center gap-2">
                 <span v-if="saving" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                {{ isEditing ? 'Save Changes' : 'Save Supplier' }}
+                {{ isEditing ? $t('admin_suppliers.save_changes') : $t('admin_suppliers.save_supplier') }}
               </button>
             </div>
           </form>
@@ -201,6 +216,8 @@ import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
 
 import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import { supplierService } from '../../api/supplierService.js'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 
@@ -302,13 +319,34 @@ const saveSupplier = async () => {
   }
 }
 
-const deleteSupplierItem = async (id) => {
-  if (!confirm('Are you sure you want to delete this supplier?')) return
+const toggleBlockSupplierItem = async (supplier) => {
+  const actionText = supplier.is_blocked ? t('admin_suppliers.unblock') : t('admin_suppliers.block')
+  const confirmMsg = supplier.is_blocked 
+    ? t('admin_suppliers.unblock_confirm', { name: supplier.company_name })
+    : t('admin_suppliers.block_confirm', { name: supplier.company_name })
+  if (!confirm(confirmMsg)) return
   try {
-    await supplierService.remove(id)
+    const res = await supplierService.toggleBlock(supplier.id)
+    showToast(res.message || t('common.success'))
     await loadSuppliers()
   } catch (error) {
-    showToast(error.response?.data?.message || 'Failed to delete supplier')
+    showToast(error.response?.data?.message || t('common.error'))
+  }
+}
+
+const deleteSupplierItem = async (supplier) => {
+  const isUsed = Number(supplier.usage_count || 0) > 0
+  const confirmMsg = isUsed 
+    ? t('admin_suppliers.delete_block_confirm', { name: supplier.company_name })
+    : t('admin_suppliers.delete_confirm', { name: supplier.company_name })
+
+  if (!confirm(confirmMsg)) return
+  try {
+    const res = await supplierService.remove(supplier.id)
+    showToast(res.message || t('common.success'))
+    await loadSuppliers()
+  } catch (error) {
+    showToast(error.response?.data?.message || t('common.error'))
   }
 }
 </script>

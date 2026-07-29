@@ -74,7 +74,7 @@
                 <!-- Avatar -->
                 <img 
                   class="w-10 h-10 rounded-xl border border-indigo-500/30 object-cover shrink-0" 
-                  :src="getAvatarUrl(buyer.avatar_url, buyer.full_name)"
+                  :src="getAvatarUrl(buyer.avatar_url, buyer.full_name, buyer.id, buyer.avatar_data, buyer.avatar_mime_type)"
                   :alt="buyer.full_name"
                 />
                 <div class="flex-1 overflow-hidden">
@@ -120,7 +120,7 @@
               >
                 <img 
                   class="w-10 h-10 rounded-xl border border-indigo-500/30 object-cover shrink-0" 
-                  :src="getAvatarUrl(conv.buyer_avatar, conv.buyer_name)"
+                  :src="getAvatarUrl(conv.buyer_avatar, conv.buyer_name, conv.user_id, conv.buyer_avatar_data, conv.buyer_avatar_mime_type)"
                   alt="Buyer Avatar"
                 />
                 <div class="flex-1 overflow-hidden">
@@ -154,7 +154,7 @@
               <div class="flex items-center gap-3">
                 <img 
                   class="w-9 h-9 rounded-xl border border-indigo-500/30 object-cover" 
-                  :src="getAvatarUrl(chatHeaderAvatar, chatHeaderName)"
+                  :src="getAvatarUrl(chatHeaderAvatar, chatHeaderName, selectedBuyer?.id || selectedConv?.user_id, selectedBuyer?.avatar_data || selectedConv?.buyer_avatar_data, selectedBuyer?.avatar_mime_type || selectedConv?.buyer_avatar_mime_type)"
                   alt="Avatar"
                 />
                 <div>
@@ -229,6 +229,7 @@ import AdminLayout from '../../components/layout/AdminLayout.vue'
 import ChatComponent from '../../components/chat/ChatComponent.vue'
 import BuyerProfileModal from '../../components/admin/BuyerProfileModal.vue'
 import { adminService } from '../../api/adminService.js'
+import { getAvatarUrl } from '../../utils/avatar'
 
 const buyers = ref([])
 const conversations = ref([])
@@ -242,17 +243,6 @@ const activeThreadId = ref(null)
 // Profile modal
 const isProfileOpen = ref(false)
 const profileUserId = ref(null)
-
-const getAvatarUrl = (url, name) => {
-  if (!url) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=4f378a&color=fff`
-  if (url.startsWith('/uploads/avatar-')) {
-    url = url.replace('/uploads/avatar-', '/uploads/avatars/avatar-')
-  }
-  if (url.startsWith('/')) {
-    return `${window.location.protocol}//${window.location.hostname}:5000${url}`
-  }
-  return url
-}
 
 const formatDateShort = (dStr) => {
   if (!dStr) return ''

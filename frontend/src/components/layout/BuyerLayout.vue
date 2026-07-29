@@ -14,28 +14,32 @@
       <nav class="hidden lg:flex gap-4 xl:gap-6 items-center shrink-0">
         <button 
           @click="navigate('dashboard')" 
-          :class="['font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'dashboard' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
+          :class="['relative font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'dashboard' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
         >
           {{ $t('nav.dashboard') }}
+          <span v-if="hasNotifForRoute('dashboard')" class="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
         <button 
           @click="navigate('requests')" 
-          :class="['font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'requests' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
+          :class="['relative font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'requests' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
         >
           {{ $t('nav.requests') }}
+          <span v-if="hasNotifForRoute('requests') || hasNotifForRoute('rfq')" class="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
         <button 
           @click="navigate('sourcing')" 
-          :class="['font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'sourcing' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
+          :class="['relative font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl', activeRoute === 'sourcing' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
         >
           {{ $t('nav.sourcing') }}
+          <span v-if="hasNotifForRoute('sourcing')" class="absolute top-0 right-0 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
         <button 
           @click="navigate('messages')" 
-          :class="['font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
+          :class="['relative font-bold text-sm xl:text-base transition-colors duration-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white']"
         >
           <span class="material-symbols-outlined text-lg">forum</span>
           <span>{{ $t('nav.chat_admin') }}</span>
+          <span v-if="hasNotifForRoute('messages')" class="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
       </nav>
 
@@ -116,7 +120,7 @@
                   <div class="flex-1 overflow-hidden">
                     <p class="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">{{ notif.title }}</p>
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">{{ notif.message }}</p>
-                    <span class="text-[10px] text-slate-400 font-medium mt-1 block">{{ notif.time }}</span>
+                    <span class="text-[10px] text-slate-400 font-medium mt-1 block">{{ formatTimeAgo(notif.created_at) }}</span>
                   </div>
                   <span v-if="!notif.read" class="w-2 h-2 rounded-full bg-indigo-600 shrink-0 mt-1"></span>
                 </div>
@@ -129,7 +133,7 @@
         <div class="relative" ref="profileRef">
           <img 
             class="w-9 h-9 rounded-xl border-2 border-indigo-500/30 shadow-sm object-cover cursor-pointer hover:scale-105 transition-transform" 
-            :src="getAvatarUrl(user.avatar_url, user.full_name)"
+            :src="getAvatarUrl(user.avatar_url, user.full_name, user.id, user.avatar_data, user.avatar_mime_type)"
             alt="Profile"
             @click="toggleProfileMenu"
           />
@@ -185,50 +189,56 @@
       <nav class="flex-grow flex flex-col gap-1.5 p-3 overflow-y-auto">
         <button 
           @click="navigate('dashboard')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">dashboard</span>
           <span>{{ $t('nav.dashboard') }}</span>
+          <span v-if="hasNotifForRoute('dashboard')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
 
         <button 
           @click="navigate('requests')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'requests' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'requests' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">request_quote</span>
           <span>{{ $t('nav.requests') }}</span>
+          <span v-if="hasNotifForRoute('requests') || hasNotifForRoute('rfq')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
 
         <button 
           @click="navigate('sourcing')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'sourcing' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'sourcing' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">manage_search</span>
           <span>{{ $t('nav.sourcing') }}</span>
+          <span v-if="hasNotifForRoute('sourcing')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
 
         <button 
           @click="navigate('messages')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'messages' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'messages' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">forum</span>
           <span>{{ $t('nav.chat_admin') }}</span>
+          <span v-if="hasNotifForRoute('messages')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
 
         <button 
           @click="navigate('suppliers')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'suppliers' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'suppliers' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">factory</span>
           <span>{{ $t('nav.suppliers') }}</span>
+          <span v-if="hasNotifForRoute('suppliers')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
 
         <button 
           @click="navigate('settings')" 
-          :class="['flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'settings' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
+          :class="['relative flex items-center gap-3.5 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200', activeRoute === 'settings' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']"
         >
           <span class="material-symbols-outlined text-xl">settings</span>
           <span>{{ $t('nav.settings') }}</span>
+          <span v-if="hasNotifForRoute('settings')" class="absolute top-3 right-4 w-2 h-2 rounded-full bg-rose-500"></span>
         </button>
       </nav>
 
@@ -284,21 +294,25 @@
       v-if="isMobile"
       class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex justify-around py-2.5 px-2 z-40"
     >
-      <button @click="navigate('dashboard')" :class="['flex flex-col items-center p-1', activeRoute === 'dashboard' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
+      <button @click="navigate('dashboard')" :class="['relative flex flex-col items-center p-1', activeRoute === 'dashboard' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span class="text-[10px]">Dashboard</span>
+        <span v-if="hasNotifForRoute('dashboard')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
-      <button @click="navigate('requests')" :class="['flex flex-col items-center p-1', activeRoute === 'requests' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
+      <button @click="navigate('requests')" :class="['relative flex flex-col items-center p-1', activeRoute === 'requests' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">request_quote</span>
         <span class="text-[10px]">Requests</span>
+        <span v-if="hasNotifForRoute('requests') || hasNotifForRoute('rfq')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
-      <button @click="navigate('messages')" :class="['flex flex-col items-center p-1', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
+      <button @click="navigate('messages')" :class="['relative flex flex-col items-center p-1', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">forum</span>
         <span class="text-[10px]">Chat Admin</span>
+        <span v-if="hasNotifForRoute('messages')" class="absolute top-1 right-3 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
-      <button @click="navigate('settings')" :class="['flex flex-col items-center p-1', activeRoute === 'settings' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
+      <button @click="navigate('settings')" :class="['relative flex flex-col items-center p-1', activeRoute === 'settings' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">settings</span>
         <span class="text-[10px]">Settings</span>
+        <span v-if="hasNotifForRoute('settings')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
     </nav>
   </div>
@@ -307,24 +321,15 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { io } from 'socket.io-client'
 import LanguageSwitcher from '../LanguageSwitcher.vue'
 import { useTheme } from '../../composables/useTheme'
 import { authService } from '../../api/authService.js'
+import { notificationService } from '../../api/notificationService.js'
+import { getAvatarUrl } from '../../utils/avatar'
 
 const { isDark, toggleTheme } = useTheme()
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
-
-const getAvatarUrl = (url, name) => {
-  if (!url) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=6366f1&color=fff`
-  let path = url
-  if (path.startsWith('/uploads/avatar-')) {
-    path = path.replace('/uploads/avatar-', '/uploads/avatars/avatar-')
-  }
-  if (path.startsWith('/')) {
-    return `${window.location.protocol}//${window.location.hostname}:5000${path}`
-  }
-  return path
-}
 
 const props = defineProps({
   activeRoute: {
@@ -347,25 +352,69 @@ const router = useRouter()
 // Notifications State & Popover
 const isNotificationOpen = ref(false)
 const notifRef = ref(null)
-const notifications = ref([
-  { id: 1, title: 'New Supplier Quote Received', message: 'RFQ #9402 has received a verified factory quotation from Ningbo Tech.', icon: 'request_quote', time: '10m ago', read: false },
-  { id: 2, title: 'Logistics Update', message: 'Shipment #AF-8840 has passed customs inspection at Mombasa Port.', icon: 'local_shipping', time: '2h ago', read: false },
-  { id: 3, title: 'Account Verified', message: 'Your business license verification is completed successfully.', icon: 'verified', time: '1d ago', read: true }
-])
+const notifications = ref([])
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.read).length)
+
+const fetchNotifications = async () => {
+  try {
+    notifications.value = await notificationService.getNotifications()
+  } catch (err) {
+    console.error('Failed to fetch notifications:', err)
+  }
+}
 
 const toggleNotifications = () => {
   isNotificationOpen.value = !isNotificationOpen.value
 }
 
-const markAllAsRead = () => {
-  notifications.value.forEach(n => n.read = true)
+const markAllAsRead = async () => {
+  try {
+    await notificationService.markAllRead()
+    notifications.value.forEach(n => n.read = true)
+  } catch (err) {
+    console.error('Failed to mark all notifications as read:', err)
+  }
 }
 
-const readNotif = (notif) => {
-  notif.read = true
+const readNotif = async (notif) => {
+  try {
+    await notificationService.markRead(notif.id)
+    notif.read = true
+  } catch (err) {
+    console.error('Failed to mark notification as read:', err)
+  }
   isNotificationOpen.value = false
+  if (notif.path) {
+    router.push(notif.path)
+  }
+}
+
+const hasNotifForRoute = (routeKey) => {
+  return notifications.value.some(n => !n.read && n.path && n.path.includes(routeKey))
+}
+
+const formatTimeAgo = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const seconds = Math.floor((new Date() - date) / 1000);
+  
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + ' yrs ago';
+  
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + ' mos ago';
+  
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + ' days ago';
+  
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + 'h ago';
+  
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + 'm ago';
+  
+  return seconds < 10 ? 'just now' : Math.floor(seconds) + 's ago';
 }
 
 const profileRef = ref(null)
@@ -398,15 +447,50 @@ const updateDeviceType = () => {
 
 const showSidebar = computed(() => isTablet.value || isDesktop.value)
 
+let socketConnection = null
+
 onMounted(() => {
   updateDeviceType()
   window.addEventListener('resize', updateDeviceType)
   document.addEventListener('click', handleClickOutside)
+
+  fetchNotifications()
+
+  // Initialize Socket.io Connection
+  const token = localStorage.getItem('token') || ''
+  socketConnection = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+    auth: { token },
+    transports: ['websocket', 'polling']
+  })
+
+  // Listen to new-notification event
+  socketConnection.on('new-notification', (notif) => {
+    if (notif && notif.user_id === user.value.id) {
+      if (notif.path === '/buyer/messages' && props.activeRoute === 'messages') {
+        notificationService.markRead(notif.id).catch(() => {})
+        return
+      }
+      notifications.value.unshift(notif)
+    }
+  })
+
+  // Listen to legacy new-message for real-time appends if not already in notifications
+  socketConnection.on('new-message', (msg) => {
+    if (msg && msg.sender_id !== user.value.id && props.activeRoute !== 'messages') {
+      const hasNotif = notifications.value.some(n => n.path === '/buyer/messages' && !n.read)
+      if (!hasNotif) {
+        fetchNotifications()
+      }
+    }
+  })
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateDeviceType)
   document.removeEventListener('click', handleClickOutside)
+  if (socketConnection) {
+    socketConnection.disconnect()
+  }
 })
 
 const navigate = (route) => {

@@ -6,10 +6,10 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Welcome back, {{ userName }}! 👋
+            {{ $t('buyer_dashboard.welcome', { name: userName }) }}
           </h1>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Here's an overview of your B2B sourcing activity and updates.
+            {{ $t('buyer_dashboard.overview_sub') }}
           </p>
         </div>
 
@@ -18,7 +18,7 @@
           class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all"
         >
           <span class="material-symbols-outlined text-lg">add</span>
-          <span>New RFQ Request</span>
+          <span>{{ $t('buyer_dashboard.new_rfq') }}</span>
         </button>
       </div>
 
@@ -32,8 +32,8 @@
             <span class="material-symbols-outlined text-2xl">add_circle</span>
           </div>
           <div>
-            <h3 class="font-bold text-sm text-slate-900 dark:text-white">New Request</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Post a sourcing requirement</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $t('buyer_dashboard.quick_new_request') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('buyer_dashboard.quick_new_desc') }}</p>
           </div>
         </div>
 
@@ -45,8 +45,8 @@
             <span class="material-symbols-outlined text-2xl">request_quote</span>
           </div>
           <div>
-            <h3 class="font-bold text-sm text-slate-900 dark:text-white">My Requests</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">View quotes and status updates</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $t('buyer_dashboard.quick_my_requests') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('buyer_dashboard.quick_my_desc') }}</p>
           </div>
         </div>
 
@@ -58,8 +58,8 @@
             <span class="material-symbols-outlined text-2xl">factory</span>
           </div>
           <div>
-            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Find Suppliers</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Browse verified manufacturers</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">{{ $t('buyer_dashboard.quick_find_suppliers') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('buyer_dashboard.quick_find_desc') }}</p>
           </div>
         </div>
       </div>
@@ -74,9 +74,9 @@
               <div class="w-9 h-9 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                 <span class="material-symbols-outlined text-xl">insights</span>
               </div>
-              <span>Activity Overview</span>
+              <span>{{ $t('buyer_dashboard.activity_overview') }}</span>
             </h2>
-            <span class="text-xs font-semibold text-slate-400">Last 5 Days</span>
+            <span class="text-xs font-semibold text-slate-400">{{ $t('buyer_dashboard.last_days') }}</span>
           </div>
           
           <div v-if="loading" class="h-64 flex items-center justify-center">
@@ -96,7 +96,7 @@
               ></div>
               <!-- Tooltip -->
               <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 dark:bg-slate-800 text-white text-[11px] font-bold px-3 py-1 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                {{ day.count }} requests
+                {{ day.count }} {{ $t('buyer_dashboard.requests_suffix') }}
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@
             <div class="w-9 h-9 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400">
               <span class="material-symbols-outlined text-xl">notifications_active</span>
             </div>
-            <span>Recent Updates</span>
+            <span>{{ $t('buyer_dashboard.recent_updates') }}</span>
           </h2>
           
           <div v-if="loading" class="flex-1 flex items-center justify-center">
@@ -122,8 +122,8 @@
 
           <div v-else-if="recentUpdates.length === 0" class="flex-1 flex flex-col items-center justify-center py-6 text-center">
             <span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-5xl mb-3">history</span>
-            <p class="text-sm font-bold text-slate-700 dark:text-slate-300">No recent activity</p>
-            <p class="text-xs text-slate-400 mt-1">Updates on your RFQ requests will appear here.</p>
+            <p class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ $t('buyer_dashboard.no_recent_activity') }}</p>
+            <p class="text-xs text-slate-400 mt-1">{{ $t('buyer_dashboard.updates_appear_here') }}</p>
           </div>
 
           <div v-else class="space-y-4 flex-1 overflow-y-auto pr-1">
@@ -156,6 +156,8 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n()
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import { requestService } from '../../api/requestService.js'
 
@@ -194,7 +196,7 @@ const activityData = computed(() => {
       return targetDate >= d && targetDate < nextD
     }).length
     
-    const label = i === 0 ? 'Today' : d.toLocaleDateString('en-US', { weekday: 'short' })
+    const label = i === 0 ? t('buyer_dashboard.today') : d.toLocaleDateString(locale.value, { weekday: 'short' })
     
     data.push({ label, count })
   }

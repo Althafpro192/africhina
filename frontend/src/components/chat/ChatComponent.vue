@@ -169,9 +169,10 @@ const { showToast } = useToast();
 
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
 import { requestService } from '../../api/requestService.js'
 import { adminService } from '../../api/adminService.js'
-import { io } from 'socket.io-client'
 
 const props = defineProps({
   requestId: { type: String, required: true },
@@ -183,7 +184,7 @@ const newMessage = ref('')
 const loading = ref(true)
 const sending = ref(false)
 const messagesContainer = ref(null)
-let socket = null
+let echoChannel = null
 
 // Dropdown & Expand State
 const activeMenu = ref(null)
@@ -224,8 +225,7 @@ const formatTime = (dateStr) => {
 const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
-  const backendUrl = window.location.origin.replace('5173', '5000')
-  return `${backendUrl}${path}`
+  return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
 }
 
 const parseTranslations = (msg) => {
@@ -406,55 +406,46 @@ const fetchMessages = async () => {
   }
 }
 
-const setupSocket = () => {
-  const token = localStorage.getItem('token')
-  if (!token) return
+const setupEcho = () => {
+  if (!props.requestId) return
 
-  socket = io(window.location.origin.replace('5173', '5000'), {
-    auth: { token }
+  window.Pusher = Pusher
+  const echo = new Echo({
+      broadcaster: 'reverb',
+      key: import.meta.env.VITE_REVERB_APP_KEY,
+      wsHost: import.meta.env.VITE_REVERB_HOST,
+      wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+      wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+      forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+      enabledTransports: ['ws', 'wss'],
   })
 
-  socket.on('connect', () => {
-    const targetRoom = props.requestId?.startsWith('buyer-') 
-      ? `room:${props.requestId}` 
-      : props.requestId === 'general-support'
-        ? `room:buyer-${currentUserId}`
-        : `room:nego-${props.requestId}`
+  echoChannel = echo.channel(`chat.${props.requestId}`)
+  
+  echoChannel.listen('MessageSent', (e) => {
+      const msg = e.message
+      const existing = messages.value.find(m => m.id === msg.id)
+      
+      const isAtBottom = messagesContainer.value && 
+        (messagesContainer.value.scrollHeight - messagesContainer.value.scrollTop <= messagesContainer.value.clientHeight + 100)
         
-    socket.emit('join_room', targetRoom)
-    socket.emit('join_room', `request_${props.requestId}`)
-  })
-
-  socket.on('new-message', (msg) => {
-    if (!messages.value.find(m => m.id === msg.id)) {
-      messages.value.push(msg)
-      scrollToBottom()
-    }
-  })
-
-  socket.on('message-edited', (msg) => {
-    const idx = messages.value.findIndex(m => m.id === msg.id)
-    if (idx !== -1) messages.value[idx] = msg
-  })
-
-  socket.on('message-deleted', (payload) => {
-    const idx = messages.value.findIndex(m => m.id === payload.id)
-    if (idx !== -1) {
-      messages.value[idx].is_deleted = true
-      messages.value[idx].content = ''
-      messages.value[idx].media_url = null
-    }
+      if (!existing) {
+          messages.value.push(msg)
+          if (isAtBottom) scrollToBottom()
+      } else {
+          Object.assign(existing, msg)
+      }
   })
 }
 
 onMounted(() => {
   document.addEventListener('click', closeMenu)
   fetchMessages()
-  setupSocket()
+  setupEcho()
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', closeMenu)
-  if (socket) socket.disconnect()
+  if (echoChannel) echoChannel.unsubscribe()
 })
 </script>

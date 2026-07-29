@@ -70,7 +70,8 @@ export const adminService = {
   },
 
   async updateOption(requestId, optionId, formData) {
-    const { data } = await api.put(`/admin/requests/${requestId}/options/${optionId}`, formData, {
+    formData.append('_method', 'PUT');
+    const { data } = await api.post(`/admin/requests/${requestId}/options/${optionId}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return data;
@@ -91,6 +92,11 @@ export const adminService = {
       const { data } = await api.post(`/admin/requests/${id}/finalize`, payload);
       return data;
     }
+  },
+
+  async proceedToNegotiate(id) {
+    const { data } = await api.post(`/admin/requests/${id}/proceed-to-negotiate`);
+    return data;
   },
 
   async verifyPayment(id) {
@@ -140,5 +146,51 @@ export const adminService = {
   async getAllRequests() {
     const { data } = await api.get('/admin/requests');
     return data?.data || data || [];
+  },
+
+  // [NEW Driver Role] Driver (delivery personnel) management
+  async listDrivers(params = {}) {
+    const { data } = await api.get('/admin/drivers', { params });
+    return data?.data || data || [];
+  },
+
+  async getAvailableDrivers() {
+    const { data } = await api.get('/admin/drivers/available');
+    return data?.data || data || [];
+  },
+
+  async getDriver(id) {
+    const { data } = await api.get(`/admin/drivers/${id}`);
+    return data;
+  },
+
+  async createDriver(payload) {
+    const { data } = await api.post('/admin/drivers', payload);
+    return data;
+  },
+
+  async updateDriver(id, payload) {
+    const { data } = await api.put(`/admin/drivers/${id}`, payload);
+    return data;
+  },
+
+  async deleteDriver(id) {
+    const { data } = await api.delete(`/admin/drivers/${id}`);
+    return data;
+  },
+
+  async toggleBlockDriver(id) {
+    const { data } = await api.post(`/admin/drivers/${id}/toggle-block`);
+    return data;
+  },
+
+  async generateDriverTempPassword(id) {
+    const { data } = await api.post(`/admin/drivers/${id}/temp-password`);
+    return data;
+  },
+
+  async assignDriver(requestId, payload) {
+    const { data } = await api.post(`/admin/requests/${requestId}/assign-driver`, payload);
+    return data;
   }
 };

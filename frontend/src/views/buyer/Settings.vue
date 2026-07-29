@@ -6,7 +6,7 @@
       <div class="flex justify-between items-center mb-6">
         <div>
           <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">{{ $t('nav.settings') }}</h1>
-          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Manage your buyer profile, contact details, and account security.</p>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $t('settings_page.subtitle') }}</p>
         </div>
       </div>
 
@@ -19,7 +19,7 @@
             <div class="relative group">
               <img 
                 class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/30 shadow-md"
-                :src="getAvatarUrl(user.avatar_url, form.full_name)" 
+                :src="getAvatarUrl(user.avatar_url, form.full_name, user.id, user.avatar_data, user.avatar_mime_type)"
                 alt="Profile"
               />
               <div v-if="uploadingAvatar" class="absolute inset-0 bg-slate-900/60 rounded-2xl flex items-center justify-center text-white">
@@ -29,7 +29,7 @@
 
             <div>
               <h2 class="text-xl font-black text-slate-900 dark:text-white">{{ form.full_name || 'Buyer User' }}</h2>
-              <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5 mb-3">{{ user.role === 'admin' ? 'Administrator' : 'Verified Buyer' }}</p>
+              <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5 mb-3">{{ user.role === 'admin' ? $t('settings_page.administrator') : $t('settings_page.verified_buyer') }}</p>
               
               <input type="file" ref="avatarInput" accept="image/png, image/jpeg, image/jpg" class="hidden" @change="handleAvatarChange" />
               <button 
@@ -38,7 +38,7 @@
                 class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors disabled:opacity-50 flex items-center gap-1.5"
               >
                 <span class="material-symbols-outlined text-sm">photo_camera</span>
-                <span>Change Avatar</span>
+                <span>{{ $t('settings_page.change_avatar') }}</span>
               </button>
             </div>
           </div>
@@ -48,17 +48,17 @@
             <div v-if="errorMsg" class="p-3.5 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs sm:text-sm font-semibold rounded-2xl border border-rose-200 dark:border-rose-800">{{ errorMsg }}</div>
             
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.full_name') }}</label>
               <input v-model="form.full_name" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required />
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.email_address') }}</label>
               <input :value="user.email" type="email" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-400 cursor-not-allowed outline-none text-xs sm:text-sm" disabled />
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.phone_number') }}</label>
               <div class="flex gap-2">
                 <select v-model="form.country_code" class="w-1/3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none text-xs">
                   <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }}</option>
@@ -69,7 +69,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Company Name</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.company_name') }}</label>
               <input v-model="form.company_name" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required />
             </div>
             
@@ -80,7 +80,7 @@
                 class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-xs sm:text-sm rounded-xl hover:opacity-95 shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <span v-if="saving" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                <span>Save Changes</span>
+                <span>{{ $t('settings_page.save_changes') }}</span>
               </button>
             </div>
           </form>
@@ -88,7 +88,7 @@
 
         <!-- Security Section -->
         <div class="p-6 sm:p-8 bg-slate-50/50 dark:bg-slate-900/50">
-          <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-4">Account Security</h3>
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-white mb-4">{{ $t('settings_page.account_security') }}</h3>
           <div class="space-y-4 max-w-lg">
             <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-xs">
               <div class="flex items-center gap-3">
@@ -96,8 +96,8 @@
                   <span class="material-symbols-outlined text-lg">lock</span>
                 </div>
                 <div>
-                  <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white block">Change Password</span>
-                  <span class="text-[11px] text-slate-400">Update temporary login password</span>
+                  <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white block">{{ $t('settings_page.change_password') }}</span>
+                  <span class="text-[11px] text-slate-400">{{ $t('settings_page.change_password_desc') }}</span>
                 </div>
               </div>
               
@@ -105,7 +105,7 @@
                 @click="isChangePassOpen = true"
                 class="px-4 py-2 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-indigo-500 transition-all cursor-pointer"
               >
-                Ganti Password
+                {{ $t('settings_page.change_password') }}
               </button>
             </div>
           </div>
@@ -122,8 +122,8 @@
       <div :class="['bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-slate-200 dark:border-slate-800 transition-all duration-300 text-slate-900 dark:text-white', isChangePassOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0']">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Ganti Password Account</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Ganti password sementara Anda dengan password baru yang aman.</p>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $t('settings_page.modal_title') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $t('settings_page.modal_subtitle') }}</p>
           </div>
           <button @click="isChangePassOpen = false" class="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
             <span class="material-symbols-outlined text-lg">close</span>
@@ -135,22 +135,22 @@
           <div v-if="passError" class="p-3 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs rounded-xl border border-rose-200 dark:border-rose-800">{{ passError }}</div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Password Baru</label>
-            <input v-model="newPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required placeholder="Minimal 6 karakter" />
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.new_password') }}</label>
+            <input v-model="newPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required :placeholder="$t('settings_page.min_chars')" />
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Konfirmasi Password Baru</label>
-            <input v-model="confirmPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required placeholder="Ulangi password baru" />
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.confirm_new_password') }}</label>
+            <input v-model="confirmPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required :placeholder="$t('settings_page.repeat_pass')" />
           </div>
 
           <div class="flex justify-end gap-3 pt-3">
             <button type="button" @click="isChangePassOpen = false" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-              Batal
+              {{ $t('settings_page.cancel') }}
             </button>
             <button type="submit" :disabled="passLoading" class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-lg hover:bg-indigo-500 transition-all disabled:opacity-50 flex items-center gap-2">
               <span v-if="passLoading" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-              Simpan Password Baru
+              {{ $t('settings_page.save_new_password') }}
             </button>
           </div>
         </form>
@@ -161,9 +161,12 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import { authService } from '../../api/authService'
 import { countryCodes, validatePhone } from '../../utils/phoneValidation'
+import { getAvatarUrl } from '../../utils/avatar'
 import { useToast } from '../../composables/useToast'
 
 const { showToast } = useToast()
@@ -183,18 +186,6 @@ const phoneError = ref('')
 
 const avatarInput = ref(null)
 const uploadingAvatar = ref(false)
-
-const getAvatarUrl = (url, name) => {
-  if (!url) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=6366f1&color=fff`
-  let path = url
-  if (path.startsWith('/uploads/avatar-')) {
-    path = path.replace('/uploads/avatar-', '/uploads/avatars/avatar-')
-  }
-  if (path.startsWith('/')) {
-    return `${window.location.protocol}//${window.location.hostname}:5000${path}`
-  }
-  return path
-}
 
 // Change Password Modal State
 const isChangePassOpen = ref(false)
@@ -239,6 +230,8 @@ const handleAvatarChange = async (e) => {
   try {
     const data = await authService.uploadAvatar(file)
     user.value.avatar_url = data.avatar_url
+    user.value.avatar_data = data.avatar_data
+    user.value.avatar_mime_type = data.avatar_mime_type
     localStorage.setItem('user', JSON.stringify(user.value))
     showToast('Avatar updated successfully!', 'success')
   } catch (err) {
@@ -273,11 +266,11 @@ const handleUpdateProfile = async () => {
 
 const submitChangePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    passError.value = 'Password baru dan konfirmasi password tidak cocok.'
+    passError.value = t('settings_page.error_match')
     return
   }
   if (newPassword.value.length < 6) {
-    passError.value = 'Password minimal 6 karakter.'
+    passError.value = t('settings_page.error_min')
     return
   }
 
@@ -286,15 +279,15 @@ const submitChangePassword = async () => {
   passError.value = ''
   try {
     await authService.updateProfile({ password: newPassword.value })
-    passSuccess.value = 'Password berhasil diganti!'
-    showToast('Password successfully updated!', 'success')
+    passSuccess.value = t('settings_page.success_update')
+    showToast(t('settings_page.success_update'), 'success')
     setTimeout(() => {
       isChangePassOpen.value = false
       newPassword.value = ''
       confirmPassword.value = ''
     }, 1500)
   } catch (err) {
-    passError.value = err.response?.data?.message || 'Gagal memperbarui password.'
+    passError.value = err.response?.data?.message || t('settings_page.failed_update')
   } finally {
     passLoading.value = false
   }

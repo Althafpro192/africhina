@@ -16,7 +16,7 @@
             <div class="flex items-center gap-4">
               <img 
                 class="w-14 h-14 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800 object-cover shadow-lg" 
-                :src="getAvatarUrl(profile.avatar_url, profile.full_name)"
+                :src="getAvatarUrl(profile.avatar_url, profile.full_name, profile.id, profile.avatar_data, profile.avatar_mime_type)"
                 :alt="profile.full_name"
               />
               <div>
@@ -118,6 +118,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { adminService } from '../../api/adminService.js'
+import { getAvatarUrl } from '../../utils/avatar'
 
 const props = defineProps({
   isOpen: { type: Boolean, default: false },
@@ -129,17 +130,6 @@ const emit = defineEmits(['close', 'blocked-toggled'])
 const profile = ref(null)
 const loading = ref(false)
 const toggling = ref(false)
-
-const getAvatarUrl = (url, name) => {
-  if (!url) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=4f378a&color=fff`
-  if (url.startsWith('/uploads/avatar-')) {
-    url = url.replace('/uploads/avatar-', '/uploads/avatars/avatar-')
-  }
-  if (url.startsWith('/')) {
-    return `${window.location.protocol}//${window.location.hostname}:5000${url}`
-  }
-  return url
-}
 
 const formatMoney = (val) => {
   if (!val || val === 0) return '0'

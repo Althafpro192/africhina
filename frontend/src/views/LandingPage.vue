@@ -27,7 +27,7 @@
           <!-- Dark Mode Toggle Button -->
           <button 
             @click="toggleTheme" 
-            class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 shadow-sm flex items-center justify-center cursor-pointer"
+            class="hidden sm:flex p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 shadow-sm items-center justify-center cursor-pointer"
             :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
           >
             <span class="material-symbols-outlined text-xl">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
@@ -360,13 +360,21 @@
     </footer>
   </div>
 </template>
-
 <script setup>
+import { onMounted } from 'vue';
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { useTheme } from '../composables/useTheme';
 
 // ===== GLOBAL THEME COMPOSABLE =====
-const { isDark, toggleTheme } = useTheme();
+const { isDark, toggleTheme, setTheme } = useTheme();
+
+onMounted(() => {
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  if (isMobile) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(prefersDark ? 'dark' : 'light');
+  }
+});
 
 // ===== KOMPONEN LOKAL =====
 const FeatureCard = {

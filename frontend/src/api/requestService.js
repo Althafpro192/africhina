@@ -14,6 +14,12 @@ export const requestService = {
     return data.data || data;
   },
 
+  // Alias used by some views (e.g. Messages.vue)
+  async getBuyerRequests() {
+    const { data } = await api.get('/requests');
+    return data.data || data;
+  },
+
   async getRequestById(id) {
     const { data } = await api.get(`/requests/${id}`);
     return data;
@@ -30,14 +36,15 @@ export const requestService = {
   },
 
   async updateRequestDetails(id, formData) {
+    // Use PUT method directly for Laravel
     const { data } = await api.put(`/requests/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     return data;
   },
 
-  async selectOption(id, option_ids, buyer_notes = '') {
-    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids, buyer_notes });
+  async selectOption(id, option_ids, buyer_notes = '', direct_approval = false) {
+    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids, buyer_notes, direct_approval });
     return data;
   },
 

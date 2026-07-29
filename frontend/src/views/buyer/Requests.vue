@@ -14,7 +14,7 @@
           <div class="flex justify-between items-center mb-6">
             <div>
               <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">{{ $t('nav.requests') }}</h1>
-              <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Manage active sourcing requirements</p>
+              <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5">{{ $t('buyer_requests.subtitle') }}</p>
             </div>
             <button 
               @click="createNewRequest" 
@@ -35,13 +35,13 @@
             <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-4 text-slate-400">
               <span class="material-symbols-outlined text-3xl">inbox</span>
             </div>
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No Active Requests</h3>
-            <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs max-w-[200px]">You don't have any pending sourcing requests.</p>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">{{ $t('buyer_requests.no_requests_title') }}</h3>
+            <p class="text-slate-500 dark:text-slate-400 mb-6 text-xs max-w-[200px]">{{ $t('buyer_requests.no_requests_desc') }}</p>
             <button 
               @click="createNewRequest" 
               class="px-5 py-2.5 text-xs bg-indigo-600 text-white font-bold rounded-xl shadow-md shadow-indigo-500/20 hover:bg-indigo-500 transition-all"
             >
-              Create Request
+              {{ $t('buyer_requests.create_request') }}
             </button>
           </div>
 
@@ -67,7 +67,7 @@
                   <span class="text-[10px] text-slate-400 font-medium">{{ formatDate(req.created_at) }}</span>
                 </div>
                 <span :class="['font-bold text-[10px] px-2.5 py-0.5 rounded-full text-white whitespace-nowrap shadow-xs', getStatusClass(req.status)]">
-                  {{ req.status === 'quoted' ? 'Quote Received' : 'Awaiting Quotes' }}
+                  {{ req.status === 'quoted' ? $t('buyer_requests.quote_received') : (req.status === 'batal' ? 'Dibatalkan' : $t('buyer_requests.awaiting_quotes')) }}
                 </span>
               </div>
               
@@ -75,17 +75,17 @@
                 <h3 :class="['text-xs sm:text-sm font-bold leading-tight line-clamp-1', route.params.id == req.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-900 dark:text-white']">
                   {{ req.product_name }}
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{{ req.specifications || 'No detailed specifications.' }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{{ req.specifications || $t('buyer_requests.no_specifications') }}</p>
               </div>
 
               <div class="flex justify-between items-end pt-3 border-t border-slate-100 dark:border-slate-700/60">
                 <div v-if="req.quoted_price">
-                  <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Est. Value</span>
+                  <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ $t('buyer_requests.est_value') }}</span>
                   <span class="font-black text-xs sm:text-sm text-indigo-600 dark:text-indigo-400">${{ Number(req.quoted_price).toLocaleString() }}</span>
                 </div>
                 <div v-else>
-                  <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">Target Qty</span>
-                  <span class="font-bold text-xs text-slate-700 dark:text-slate-300">{{ req.quantity }} units</span>
+                  <span class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ $t('buyer_requests.target_qty') }}</span>
+                  <span class="font-bold text-xs text-slate-700 dark:text-slate-300">{{ req.quantity }} {{ $t('buyer_requests.units') }}</span>
                 </div>
                 
                 <span v-if="route.params.id == req.id" class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-lg">chevron_right</span>
@@ -107,8 +107,8 @@
           <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6">
             <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">inventory_2</span>
           </div>
-          <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">Select a Sourcing Request</h2>
-          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm">Please choose a request from the list on the left to view detailed quotes, timelines, and communications.</p>
+          <h2 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">{{ $t('buyer_requests.select_request_title') }}</h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm">{{ $t('buyer_requests.select_request_desc') }}</p>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ const loadingRequests = ref(true)
 
 // Filter for active statuses
 const filteredRequests = computed(() => {
-  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved']
+  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved', 'batal']
   let filtered = requests.value.filter(r => activeStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
@@ -169,6 +169,7 @@ const getStatusClass = (status) => {
   const classes = {
     'pending': 'bg-amber-500',
     'quoted': 'bg-indigo-600',
+    'batal': 'bg-red-500',
   }
   return classes[status] || 'bg-slate-500'
 }

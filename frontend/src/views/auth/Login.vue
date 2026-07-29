@@ -54,6 +54,32 @@
         </button>
       </div>
 
+      <!-- Demo Accounts Helper -->
+      <div v-if="!isRegister" class="mb-5 p-3 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/40 rounded-2xl text-xs text-indigo-900 dark:text-indigo-200">
+        <div class="font-bold mb-1.5 flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300">
+          <span class="material-symbols-outlined text-base">key</span>
+          <span>Demo Quick Login:</span>
+        </div>
+        <div class="flex gap-2">
+          <button 
+            type="button" 
+            @click="fillDemo('buyer')"
+            class="flex-1 py-1.5 px-2 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 hover:border-indigo-400 rounded-xl font-medium text-[11px] text-indigo-700 dark:text-indigo-300 transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-sm">person</span>
+            Buyer Account
+          </button>
+          <button 
+            type="button" 
+            @click="fillDemo('admin')"
+            class="flex-1 py-1.5 px-2 bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 hover:border-indigo-400 rounded-xl font-medium text-[11px] text-indigo-700 dark:text-indigo-300 transition-all shadow-sm flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+            Admin Account
+          </button>
+        </div>
+      </div>
+
       <!-- Error Alert -->
       <div v-if="errorMsg" class="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-2xl text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
         <span class="material-symbols-outlined text-rose-500 text-lg shrink-0">error</span>
@@ -392,5 +418,15 @@ const toggleMode = () => {
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value
+}
+
+const fillDemo = (role) => {
+  if (role === 'admin') {
+    email.value = 'admin@africhina.com'
+    password.value = 'password123'
+  } else {
+    email.value = 'buyer@africhina.com'
+    password.value = 'password123'
+  }
 }
 </script>

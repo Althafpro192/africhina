@@ -2,12 +2,12 @@
   <div class="relative" ref="dropdownRef">
     <button 
       @click="isOpen = !isOpen" 
-      class="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition-all duration-200"
+      class="flex items-center gap-2 p-2.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition-all duration-200"
       :aria-expanded="isOpen"
     >
       <span class="text-base leading-none">{{ getFlag(locale) }}</span>
-      <span>{{ getLanguageName(locale) }}</span>
-      <span class="material-symbols-outlined text-sm transition-transform duration-200" :class="{ 'rotate-180': isOpen }">expand_more</span>
+      <span class="hidden sm:inline">{{ getLanguageName(locale) }}</span>
+      <span class="hidden sm:inline material-symbols-outlined text-sm transition-transform duration-200" :class="{ 'rotate-180': isOpen }">expand_more</span>
     </button>
 
     <Transition

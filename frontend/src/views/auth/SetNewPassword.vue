@@ -64,8 +64,12 @@ const handlePasswordChange = async () => {
 
 <template>
   <div class="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-      <div class="text-center mb-6">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl relative">
+      <router-link to="/login" class="absolute top-4 left-4 z-10 p-2 text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-lg transition-colors flex items-center justify-center">
+        <span class="material-symbols-outlined text-sm">arrow_back</span>
+      </router-link>
+
+      <div class="text-center mb-6 mt-2">
         <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center mx-auto mb-3">
           <span class="material-symbols-outlined text-amber-400 text-2xl">lock_reset</span>
         </div>

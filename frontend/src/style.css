@@ -44,3 +44,12 @@
     @apply bg-white border border-border rounded-lg h-12 px-4 shadow-inner-input transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary;
   }
 }
+
+html.dark {
+  color-scheme: dark;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) !important;
+  cursor: pointer;
+}

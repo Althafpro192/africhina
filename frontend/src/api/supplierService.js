@@ -24,5 +24,10 @@ export const supplierService = {
   async remove(id) {
     const { data } = await api.delete(`/admin/suppliers/${id}`);
     return data;
+  },
+
+  async toggleBlock(id) {
+    const { data } = await api.put(`/admin/suppliers/${id}/toggle-block`);
+    return data;
   }
 };

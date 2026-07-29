@@ -48,7 +48,7 @@
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-1">Description & Specifications *</label>
-              <textarea v-model="editForm.description" rows="4" class="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"></textarea>
+              <textarea v-model="editForm.specifications" rows="4" class="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"></textarea>
             </div>
           </div>
 
@@ -154,7 +154,7 @@
               <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">{{ request.product_name }}</h1>
             </div>
             <span :class="['font-semibold text-xs px-3 py-1 rounded-full text-white self-start shadow-xs', getStatusClass(request.status)]">
-              {{ request.status.replace(/_/g, ' ').toUpperCase() }}
+              {{ $t(`status.${request.status.toLowerCase()}`) }}
             </span>
           </div>
 
@@ -236,7 +236,7 @@
                   <div class="w-10 h-10 bg-[#4f378a]/10 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center">
                     <span class="material-symbols-outlined text-[#4f378a] dark:text-indigo-400">verified</span>
                   </div>
-                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">KUALITAS & SERTIFIKASI</h2>
+                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ $t('order_detail.quality_cert') }}</h2>
                 </div>
                 <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('quality')" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 p-1 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 rounded-md transition-colors cursor-pointer" title="Edit Kualitas">
                   <span class="material-symbols-outlined text-[20px]">edit</span>
@@ -244,20 +244,20 @@
               </div>
               <div class="space-y-4">
                 <div>
-                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Persyaratan Kualitas:</h4>
+                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">{{ $t('order_detail.quality_reqs') }}</h4>
                   <div class="flex gap-2 items-start bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/50">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[18px] mt-0.5">task_alt</span>
-                    <p class="text-sm text-gray-700 dark:text-emerald-200 whitespace-pre-line">{{ request.quality_requirements || 'Tidak ada persyaratan khusus' }}</p>
+                    <p class="text-sm text-gray-700 dark:text-emerald-200 whitespace-pre-line">{{ request.quality_requirements || $t('order_detail.no_special_reqs') }}</p>
                   </div>
                 </div>
                 <div>
-                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sertifikasi Dibutuhkan:</h4>
+                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">{{ $t('order_detail.cert_needed') }}</h4>
                   <div v-if="request.certifications" class="flex flex-wrap gap-2">
                     <span v-for="cert in request.certifications.split(',')" :key="cert" class="px-3 py-1 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-xs font-bold rounded-full border border-blue-200 dark:border-blue-800">
-                      {{ cert.trim() }}
+                       {{ cert.trim() }}
                     </span>
                   </div>
-                  <p v-else class="text-sm text-gray-500 dark:text-slate-500 italic">Tidak ada</p>
+                  <p v-else class="text-sm text-gray-500 dark:text-slate-500 italic">{{ $t('order_detail.none') }}</p>
                 </div>
               </div>
             </div>
@@ -269,7 +269,7 @@
                   <div class="w-10 h-10 bg-[#4f378a]/10 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center">
                     <span class="material-symbols-outlined text-[#4f378a] dark:text-indigo-400">local_shipping</span>
                   </div>
-                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">BUDGET & LOGISTIK</h2>
+                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ $t('order_detail.budget_logistics') }}</h2>
                 </div>
                 <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('logistics')" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 p-1 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 rounded-md transition-colors cursor-pointer" title="Edit Budget & Logistik">
                   <span class="material-symbols-outlined text-[20px]">edit</span>
@@ -277,23 +277,23 @@
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                 <div class="py-2 border-b border-gray-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Quantity</span>
+                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">{{ $t('order_detail.quantity') }}</span>
                   <span class="text-sm font-semibold text-gray-800 dark:text-slate-200">{{ request.quantity }} {{ request.unit || 'units' }}</span>
                 </div>
                 <div class="py-2 border-b border-gray-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Target Delivery</span>
+                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">{{ $t('order_detail.target_delivery') }}</span>
                   <span class="text-sm font-semibold text-gray-800 dark:text-slate-200">{{ request.delivery_timeline ? formatDate(request.delivery_timeline).split(',')[0] : '-' }}</span>
                 </div>
                 <div class="py-2 border-b border-gray-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Budget Range</span>
+                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">{{ $t('order_detail.budget_range') }}</span>
                   <span class="text-sm font-bold text-[#4f378a] dark:text-indigo-400">{{ request.currency || 'USD' }} {{ request.budget_range }}</span>
                 </div>
                 <div class="py-2 border-b border-gray-100 dark:border-slate-800 sm:border-0">
-                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Shipping</span>
+                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">{{ $t('order_detail.shipping') }}</span>
                   <span class="text-sm font-semibold text-gray-800 dark:text-slate-200">{{ request.shipping_terms || '-' }}</span>
                 </div>
                 <div class="py-2 sm:col-span-2">
-                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">Payment</span>
+                  <span class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-1">{{ $t('order_detail.payment') }}</span>
                   <span class="text-sm font-semibold text-gray-800 dark:text-slate-200">{{ request.payment_terms || '-' }}</span>
                 </div>
               </div>
@@ -306,33 +306,37 @@
                   <div class="w-10 h-10 bg-[#4f378a]/10 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center">
                     <span class="material-symbols-outlined text-[#4f378a] dark:text-indigo-400">attach_file</span>
                   </div>
-                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">LAMPIRAN ({{ request.image_urls ? request.image_urls.length : 0 }} file)</h2>
+                  <h2 class="text-lg font-bold text-gray-800 dark:text-white">
+                    {{ request.image_urls && request.image_urls.length === 1 
+                       ? $t('order_detail.attachments_count', { count: request.image_urls.length })
+                       : $t('order_detail.attachments_count_plural', { count: request.image_urls ? request.image_urls.length : 0 }) }}
+                  </h2>
                 </div>
                 <button v-if="request.status === 'menunggu_penawaran_admin'" @click="openEditModal('attachments')" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 p-1 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 rounded-md transition-colors cursor-pointer" title="Edit Lampiran">
                   <span class="material-symbols-outlined text-[20px]">edit</span>
                 </button>
               </div>
               <div v-if="request.image_urls && request.image_urls.length > 0" class="flex flex-col gap-3">
-                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="'http://localhost:5000' + file" target="_blank" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors group">
+                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="file" target="_blank" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors group">
                   <div class="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-gray-500 dark:text-slate-400 group-hover:text-[#4f378a] dark:group-hover:text-indigo-400 transition-colors">
                     <span class="material-symbols-outlined">description</span>
                   </div>
                   <div class="flex-1 overflow-hidden">
                     <p class="text-sm font-semibold text-gray-700 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
-                    <p class="text-xs text-gray-500 dark:text-slate-400">Click to view</p>
+                    <p class="text-xs text-gray-500 dark:text-slate-400">{{ $t('order_detail.click_view') }}</p>
                   </div>
                   <span class="material-symbols-outlined text-gray-400 dark:text-slate-500 group-hover:text-[#4f378a] dark:group-hover:text-indigo-400">open_in_new</span>
                 </a>
               </div>
               <div v-else class="text-center py-6 text-gray-500 dark:text-slate-500 text-sm italic">
-                Tidak ada lampiran
+                {{ $t('order_detail.no_attachments') }}
               </div>
             </div>
 
             <!-- Product Options (Golden Path) -->
             <div v-if="request.options && request.options.length > 0" class="bg-indigo-50/40 dark:bg-slate-900/90 border border-indigo-100 dark:border-slate-800 rounded-2xl p-4 sm:p-6 mb-6 shadow-sm">
               <div class="mb-4">
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Pilih Opsi Produk untuk Request #{{ request.id.split('-')[0].toUpperCase() }}</h2>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ $t('order_detail.select_product_options', { id: request.id.split('-')[0].toUpperCase() }) }}</h2>
                 <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Admin telah menyiapkan {{ request.options.length }} pilihan untuk Anda. Anda dapat memilih satu atau lebih opsi.</p>
               </div>
               
@@ -370,7 +374,7 @@
                     
                     <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 rounded-xl p-3 mb-4">
                       <div class="flex items-center gap-1 text-amber-700 dark:text-amber-300 font-bold text-xs mb-1">
-                        <span class="material-symbols-outlined text-[16px]">stars</span> Admin's Recommendation:
+                        <span class="material-symbols-outlined text-[16px]">stars</span> {{ $t('order_detail.admin_recommendation') }}:
                       </div>
                       <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">{{ opt.admin_reason }}</p>
                     </div>
@@ -385,17 +389,17 @@
                       
                       <div v-if="['sea', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950/80 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0"><span class="material-symbols-outlined text-[14px]">directions_boat</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">Laut: {{ opt.est_time_sea }}</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.sea') }}: {{ opt.est_time_sea }}</span>
                       </div>
                       
                       <div v-if="['air', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950/80 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0"><span class="material-symbols-outlined text-[14px]">flight</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">Udara: {{ opt.est_time_air }}</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.air') }}: {{ opt.est_time_air }}</span>
                       </div>
 
                       <div v-if="opt.target_delivery" class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-950/80 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0"><span class="material-symbols-outlined text-[14px]">calendar_month</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">Target: {{ formatDate(opt.target_delivery).split(',')[0] }}</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.target') }}: {{ formatDate(opt.target_delivery).split(',')[0] }}</span>
                       </div>
                     </div>
                   </div>
@@ -512,6 +516,47 @@
             </div>
 
             <!-- Action to Confirm Delivery (menunggu_verifikasi_admin) -->
+            <!-- Driver / Delivery Information (visible once delivery is assigned) -->
+            <div v-if="['menunggu_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin'].includes(request.status) && (request.assigned_driver || request.delivery_method === 'trusted_provider')" class="bg-gradient-to-br from-indigo-50/80 to-purple-50/40 dark:from-indigo-950/30 dark:to-purple-950/20 border border-indigo-200 dark:border-indigo-900/50 rounded-2xl p-4 sm:p-5 shadow-sm">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-xl">{{ request.delivery_method === 'sea' ? 'directions_boat' : request.delivery_method === 'air' ? 'flight' : 'verified_user' }}</span>
+                </div>
+                <h3 class="font-bold text-base text-indigo-900 dark:text-indigo-300">
+                  {{ request.delivery_method === 'trusted_provider' ? 'Trusted Provider' : 'Delivery Driver' }}
+                </h3>
+              </div>
+
+              <div v-if="request.assigned_driver" class="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-900/60 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                  {{ request.assigned_driver.name ? request.assigned_driver.name.charAt(0).toUpperCase() : 'D' }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ request.assigned_driver.name }}</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ request.assigned_driver.email }}</p>
+                  <p v-if="request.assigned_driver.phone" class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ request.assigned_driver.phone }}</p>
+                </div>
+                <span class="text-[10px] font-extrabold px-2 py-1 rounded-md uppercase shrink-0"
+                  :class="request.delivery_method === 'sea' ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800' : request.delivery_method === 'air' ? 'bg-cyan-100 dark:bg-cyan-950/80 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800' : 'bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'">
+                  {{ request.delivery_method === 'sea' ? 'Sea Freight' : request.delivery_method === 'air' ? 'Air Freight' : 'Trusted' }}
+                </span>
+              </div>
+
+              <div v-else-if="request.delivery_method === 'trusted_provider'" class="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-900/60 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-xl">verified_user</span>
+                </div>
+                <div class="flex-1">
+                  <p class="font-bold text-sm text-slate-900 dark:text-white">AfriChina Trusted Provider</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Pengiriman Anda akan ditangani oleh mitra logistik terpercaya kami</p>
+                </div>
+              </div>
+
+              <p class="text-[11px] text-indigo-700 dark:text-indigo-300 mt-3 leading-relaxed">
+                💬 Driver hanya untuk komunikasi dengan buyer terkait pengiriman. Untuk hal teknis produk, hubungi admin melalui menu Messages.
+              </p>
+            </div>
+
             <div v-if="request.status === 'dikirim'" class="bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-4 sm:p-6 shadow-sm">
               <h3 class="font-bold text-emerald-900 dark:text-emerald-300 mb-2">Konfirmasi Barang Tiba</h3>
               <p class="text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 mb-4">Klik tombol di bawah jika barang fisik telah Anda terima dalam kondisi baik.</p>
@@ -606,7 +651,7 @@
                   </div>
                   <div class="flex-1 pb-4">
                     <p :class="['font-semibold text-sm', idx === trackingLogs.length - 1 ? 'text-[#4f378a] dark:text-indigo-400' : 'text-gray-800 dark:text-slate-200']">
-                      {{ log.status.replace(/_/g, ' ').toUpperCase() }}
+                      {{ $t(`status.${log.status.toLowerCase()}`) }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-slate-400">{{ formatDate(log.created_at) }}</p>
                     <p v-if="log.notes" class="text-xs text-gray-600 dark:text-slate-300 mt-1">{{ log.notes }}</p>
@@ -655,6 +700,9 @@
         <p class="text-xs text-slate-500 dark:text-slate-400">Klik opsi di atas untuk menambah pilihan.</p>
       </div>
       <div class="flex w-full sm:w-auto gap-3">
+        <button @click="submitSelection([], true)" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold rounded-xl hover:bg-emerald-200 dark:hover:bg-emerald-800 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
+          Acc Langsung
+        </button>
         <button @click="submitSelection([])" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
           Minta Opsi Lain
         </button>
@@ -786,7 +834,7 @@ const getOptionImages = (opt) => {
     if (!img) return ''
     if (typeof img !== 'string') return ''
     if (img.startsWith('http')) return img
-    return `${window.location.protocol}//${window.location.hostname}:5000${img.startsWith('/') ? '' : '/'}${img}`
+    return `${window.location.origin}${img.startsWith('/') ? '' : '/'}${img}`
   }).filter(Boolean)
 }
 
@@ -847,8 +895,7 @@ const copyText = (text) => {
 const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
-  const backendUrl = window.location.origin.replace('5173', '5000')
-  return `${backendUrl}${path.startsWith('/') ? '' : '/'}${path}`
+  return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
 }
 
 const toggleOption = (id) => {
@@ -859,18 +906,18 @@ const toggleOption = (id) => {
   }
 }
 
-const submitSelection = async (optionIds) => {
-  if (optionIds.length === 0) {
+const submitSelection = async (optionIds, isDirectApproval = false) => {
+  if (!isDirectApproval && optionIds.length === 0) {
     if (!confirm('Anda tidak memilih opsi satupun. Anda yakin ingin meminta opsi alternatif dari Admin?')) return;
   }
   
   selectingOption.value = true;
   try {
-    await requestService.selectOption(request.value.id, optionIds, buyerNote.value);
+    await requestService.selectOption(request.value.id, optionIds, buyerNote.value, isDirectApproval);
     await loadData();
     selectedOptionIds.value = [];
     buyerNote.value = '';
-    showToast('Tanggapan Anda telah dikirim ke Admin!');
+    showToast(isDirectApproval ? 'Permintaan langsung disetujui!' : 'Tanggapan Anda telah dikirim ke Admin!');
   } catch (e) {
     showToast(e.response?.data?.message || 'Failed to submit selection');
   } finally {
@@ -932,7 +979,7 @@ const openEditModal = (section) => {
     product_name: request.value.product_name,
     category: request.value.category,
     sub_category: request.value.sub_category,
-    description: request.value.description,
+    specifications: request.value.specifications,
     quality_requirements: request.value.quality_requirements,
     certifications: request.value.certifications,
     quantity: request.value.quantity,
@@ -964,7 +1011,7 @@ const submitEdit = async () => {
     
     if (activeEditSection.value === 'attachments' && editFiles.value.length > 0) {
       for (const file of editFiles.value) {
-        formData.append('images', file);
+        formData.append('images[]', file);
       }
     } else if (activeEditSection.value === 'attachments' && editFiles.value.length === 0) {
       formData.append('keep_images', 'true');

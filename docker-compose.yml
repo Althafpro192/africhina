@@ -1,27 +1,27 @@
 version: '3.8'
 
 services:
-  # 1. Database (PostgreSQL)
+  # 1. Database (MySQL)
   db:
-    image: postgres:15-alpine
+    image: mysql:8.0
     container_name: africhina_db
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-160907}
-      POSTGRES_DB: ${DB_NAME:-africhina}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-160907}
+      MYSQL_DATABASE: ${DB_NAME:-africhina}
+      MYSQL_USER: ${DB_USER:-africhina}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-160907}
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysqldata:/var/lib/mysql
     networks:
       - africhina_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-160907}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # 2. Backend (Node.js + Express)
+  # 2. Backend (Laravel PHP-FPM + Nginx)
   backend:
     build:
       context: ./backend
@@ -29,19 +29,25 @@ services:
     container_name: africhina_backend
     restart: always
     environment:
-      PORT: 5000
-      DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-160907}@db:5432/${DB_NAME:-africhina}
-      JWT_SECRET: ${JWT_SECRET:-supersecretkey_change_in_prod}
-      NODE_ENV: production
-      EMAIL_USER: ${EMAIL_USER:-}
-      EMAIL_PASS: ${EMAIL_PASS:-}
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_NAME:-africhina}
+      DB_USERNAME: ${DB_USER:-africhina}
+      DB_PASSWORD: ${DB_PASSWORD:-160907}
+    volumes:
+      # Bind mount uploads for persistent storage during dev
+      - ./backend/public/uploads:/var/www/html/public/uploads
     depends_on:
       db:
         condition: service_healthy
     networks:
       - africhina_net
-    expose:
-      - "5000"
+    ports:
+      - "5000:80"
 
   # 3. Frontend (Vue 3 + Nginx)
   frontend:
@@ -64,4 +70,4 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  mysqldata:

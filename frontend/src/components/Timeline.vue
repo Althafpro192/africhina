@@ -31,6 +31,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   currentStatus: {
@@ -43,24 +44,27 @@ const props = defineProps({
   }
 });
 
+const { t } = useI18n();
+
 const statusOrder = ['pending', 'quoted', 'approved', 'production', 'shipped', 'arrived', 'completed'];
 
 const steps = computed(() => {
   const currentIndex = statusOrder.indexOf(props.currentStatus);
   
   return [
-    { name: 'Request Received', status: 'pending' },
-    { name: 'Quote Provided', status: 'quoted' },
-    { name: 'Quote Approved', status: 'approved' },
-    { name: 'Production & QC', status: 'production' },
-    { name: 'Shipped', status: 'shipped' },
-    { name: 'Arrived', status: 'arrived' },
-    { name: 'Completed', status: 'completed' }
+    { key: 'request_received', status: 'pending' },
+    { key: 'quote_provided', status: 'quoted' },
+    { key: 'quote_approved', status: 'approved' },
+    { key: 'production_qc', status: 'production' },
+    { key: 'shipped', status: 'shipped' },
+    { key: 'arrived', status: 'arrived' },
+    { key: 'completed', status: 'completed' }
   ].map(s => {
     const sIndex = statusOrder.indexOf(s.status);
     const log = props.logs.find(l => l.status === s.status);
     return {
       ...s,
+      name: t(`timeline.${s.key}`),
       completed: sIndex < currentIndex || (sIndex === currentIndex && s.status === 'completed'),
       current: sIndex === currentIndex && s.status !== 'completed',
       date: log ? log.created_at : null

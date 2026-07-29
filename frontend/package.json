@@ -13,6 +13,8 @@
     "@heroicons/vue": "^2.2.0",
     "axios": "^1.18.1",
     "chart.js": "^4.5.1",
+    "laravel-echo": "^2.4.0",
+    "pusher-js": "^8.6.0",
     "socket.io-client": "^4.8.3",
     "vue": "^3.5.39",
     "vue-chartjs": "^5.3.4",
