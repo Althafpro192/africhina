@@ -42,6 +42,9 @@ class AdminDriverController extends Controller
             $driver->assigned_requests_count = DB::table('requests')
                 ->where('assigned_driver_id', $driver->id)
                 ->count();
+            if ($driver->avatar_data) {
+                $driver->avatar_data = base64_encode($driver->avatar_data);
+            }
         }
 
         return response()->json([
@@ -99,6 +102,10 @@ class AdminDriverController extends Controller
         $driver->assigned_requests_count = DB::table('requests')
             ->where('assigned_driver_id', $driver->id)
             ->count();
+            
+        if ($driver->avatar_data) {
+            $driver->avatar_data = base64_encode($driver->avatar_data);
+        }
 
         return response()->json($driver);
     }
@@ -207,7 +214,11 @@ class AdminDriverController extends Controller
         $drivers = User::where('role', 'driver')
             ->where('is_blocked', false)
             ->orderBy('full_name', 'asc')
-            ->get(['id', 'full_name', 'email', 'phone', 'country', 'country_code', 'avatar_url']);
+            ->get(['id', 'full_name', 'email', 'phone', 'country', 'country_code', 'avatar_url', 'avatar_data', 'avatar_mime_type']);
+
+        foreach ($drivers as $driver) {
+            $driver->avatar_data = $driver->avatar_data ? base64_encode($driver->avatar_data) : null;
+        }
 
         return response()->json([
             'data' => $drivers,

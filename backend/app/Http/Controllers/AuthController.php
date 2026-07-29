@@ -271,13 +271,12 @@ class AuthController extends Controller
             $user->update([
                 'avatar_data' => $avatarData,
                 'avatar_mime_type' => $mimeType,
-                // Keep avatar_url for backward compatibility, point to our API endpoint
-                'avatar_url' => '/api/avatars/' . $user->id,
+                'avatar_url' => null, // Disable file-based URL usage
             ]);
 
             return response()->json([
                 'message' => 'Avatar updated successfully',
-                'avatar_url' => '/api/avatars/' . $user->id,
+                'avatar_url' => null,
                 'avatar_data' => $user->avatar_data ? base64_encode($user->avatar_data) : null,
                 'avatar_mime_type' => $user->avatar_mime_type,
             ]);

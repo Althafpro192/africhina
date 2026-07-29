@@ -35,7 +35,7 @@ class BuyerRequestActionsController extends Controller
         DB::beginTransaction();
         try {
             if ($directApproval) {
-                $status = 'menunggu_' . 'kesepa' . 'katan_final';
+                $status = 'menunggu_kesepakatan_final';
                 $rfq->update([
                     'status' => $status,
                     'buyer_notes' => $buyerNotes ?? 'Buyer approved directly without selecting options.',
@@ -49,7 +49,7 @@ class BuyerRequestActionsController extends Controller
             } elseif (count($optionIds) > 0) {
                 RequestOption::whereIn('id', $optionIds)->update(['is_selected' => true]);
 
-                $negStatus = 'menunggu_' . 'kesepa' . 'katan_final';
+                $negStatus = 'menunggu_kesepakatan_final';
                 $rfq->update([
                     'status' => $negStatus,
                     'buyer_notes' => $buyerNotes,
@@ -61,7 +61,7 @@ class BuyerRequestActionsController extends Controller
                     'notes' => "Buyer selected " . count($optionIds) . " option(s). Note: " . ($buyerNotes ?? 'None'),
                 ]);
             } else {
-                $altStatus = 'menunggu_pen' . 'awaran_admin';
+                $altStatus = 'menunggu_penawaran_admin';
                 $rfq->update([
                     'status' => $altStatus,
                     'buyer_notes' => $buyerNotes,
@@ -115,7 +115,7 @@ class BuyerRequestActionsController extends Controller
             'reason' => 'required|string',
         ]);
 
-        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_' . 'kesepa' . 'katan_final'])) {
+        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final'])) {
             return response()->json(['message' => 'Cannot cancel request at this stage'], 400);
         }
 

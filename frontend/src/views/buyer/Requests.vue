@@ -67,7 +67,7 @@
                   <span class="text-[10px] text-slate-400 font-medium">{{ formatDate(req.created_at) }}</span>
                 </div>
                 <span :class="['font-bold text-[10px] px-2.5 py-0.5 rounded-full text-white whitespace-nowrap shadow-xs', getStatusClass(req.status)]">
-                  {{ req.status === 'quoted' ? $t('buyer_requests.quote_received') : (req.status === 'batal' ? 'Dibatalkan' : $t('buyer_requests.awaiting_quotes')) }}
+                  {{ req.status === 'quoted' ? $t('buyer_requests.quote_received') : (req.status === 'batal' ? $t('status.batal') : $t('buyer_requests.awaiting_quotes')) }}
                 </span>
               </div>
               

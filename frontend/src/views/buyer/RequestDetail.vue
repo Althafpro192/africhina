@@ -14,9 +14,7 @@
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
         <div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-slate-800 shrink-0">
           <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-            Edit {{ activeEditSection === 'product_details' ? 'Detail Produk' : 
-                     activeEditSection === 'quality' ? 'Kualitas & Sertifikasi' : 
-                     activeEditSection === 'logistics' ? 'Budget & Logistik' : 'Lampiran' }}
+            {{ $t('request_details.edit_title') }}
           </h2>
           <button @click="showEditModal = false" class="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 cursor-pointer">
             <span class="material-symbols-outlined">close</span>
@@ -223,7 +221,7 @@
                 </div>
                 
                 <div v-if="request.description" class="pt-4 border-t border-gray-100 dark:border-slate-800">
-                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Deskripsi & Spesifikasi:</h4>
+                  <h4 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">{{ $t('request_details.description_spec') }}</h4>
                   <p class="text-sm text-gray-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ request.description }}</p>
                 </div>
               </div>
@@ -337,7 +335,7 @@
             <div v-if="request.options && request.options.length > 0" class="bg-indigo-50/40 dark:bg-slate-900/90 border border-indigo-100 dark:border-slate-800 rounded-2xl p-4 sm:p-6 mb-6 shadow-sm">
               <div class="mb-4">
                 <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ $t('order_detail.select_product_options', { id: request.id.split('-')[0].toUpperCase() }) }}</h2>
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Admin telah menyiapkan {{ request.options.length }} pilihan untuk Anda. Anda dapat memilih satu atau lebih opsi.</p>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">{{ $t('request_details.admin_prepared_options', { count: request.options.length }) }}</p>
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -353,7 +351,7 @@
                      
                   <!-- Selected Badge -->
                   <div v-if="selectedOptionIds.includes(opt.id) || opt.is_selected" class="absolute top-2 right-2 z-10 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-md">
-                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Terpilih
+                    <span class="material-symbols-outlined text-[14px]">check_circle</span> {{ $t('request_details.selected') }}
                   </div>
 
                   <!-- Image rendering -->
@@ -414,9 +412,9 @@
               <div v-if="request.payment_rejection_reason" class="p-4 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 rounded-2xl text-rose-800 dark:text-rose-200 flex items-start gap-3">
                 <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-2xl shrink-0 mt-0.5">error</span>
                 <div>
-                  <h4 class="font-black text-sm text-rose-900 dark:text-rose-100">Bukti Pembayaran Ditolak Admin</h4>
-                  <p class="text-xs sm:text-sm text-rose-700 dark:text-rose-300 mt-1 font-medium">Alasan: "{{ request.payment_rejection_reason }}"</p>
-                  <p class="text-[11px] font-bold text-rose-600 dark:text-rose-400 mt-1.5">Silakan periksa ulang nominal/transfer Anda dan unggah ulang bukti pembayaran yang sesuai di bawah.</p>
+                  <h4 class="font-black text-sm text-rose-900 dark:text-rose-100">{{ $t('request_details.payment_rejected') }}</h4>
+                  <p class="text-xs sm:text-sm text-rose-700 dark:text-rose-300 mt-1 font-medium">{{ $t('request_details.payment_rejected_reason') }} "{{ request.payment_rejection_reason }}"</p>
+                  <p class="text-[11px] font-bold text-rose-600 dark:text-rose-400 mt-1.5">{{ $t('request_details.payment_rejected_reupload') }}</p>
                 </div>
               </div>
 
@@ -427,12 +425,12 @@
                     <span class="material-symbols-outlined text-2xl">receipt_long</span>
                   </div>
                   <div>
-                    <h3 class="font-black text-slate-900 dark:text-white text-base sm:text-lg">Tagihan & Instruksi Pembayaran</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Kesepakatan telah difinalisasi oleh Admin</p>
+                    <h3 class="font-black text-slate-900 dark:text-white text-base sm:text-lg">{{ $t('request_details.payment_instructions') }}</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('request_details.payment_finalized') }}</p>
                   </div>
                 </div>
                 <div class="text-right">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Tagihan</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">{{ $t('request_details.total_bill') }}</span>
                   <span class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">
                     USD {{ (request.final_price || request.quoted_price || 0).toLocaleString() }}
                   </span>
@@ -444,25 +442,25 @@
                 <!-- Bank Info Box -->
                 <div class="bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 space-y-3">
                   <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">account_balance</span> Bank Transfer Direct
+                    <span class="material-symbols-outlined text-base">account_balance</span> {{ $t('request_details.direct_transfer') }}
                   </h4>
                   
                   <div class="space-y-2">
                     <div>
-                      <span class="text-[11px] text-slate-400 block">Nama Bank</span>
+                      <span class="text-[11px] text-slate-400 block">{{ $t('request_details.bank_name') }}</span>
                       <span class="text-sm font-bold text-slate-900 dark:text-white">{{ request.bank_name || 'Bank Transfer (Admin)' }}</span>
                     </div>
                     <div>
-                      <span class="text-[11px] text-slate-400 block">Nomor Rekening</span>
+                      <span class="text-[11px] text-slate-400 block">{{ $t('request_details.account_number') }}</span>
                       <div class="flex items-center gap-2">
                         <span class="text-base font-black tracking-wider text-indigo-600 dark:text-indigo-400 font-mono">{{ request.bank_account_number || '-' }}</span>
-                        <button v-if="request.bank_account_number" @click="copyText(request.bank_account_number)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer" title="Copy Rekening">
+                        <button v-if="request.bank_account_number" @click="copyText(request.bank_account_number)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer" :title="$t('request_details.copy_rekening')">
                           <span class="material-symbols-outlined text-sm">content_copy</span>
                         </button>
                       </div>
                     </div>
                     <div>
-                      <span class="text-[11px] text-slate-400 block">Atas Nama</span>
+                      <span class="text-[11px] text-slate-400 block">{{ $t('request_details.account_name') }}</span>
                       <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ request.bank_account_name || 'AfriChina Bridge Escrow' }}</span>
                     </div>
                   </div>
@@ -472,7 +470,7 @@
                 <div class="bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 flex flex-col justify-between">
                   <div>
                     <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5 mb-2">
-                      <span class="material-symbols-outlined text-base">qr_code_2</span> QR Code / Catatan Admin
+                      <span class="material-symbols-outlined text-base">qr_code_2</span> {{ $t('request_details.qr_code_notes') }}
                     </h4>
                     <p v-if="request.payment_notes" class="text-xs text-slate-600 dark:text-slate-300 italic leading-relaxed mb-3">
                       "{{ request.payment_notes }}"
@@ -480,10 +478,10 @@
                   </div>
 
                   <div v-if="request.payment_qr_url" class="flex items-center gap-3 pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
-                    <img :src="getMediaUrl(request.payment_qr_url)" alt="QR Code" class="w-16 h-16 object-cover rounded-xl border border-slate-300 dark:border-slate-600 shadow-xs cursor-pointer hover:scale-105 transition-transform" @click="window.open(getMediaUrl(request.payment_qr_url), '_blank')" />
+                    <img :src="getMediaUrl(request.payment_qr_url)" alt="QR Code" class="w-16 h-16 object-cover rounded-xl border border-slate-300 dark:border-slate-600 shadow-xs cursor-pointer hover:scale-105 transition-transform" @click="openInNewTab(getMediaUrl(request.payment_qr_url))" />
                     <div>
-                      <span class="text-xs font-bold text-slate-800 dark:text-white block">Scan QR Code</span>
-                      <span class="text-[11px] text-slate-400">Klik gambar QR untuk memperbesar</span>
+                      <span class="text-xs font-bold text-slate-800 dark:text-white block">{{ $t('request_details.scan_qr_code') }}</span>
+                      <span class="text-[11px] text-slate-400">{{ $t('request_details.scan_qr_enlarge') }}</span>
                     </div>
                   </div>
                 </div>
@@ -491,18 +489,18 @@
 
               <!-- File Upload Action Form -->
               <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
-                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Unggah Bukti Transfer / Pembayaran:</h4>
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">{{ $t('request_details.upload_proof') }}</h4>
                 <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                   <input type="file" ref="paymentProofInput" accept="image/*,.pdf" class="hidden" @change="handlePaymentProofChange">
                   <button @click="paymentProofInput.click()" class="flex-1 px-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-lg">upload_file</span>
-                    <span class="truncate">{{ paymentProofFile ? paymentProofFile.name : 'Pilih File Bukti Bayar (JPG, PNG, PDF)' }}</span>
+                    <span class="truncate">{{ paymentProofFile ? paymentProofFile.name : $t('request_details.select_proof_file') }}</span>
                   </button>
                   <button @click="submitPaymentProof" :disabled="!paymentProofFile || uploadingProof" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 text-white font-bold text-xs sm:text-sm rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center cursor-pointer shadow-md shadow-amber-500/20">
                     <span v-if="uploadingProof" class="material-symbols-outlined animate-spin text-lg">progress_activity</span>
                     <span v-else class="flex items-center gap-1.5">
                       <span class="material-symbols-outlined text-lg">send</span>
-                      Kirim Bukti
+                      {{ $t('request_details.send_proof') }}
                     </span>
                   </button>
                 </div>
@@ -523,7 +521,7 @@
                   <span class="material-symbols-outlined text-xl">{{ request.delivery_method === 'sea' ? 'directions_boat' : request.delivery_method === 'air' ? 'flight' : 'verified_user' }}</span>
                 </div>
                 <h3 class="font-bold text-base text-indigo-900 dark:text-indigo-300">
-                  {{ request.delivery_method === 'trusted_provider' ? 'Trusted Provider' : 'Delivery Driver' }}
+                  {{ $t('request_details.trusted_provider') }}
                 </h3>
               </div>
 
@@ -547,48 +545,48 @@
                   <span class="material-symbols-outlined text-xl">verified_user</span>
                 </div>
                 <div class="flex-1">
-                  <p class="font-bold text-sm text-slate-900 dark:text-white">AfriChina Trusted Provider</p>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">Pengiriman Anda akan ditangani oleh mitra logistik terpercaya kami</p>
+                  <p class="font-bold text-sm text-slate-900 dark:text-white">{{ $t('request_details.trusted_provider') }}</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('request_details.trusted_provider_desc') }}</p>
                 </div>
               </div>
 
               <p class="text-[11px] text-indigo-700 dark:text-indigo-300 mt-3 leading-relaxed">
-                💬 Driver hanya untuk komunikasi dengan buyer terkait pengiriman. Untuk hal teknis produk, hubungi admin melalui menu Messages.
+                💬 {{ $t('request_details.driver_contact_hint') }}
               </p>
             </div>
 
             <div v-if="request.status === 'dikirim'" class="bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-4 sm:p-6 shadow-sm">
-              <h3 class="font-bold text-emerald-900 dark:text-emerald-300 mb-2">Konfirmasi Barang Tiba</h3>
-              <p class="text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 mb-4">Klik tombol di bawah jika barang fisik telah Anda terima dalam kondisi baik.</p>
+              <h3 class="font-bold text-emerald-900 dark:text-emerald-300 mb-2">{{ $t('request_details.confirm_delivery') }}</h3>
+              <p class="text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 mb-4">{{ $t('request_details.confirm_delivery_desc') }}</p>
               <button @click="confirmDelivery" :disabled="confirming" class="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer">
                 <span v-if="confirming" class="material-symbols-outlined animate-spin">progress_activity</span>
                 <span class="material-symbols-outlined" v-else>done_all</span>
-                Barang Diterima
+                {{ $t('request_details.goods_received') }}
               </button>
             </div>
             
             <!-- Cancel Action -->
             <div v-if="['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final'].includes(request.status)" class="bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 rounded-2xl p-4 sm:p-6 mt-4 shadow-sm">
-              <h3 class="font-bold text-rose-800 dark:text-rose-300 mb-2">Batalkan Permintaan</h3>
-              <p class="text-xs sm:text-sm text-rose-600 dark:text-rose-400 mb-4">Jika Anda berubah pikiran, Anda dapat membatalkan permintaan ini sebelum pembayaran dilakukan.</p>
+              <h3 class="font-bold text-rose-800 dark:text-rose-300 mb-2">{{ $t('request_details.cancel_request') }}</h3>
+              <p class="text-xs sm:text-sm text-rose-600 dark:text-rose-400 mb-4">{{ $t('request_details.cancel_request_desc') }}</p>
               <button @click="showCancelModal = true" class="w-full px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-colors cursor-pointer">
-                Batalkan Permintaan
+                {{ $t('request_details.cancel_request_button') }}
               </button>
             </div>
 
             <!-- Dispute Action -->
             <div v-if="['dikirim', 'menunggu_verifikasi_admin'].includes(request.status)" class="bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 rounded-2xl p-4 sm:p-6 mt-4 shadow-sm">
-              <h3 class="font-bold text-amber-800 dark:text-amber-300 mb-2">Ajukan Komplain</h3>
-              <p class="text-xs sm:text-sm text-amber-600 dark:text-amber-400 mb-4">Jika ada masalah dengan pesanan, ajukan komplain untuk ditinjau oleh Admin.</p>
+              <h3 class="font-bold text-amber-800 dark:text-amber-300 mb-2">{{ $t('request_details.raise_complaint') }}</h3>
+              <p class="text-xs sm:text-sm text-amber-600 dark:text-amber-400 mb-4">{{ $t('request_details.raise_complaint_desc') }}</p>
               <button @click="disputeModalOpen = true" class="w-full px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-colors cursor-pointer">
-                Ajukan Komplain
+                {{ $t('request_details.raise_complaint_button') }}
               </button>
             </div>
             
             <!-- Rating Form (If Completed) -->
             <div v-if="request.status === 'selesai' && !existingRating" class="premium-card rounded-xl p-4 sm:p-6 bg-purple-50 border-purple-200">
-              <h3 class="font-bold text-gray-800 mb-2">Beri Rating Pesanan Ini</h3>
-              <p class="text-sm text-gray-600 mb-4">Bagaimana pengalaman Anda?</p>
+              <h3 class="font-bold text-gray-800 mb-2">{{ $t('request_details.rate_order') }}</h3>
+              <p class="text-sm text-gray-600 mb-4">{{ $t('request_details.rate_order_desc') }}</p>
               
               <div class="flex items-center gap-2 mb-4">
                 <button 
@@ -607,7 +605,7 @@
               <textarea 
                 v-model="ratingReview"
                 rows="3"
-                placeholder="Tulis ulasan Anda..."
+                :placeholder="$t('request_details.write_review')"
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#4f378a] mb-4 text-sm"
               ></textarea>
               
@@ -616,12 +614,12 @@
                 :disabled="!ratingScore || submittingRating"
                 class="px-6 py-2 bg-[#4f378a] text-white rounded-lg font-semibold disabled:opacity-50"
               >
-                Kirim Ulasan
+                {{ $t('request_details.submit_review') }}
               </button>
             </div>
             
             <div v-if="existingRating" class="premium-card rounded-xl p-4 sm:p-6">
-              <h3 class="font-bold text-gray-800 mb-2">Ulasan Anda</h3>
+              <h3 class="font-bold text-gray-800 mb-2">{{ $t('request_details.your_review') }}</h3>
               <div class="flex text-yellow-400 text-xl mb-2">
                 {{ '★'.repeat(existingRating.score) }}{{ '☆'.repeat(5 - existingRating.score) }}
               </div>
@@ -667,12 +665,12 @@
       <div v-if="showCancelModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showCancelModal = false"></div>
         <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6">
-          <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Batalkan Permintaan</h2>
-          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">Tuliskan alasan Anda membatalkan permintaan ini.</p>
-          <textarea v-model="cancelReason" rows="3" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl mb-4 text-slate-900 dark:text-white" placeholder="Alasan pembatalan..."></textarea>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">{{ $t('request_details.cancel_modal_title') }}</h2>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">{{ $t('request_details.cancel_modal_desc') }}</p>
+          <textarea v-model="cancelReason" rows="3" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl mb-4 text-slate-900 dark:text-white" :placeholder="$t('request_details.cancel_reason_placeholder')"></textarea>
           <div class="flex gap-2 justify-end">
-            <button @click="showCancelModal = false" class="px-4 py-2 text-gray-600 dark:text-slate-400 font-semibold hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer">Batal</button>
-            <button @click="submitCancel" :disabled="!cancelReason || cancelling" class="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 disabled:opacity-50 cursor-pointer">Ya, Batalkan</button>
+            <button @click="showCancelModal = false" class="px-4 py-2 text-gray-600 dark:text-slate-400 font-semibold hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer">{{ $t('common.cancel') }}</button>
+            <button @click="submitCancel" :disabled="!cancelReason || cancelling" class="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 disabled:opacity-50 cursor-pointer">{{ $t('request_details.cancel_action') }}</button>
           </div>
         </div>
       </div>
@@ -681,12 +679,12 @@
       <div v-if="disputeModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="disputeModalOpen = false"></div>
         <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6">
-          <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Ajukan Komplain</h2>
-          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">Tuliskan alasan atau masalah terkait pesanan ini.</p>
-          <textarea v-model="disputeReason" rows="3" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl mb-4 text-slate-900 dark:text-white" placeholder="Detail masalah..."></textarea>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">{{ $t('request_details.dispute_modal_title') }}</h2>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">{{ $t('request_details.dispute_modal_desc') }}</p>
+          <textarea v-model="disputeReason" rows="3" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl mb-4 text-slate-900 dark:text-white" :placeholder="$t('request_details.dispute_reason_placeholder')"></textarea>
           <div class="flex gap-2 justify-end">
-            <button @click="disputeModalOpen = false" class="px-4 py-2 text-gray-600 dark:text-slate-400 font-semibold hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer">Batal</button>
-            <button @click="submitDispute" :disabled="!disputeReason || disputing" class="px-4 py-2 bg-yellow-600 text-white font-bold rounded-lg hover:bg-yellow-700 disabled:opacity-50 cursor-pointer">Kirim Komplain</button>
+            <button @click="disputeModalOpen = false" class="px-4 py-2 text-gray-600 dark:text-slate-400 font-semibold hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer">{{ $t('common.cancel') }}</button>
+            <button @click="submitDispute" :disabled="!disputeReason || disputing" class="px-4 py-2 bg-yellow-600 text-white font-bold rounded-lg hover:bg-yellow-700 disabled:opacity-50 cursor-pointer">{{ $t('request_details.dispute_action') }}</button>
           </div>
         </div>
       </div>
@@ -696,20 +694,20 @@
     <!-- Multi-Select Options Action Bar -->
     <div v-if="request && request.status === 'menunggu_pemilihan_buyer'" class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <p class="font-bold text-slate-900 dark:text-white text-base sm:text-lg">{{ selectedOptionIds.length }} Opsi Terpilih</p>
-        <p class="text-xs text-slate-500 dark:text-slate-400">Klik opsi di atas untuk menambah pilihan.</p>
+        <p class="font-bold text-slate-900 dark:text-white text-base sm:text-lg">{{ selectedOptionIds.length }} {{ $t('request_details.your_selection') }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('request_details.click_to_add_selection') }}</p>
       </div>
       <div class="flex w-full sm:w-auto gap-3">
         <button @click="submitSelection([], true)" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold rounded-xl hover:bg-emerald-200 dark:hover:bg-emerald-800 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
-          Acc Langsung
+          {{ $t('request_details.direct_approve') }}
         </button>
         <button @click="submitSelection([])" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
-          Minta Opsi Lain
+          {{ $t('request_details.request_other_options') }}
         </button>
         <button @click="submitSelection(selectedOptionIds)" :disabled="selectingOption || selectedOptionIds.length === 0" class="flex-1 sm:flex-none px-7 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl hover:opacity-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 text-xs sm:text-sm cursor-pointer">
           <span v-if="selectingOption" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
           <span v-else class="material-symbols-outlined text-sm">check_circle</span>
-          Konfirmasi
+          {{ $t('request_details.confirm_selection') }}
         </button>
       </div>
     </div>
@@ -719,6 +717,8 @@
 <script setup>
 import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -889,13 +889,18 @@ const buyerNote = ref('')
 const copyText = (text) => {
   if (!text) return
   navigator.clipboard.writeText(text)
-  showToast('Nomor rekening disalin!')
+  showToast(t('request_details.account_copied'))
 }
 
 const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
   return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
+}
+
+const openInNewTab = (url) => {
+  if (!url) return
+  window.open(url, '_blank')
 }
 
 const toggleOption = (id) => {
@@ -908,7 +913,7 @@ const toggleOption = (id) => {
 
 const submitSelection = async (optionIds, isDirectApproval = false) => {
   if (!isDirectApproval && optionIds.length === 0) {
-    if (!confirm('Anda tidak memilih opsi satupun. Anda yakin ingin meminta opsi alternatif dari Admin?')) return;
+    if (!confirm(t('request_details.no_selection_warning'))) return;
   }
   
   selectingOption.value = true;
@@ -917,7 +922,7 @@ const submitSelection = async (optionIds, isDirectApproval = false) => {
     await loadData();
     selectedOptionIds.value = [];
     buyerNote.value = '';
-    showToast(isDirectApproval ? 'Permintaan langsung disetujui!' : 'Tanggapan Anda telah dikirim ke Admin!');
+    showToast(isDirectApproval ? t('request_details.acc_direct_confirmed') : t('request_details.response_sent'));
   } catch (e) {
     showToast(e.response?.data?.message || 'Failed to submit selection');
   } finally {
@@ -948,7 +953,7 @@ const submitPaymentProof = async () => {
 }
 
 const confirmDelivery = async () => {
-  if (!confirm('Apakah Anda yakin barang fisik telah diterima? Admin akan memverifikasi langkah ini.')) return;
+  if (!confirm(t('request_details.confirm_delivery_confirm'))) return;
   confirming.value = true
   try {
     await requestService.confirmDelivery(request.value.id)
