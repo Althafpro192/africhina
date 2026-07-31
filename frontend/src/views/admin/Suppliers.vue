@@ -215,6 +215,9 @@
 import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
 
+import { useConfirm } from '../../composables/useConfirm.js';
+const { confirmDelete, confirmBlock, confirmAction } = useConfirm();
+
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -320,11 +323,8 @@ const saveSupplier = async () => {
 }
 
 const toggleBlockSupplierItem = async (supplier) => {
-  const actionText = supplier.is_blocked ? t('admin_suppliers.unblock') : t('admin_suppliers.block')
-  const confirmMsg = supplier.is_blocked 
-    ? t('admin_suppliers.unblock_confirm', { name: supplier.company_name })
-    : t('admin_suppliers.block_confirm', { name: supplier.company_name })
-  if (!confirm(confirmMsg)) return
+  const confirmed = await confirmBlock(supplier.company_name, supplier.is_blocked)
+  if (!confirmed) return
   try {
     const res = await supplierService.toggleBlock(supplier.id)
     showToast(res.message || t('common.success'))
@@ -335,12 +335,8 @@ const toggleBlockSupplierItem = async (supplier) => {
 }
 
 const deleteSupplierItem = async (supplier) => {
-  const isUsed = Number(supplier.usage_count || 0) > 0
-  const confirmMsg = isUsed 
-    ? t('admin_suppliers.delete_block_confirm', { name: supplier.company_name })
-    : t('admin_suppliers.delete_confirm', { name: supplier.company_name })
-
-  if (!confirm(confirmMsg)) return
+  const confirmed = await confirmDelete(supplier.company_name)
+  if (!confirmed) return
   try {
     const res = await supplierService.remove(supplier.id)
     showToast(res.message || t('common.success'))

@@ -29,19 +29,20 @@ class RequestController extends Controller
             'payment_terms' => 'required|string|max:50',
             'quality_requirements' => 'nullable|string',
             'certifications' => 'nullable|string',
-            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB per file
         ]);
 
-        $imageUrls = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                // Storage::disk('public')->putFile() returns a path like
-                // "uploads/abc.jpg" (the directory is part of the path).
-                $path = $file->store('uploads', 'public');
-                // Public URL is /storage/<path> when served via the
-                // `storage:link` symlink. Keep it consistent so the frontend
-                // can render the image from the same origin.
-                $imageUrls[] = '/storage/' . $path;
+        // Handle images - accept both 'images' (array field) and 'images[]' formats
+        $imageData = [];
+        $files = $request->allFiles();
+        
+        // Check for 'images' as array
+        if (isset($files['images']) && is_array($files['images'])) {
+            foreach ($files['images'] as $file) {
+                if ($file && $file->isValid()) {
+                    $mimeType = $file->getMimeType();
+                    $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                    $imageData[] = $base64;
+                }
             }
         }
 
@@ -60,7 +61,7 @@ class RequestController extends Controller
             'payment_terms' => $validated['payment_terms'],
             'quality_requirements' => $validated['quality_requirements'] ?? null,
             'certifications' => $validated['certifications'] ?? null,
-            'image_urls' => $imageUrls,
+            'image_urls' => $imageData, // Store as array of base64 data URLs
             'status' => 'menunggu_penawaran_admin',
         ]);
 
@@ -154,18 +155,19 @@ class RequestController extends Controller
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
         ]);
 
-        $imageUrls = $rfq->image_urls ?? [];
+        $imageData = $rfq->image_urls ?? [];
         $hasNewImages = $request->hasFile('images');
         
         // Check if we should keep existing images
         if ($request->input('keep_images') === 'true' && !$hasNewImages) {
             // Keep existing images - do nothing
         } else if ($hasNewImages) {
-            // Replace existing images with new ones
-            $imageUrls = [];
+            // Replace existing images with new ones - store as base64
+            $imageData = [];
             foreach ($request->file('images') as $file) {
-                $path = $file->store('uploads', 'public');
-                $imageUrls[] = '/storage/' . $path;
+                $mimeType = $file->getMimeType();
+                $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                $imageData[] = $base64;
             }
         }
 
@@ -182,7 +184,7 @@ class RequestController extends Controller
             'delivery_timeline' => $validated['delivery_timeline'] ?? null,
             'shipping_terms' => $validated['shipping_terms'],
             'payment_terms' => $validated['payment_terms'],
-            'image_urls' => $imageUrls,
+            'image_urls' => $imageData,
         ]);
 
         return response()->json(['message' => 'Request updated successfully', 'request' => $rfq]);

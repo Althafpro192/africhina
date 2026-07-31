@@ -151,9 +151,10 @@
               </div>
               <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">{{ request.product_name }}</h1>
             </div>
-            <span :class="['font-semibold text-xs px-3 py-1 rounded-full text-white self-start shadow-xs', getStatusClass(request.status)]">
-              {{ $t(`status.${request.status.toLowerCase()}`) }}
-            </span>
+            <span :class="['font-semibold text-xs px-3 py-1 rounded-full text-white self-start shadow-xs flex items-center gap-1', getStatusClass(request.status)]">
+              <span class="material-symbols-outlined text-[12px]">{{ getStatusIcon(request.status) }}</span>
+               {{ $t(`status.${request.status.toLowerCase()}`) }}
+             </span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-gray-100 dark:border-slate-800">
@@ -314,16 +315,29 @@
                   <span class="material-symbols-outlined text-[20px]">edit</span>
                 </button>
               </div>
-              <div v-if="request.image_urls && request.image_urls.length > 0" class="flex flex-col gap-3">
-                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="file" target="_blank" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors group">
-                  <div class="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-gray-500 dark:text-slate-400 group-hover:text-[#4f378a] dark:group-hover:text-indigo-400 transition-colors">
-                    <span class="material-symbols-outlined">description</span>
+              <div v-if="request.image_urls && request.image_urls.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="file" target="_blank" 
+                   :class="[
+                     'block rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700 group hover:border-[#4f378a] dark:hover:border-indigo-500 transition-all',
+                     isImageFile(file) ? 'aspect-square' : 'p-3'
+                   ]">
+                  <!-- Image Preview -->
+                  <div v-if="isImageFile(file)" class="w-full h-full relative">
+                    <img :src="getImageUrl(file)" :alt="file.split('/').pop()" class="w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                      <span class="material-symbols-outlined text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                    </div>
                   </div>
-                  <div class="flex-1 overflow-hidden">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
-                    <p class="text-xs text-gray-500 dark:text-slate-400">{{ $t('order_detail.click_view') }}</p>
+                  <!-- Non-Image File -->
+                  <div v-else class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-gray-500 dark:text-slate-400 group-hover:text-[#4f378a] dark:group-hover:text-indigo-400 transition-colors shrink-0">
+                      <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                      <p class="text-sm font-semibold text-gray-700 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
+                      <p class="text-xs text-gray-500 dark:text-slate-400">{{ $t('order_detail.click_view') }}</p>
+                    </div>
                   </div>
-                  <span class="material-symbols-outlined text-gray-400 dark:text-slate-500 group-hover:text-[#4f378a] dark:group-hover:text-indigo-400">open_in_new</span>
                 </a>
               </div>
               <div v-else class="text-center py-6 text-gray-500 dark:text-slate-500 text-sm italic">
@@ -527,10 +541,10 @@
 
               <div v-if="request.assigned_driver" class="flex items-center gap-3 p-3 bg-white/60 dark:bg-slate-900/60 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shrink-0">
-                  {{ request.assigned_driver.name ? request.assigned_driver.name.charAt(0).toUpperCase() : 'D' }}
+                  {{ (request.assigned_driver.full_name || request.assigned_driver.name) ? (request.assigned_driver.full_name || request.assigned_driver.name).charAt(0).toUpperCase() : 'D' }}
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ request.assigned_driver.name }}</p>
+                  <p class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ request.assigned_driver.full_name || request.assigned_driver.name }}</p>
                   <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ request.assigned_driver.email }}</p>
                   <p v-if="request.assigned_driver.phone" class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ request.assigned_driver.phone }}</p>
                 </div>
@@ -734,7 +748,17 @@ const request = ref(null)
 const trackingLogs = ref([])
 const loading = ref(true)
 const confirming = ref(false)
-const userRole = ref(JSON.parse(localStorage.getItem('user') || '{}').role)
+
+// Safe LocalStorage JSON parse with fallback
+const getStoredUserRole = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    return user.role || 'buyer'
+  } catch {
+    return 'buyer'
+  }
+}
+const userRole = ref(getStoredUserRole())
 
 const ratingScore = ref(0)
 const hoverScore = ref(0)
@@ -820,20 +844,25 @@ const formatDate = (dateStr) => {
 
 const getOptionImages = (opt) => {
   if (!opt) return []
-  let raw = opt.images || opt.image_url
+  let raw = opt.images || opt.image_url || opt.images_data
   if (!raw) return []
+  
   if (typeof raw === 'string') {
+    if (raw.startsWith('data:')) {
+      return [raw]
+    }
     if (raw.startsWith('[')) {
       try { raw = JSON.parse(raw) } catch (e) { raw = [raw] }
     } else {
       raw = [raw]
     }
   }
+  
   if (!Array.isArray(raw)) raw = [raw]
+  
   return raw.map(img => {
-    if (!img) return ''
-    if (typeof img !== 'string') return ''
-    if (img.startsWith('http')) return img
+    if (!img || typeof img !== 'string') return ''
+    if (img.startsWith('data:') || img.startsWith('http')) return img
     return `${window.location.origin}${img.startsWith('/') ? '' : '/'}${img}`
   }).filter(Boolean)
 }
@@ -853,6 +882,23 @@ const getStatusClass = (status) => {
     'dispute': 'bg-red-700'
   }
   return classes[status] || 'bg-gray-500'
+}
+
+const getStatusIcon = (status) => {
+  const icons = {
+    'menunggu_penawaran_admin': 'schedule',
+    'menunggu_pemilihan_buyer': 'list_alt',
+    'menunggu_kesepakatan_final': 'handshake',
+    'menunggu_pembayaran': 'payments',
+    'menunggu_verifikasi_pembayaran': 'pending_actions',
+    'sedang_diproses': 'inventory',
+    'dikirim': 'local_shipping',
+    'menunggu_verifikasi_admin': 'fact_check',
+    'selesai': 'task_alt',
+    'batal': 'cancel',
+    'dispute': 'report'
+  }
+  return icons[status] || 'help'
 }
 
 const shouldShowChat = computed(() => {
@@ -896,6 +942,21 @@ const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
   return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
+}
+
+const isImageFile = (path) => {
+  if (!path) return false
+  // Check for base64 data URL (starts with data:image/...)
+  if (path.startsWith('data:')) {
+    return path.startsWith('data:image/')
+  }
+  // Check for regular URLs with image extensions
+  const ext = path.split('.').pop()?.toLowerCase()
+  return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(ext)
+}
+
+const getImageUrl = (path) => {
+  return getMediaUrl(path)
 }
 
 const openInNewTab = (url) => {

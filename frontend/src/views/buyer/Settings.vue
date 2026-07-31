@@ -31,7 +31,7 @@
               <h2 class="text-xl font-black text-slate-900 dark:text-white">{{ form.full_name || 'Buyer User' }}</h2>
               <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5 mb-3">{{ user.role === 'admin' ? $t('settings_page.administrator') : $t('settings_page.verified_buyer') }}</p>
               
-              <input type="file" ref="avatarInput" accept="image/png, image/jpeg, image/jpg" class="hidden" @change="handleAvatarChange" />
+              <input type="file" ref="avatarInput" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" @change="handleAvatarChange" />
               <button 
                 @click="$refs.avatarInput.click()" 
                 :disabled="uploadingAvatar" 
@@ -168,10 +168,20 @@ import { authService } from '../../api/authService'
 import { countryCodes, validatePhone } from '../../utils/phoneValidation'
 import { getAvatarUrl } from '../../utils/avatar'
 import { useToast } from '../../composables/useToast'
+import { compressImage } from '../../utils/imageCompressor'
 
 const { showToast } = useToast()
 
-const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
+// Safe LocalStorage JSON parse with fallback
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || '{}')
+  } catch (e) {
+    console.warn('Failed to parse user from localStorage', e)
+    return {}
+  }
+}
+const user = ref(getStoredUser())
 const form = ref({
   full_name: '',
   phone: '',
@@ -221,21 +231,37 @@ const handleAvatarChange = async (e) => {
   const file = e.target.files[0]
   if (!file) return
   
-  if (file.size > 2 * 1024 * 1024) {
-    showToast('File is too large. Max size is 2MB.', 'error')
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif']
+  if (!allowedTypes.includes(file.type)) {
+    showToast('Only JPEG, PNG, WebP, and GIF images are allowed.', 'error')
+    return
+  }
+  
+  // Max file size: 10MB (before compression), compression will reduce it further
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('File is too large. Max size is 10MB.', 'error')
     return
   }
 
   uploadingAvatar.value = true
   try {
-    const data = await authService.uploadAvatar(file)
+    // Compress image before uploading for better performance
+    let fileToUpload = file
+    if (file.type.startsWith('image/') && file.type !== 'image/gif') {
+      fileToUpload = await compressImage(file, 800, 800, 0.85) // Resize to max 800x800 for avatar
+      showToast('Optimizing image...', 'info')
+    }
+    
+    const data = await authService.uploadAvatar(fileToUpload)
     user.value.avatar_url = data.avatar_url
     user.value.avatar_data = data.avatar_data
     user.value.avatar_mime_type = data.avatar_mime_type
     localStorage.setItem('user', JSON.stringify(user.value))
     showToast('Avatar updated successfully!', 'success')
   } catch (err) {
-    showToast(err.response?.data?.message || 'Failed to upload avatar', 'error')
+    console.error('Avatar upload error:', err)
+    showToast(err.response?.data?.message || 'Failed to upload avatar. Please try again.', 'error')
   } finally {
     uploadingAvatar.value = false
     if (avatarInput.value) avatarInput.value.value = ''

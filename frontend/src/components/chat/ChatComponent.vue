@@ -62,7 +62,8 @@
           <div v-else>
             <!-- Media Rendering -->
             <div v-if="msg.media_url" class="mb-2">
-              <img v-if="msg.media_type === 'image'" :src="getMediaUrl(msg.media_url)" alt="Attachment" class="max-w-full rounded-xl max-h-56 object-cover cursor-pointer hover:opacity-90 transition-opacity" @click="window.open(getMediaUrl(msg.media_url), '_blank')" />
+              <img v-if="msg.media_type === 'image'" :src="getMediaUrl(msg.media_url)" alt="Attachment" class="max-w-full rounded-xl max-h-56 object-cover cursor-pointer hover:opacity-90 transition-opacity" @click="openMediaInNewTab(getMediaUrl(msg.media_url))" />
+              <video v-else-if="msg.media_type === 'video'" controls :src="getMediaUrl(msg.media_url)" class="max-w-full rounded-xl max-h-64 cursor-pointer"></video>
               <audio v-else-if="msg.media_type === 'audio'" controls :src="getMediaUrl(msg.media_url)" class="max-w-full h-10"></audio>
               <a v-else :href="getMediaUrl(msg.media_url)" target="_blank" :class="['flex items-center gap-2 underline text-xs font-bold', msg.sender_id === currentUserId ? 'text-white' : 'text-indigo-600 dark:text-indigo-400']">
                 <span class="material-symbols-outlined text-[16px]">attach_file</span> {{ $t('chat.view_attachment') }}
@@ -124,7 +125,7 @@
     </div>
 
     <div class="p-3 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-end gap-2 relative shrink-0">
-      <input type="file" ref="fileInput" class="hidden" accept="image/*,audio/*" @change="handleFileSelect" />
+      <input type="file" ref="fileInput" class="hidden" accept="image/*,audio/*,video/mp4,video/webm,video/quicktime,.pdf,.doc,.docx" @change="handleFileSelect" />
       
       <button v-if="!isRecording" @click="$refs.fileInput.click()" class="p-2.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0 cursor-pointer" title="Attach file">
         <span class="material-symbols-outlined text-xl">attach_file</span>
@@ -169,8 +170,6 @@ const { showToast } = useToast();
 
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
 import { requestService } from '../../api/requestService.js'
 import { adminService } from '../../api/adminService.js'
 
@@ -224,8 +223,15 @@ const formatTime = (dateStr) => {
 
 const getMediaUrl = (path) => {
   if (!path) return ''
+  // Handle base64 data URLs directly
+  if (path.startsWith('data:')) return path
   if (path.startsWith('http')) return path
   return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
+}
+
+const openMediaInNewTab = (url) => {
+  if (!url) return
+  window.open(url, '_blank')
 }
 
 const parseTranslations = (msg) => {
@@ -267,7 +273,15 @@ const handleFileSelect = async (e) => {
   if (!file) return
   const fileToUse = file.type.startsWith('image/') ? await compressImage(file) : file
   selectedFile.value = fileToUse
-  previewType.value = fileToUse.type.startsWith('image/') ? 'image' : 'audio'
+  if (fileToUse.type.startsWith('image/')) {
+    previewType.value = 'image'
+  } else if (fileToUse.type.startsWith('audio/')) {
+    previewType.value = 'audio'
+  } else if (fileToUse.type.startsWith('video/')) {
+    previewType.value = 'video'
+  } else {
+    previewType.value = 'document'
+  }
   previewUrl.value = URL.createObjectURL(fileToUse)
 }
 
@@ -365,6 +379,7 @@ const submitMessage = async () => {
       const idx = messages.value.findIndex(m => m.id === editingMsg.value.id)
       if (idx !== -1) messages.value[idx] = updated
       cancelEdit()
+      showToast('Message updated', 'success')
     } else {
       // Send new
       let payload
@@ -388,6 +403,7 @@ const submitMessage = async () => {
     }
   } catch (error) {
     console.error('Failed to send/edit message:', error)
+    showToast(error.response?.data?.message || 'Failed to send message. Please try again.', 'error')
   } finally {
     sending.value = false
   }
@@ -407,35 +423,10 @@ const fetchMessages = async () => {
 }
 
 const setupEcho = () => {
-  if (!props.requestId) return
-
-  window.Pusher = Pusher
-  const echo = new Echo({
-      broadcaster: 'reverb',
-      key: import.meta.env.VITE_REVERB_APP_KEY,
-      wsHost: import.meta.env.VITE_REVERB_HOST,
-      wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-      wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-      forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-      enabledTransports: ['ws', 'wss'],
-  })
-
-  echoChannel = echo.channel(`chat.${props.requestId}`)
-  
-  echoChannel.listen('MessageSent', (e) => {
-      const msg = e.message
-      const existing = messages.value.find(m => m.id === msg.id)
-      
-      const isAtBottom = messagesContainer.value && 
-        (messagesContainer.value.scrollHeight - messagesContainer.value.scrollTop <= messagesContainer.value.clientHeight + 100)
-        
-      if (!existing) {
-          messages.value.push(msg)
-          if (isAtBottom) scrollToBottom()
-      } else {
-          Object.assign(existing, msg)
-      }
-  })
+  // Note: Real-time chat uses Socket.IO via useChat.js
+  // Echo/Reverb setup disabled to prevent connection errors
+  // If you want to use Laravel Echo with Reverb, configure VITE_REVERB_* env vars
+  console.log('[Chat] Real-time updates handled by useChat composable')
 }
 
 onMounted(() => {

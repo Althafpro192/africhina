@@ -7,6 +7,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 
@@ -171,7 +172,7 @@ class AuthController extends Controller
             'company_name' => $user->company_name,
             'role' => $user->role,
             'avatar_url' => $user->avatar_url,
-            'avatar_data' => $user->avatar_data ? base64_encode($user->avatar_data) : null,
+            'avatar_data' => $user->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $user->avatar_data) ?: '') : null,
             'avatar_mime_type' => $user->avatar_mime_type,
             'mustChangePassword' => $mustChangePassword,
         ]);
@@ -205,7 +206,7 @@ class AuthController extends Controller
                 'company_name' => $user->company_name,
                 'role' => $user->role,
                 'avatar_url' => $user->avatar_url,
-                'avatar_data' => $user->avatar_data ? base64_encode($user->avatar_data) : null,
+                'avatar_data' => $user->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $user->avatar_data) ?: '') : null,
                 'avatar_mime_type' => $user->avatar_mime_type,
             ]
         ]);
@@ -251,38 +252,56 @@ class AuthController extends Controller
 
     public function uploadAvatar(Request $request)
     {
-        $user = $request->user();
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+        try {
+            $user = $request->user();
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
 
-        $request->validate([
-            'avatar' => 'required|image|max:5120', // max 5MB
-        ]);
-
-        if ($request->file('avatar')) {
-            $file = $request->file('avatar');
-            
-            // Read file content as binary data
-            $avatarData = file_get_contents($file->getRealPath());
-            $mimeType = $file->getMimeType();
-            
-            // Update user with avatar data stored in database
-            $user->update([
-                'avatar_data' => $avatarData,
-                'avatar_mime_type' => $mimeType,
-                'avatar_url' => null, // Disable file-based URL usage
+            // Increased to 50MB for high-quality images
+            // Note: PHP must have upload_max_filesize >= 50M
+            $request->validate([
+                'avatar' => 'required|image|max:51200', // max 50MB in KB
             ]);
 
+            if ($request->file('avatar')) {
+                $file = $request->file('avatar');
+                
+                // Read file content as binary data
+                $avatarData = file_get_contents($file->getRealPath());
+                if ($avatarData === false) {
+                    return response()->json(['message' => 'Failed to read uploaded file'], 500);
+                }
+                
+                $mimeType = $file->getMimeType();
+                
+                // Validate it's actually an image
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+                if (!in_array($mimeType, $allowedMimes)) {
+                    return response()->json(['message' => 'Only JPEG, PNG, GIF, and WebP images are allowed'], 400);
+                }
+                
+                // Update user with avatar data stored in database
+                $user->update([
+                    'avatar_data' => $avatarData,
+                    'avatar_mime_type' => $mimeType,
+                    'avatar_url' => null, // Disable file-based URL usage
+                ]);
+
+                return response()->json([
+                    'message' => 'Avatar updated successfully',
+                    'avatar_url' => null,
+                    'avatar_mime_type' => $user->avatar_mime_type,
+                ]);
+            }
+
+            return response()->json(['message' => 'No file uploaded'], 400);
+        } catch (\Exception $e) {
+            Log::error('Avatar upload error: ' . $e->getMessage());
             return response()->json([
-                'message' => 'Avatar updated successfully',
-                'avatar_url' => null,
-                'avatar_data' => $user->avatar_data ? base64_encode($user->avatar_data) : null,
-                'avatar_mime_type' => $user->avatar_mime_type,
-            ]);
+                'message' => 'Failed to upload avatar: ' . $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json(['message' => 'No file uploaded'], 400);
     }
 
     /**

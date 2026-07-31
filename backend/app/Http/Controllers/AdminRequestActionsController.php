@@ -40,14 +40,15 @@ class AdminRequestActionsController extends Controller
             return response()->json(['message' => 'Cannot upload options at this stage'], 400);
         }
 
-        $imageUrls = [];
+        // Store images as base64 in LONGBLOB
+        $imageData = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('uploads', 'public');
-                $imageUrls[] = '/uploads/' . $path;
+                $mimeType = $file->getMimeType();
+                $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                $imageData[] = $base64;
             }
         }
-        $imageUrl = count($imageUrls) > 0 ? $imageUrls[0] : null;
 
         DB::beginTransaction();
         try {
@@ -55,8 +56,8 @@ class AdminRequestActionsController extends Controller
                 'request_id' => $id,
                 'product_name' => $validated['product_name'],
                 'description' => $validated['description'] ?? null,
-                'image_url' => $imageUrl, // stored first image as main image URL for legacy support
-                'images' => $imageUrls,
+                'image_url' => $imageData[0] ?? null,
+                'images' => $imageData,
                 'price_min' => $validated['price_min'] ?? null,
                 'price_max' => $validated['price_max'] ?? null,
                 'admin_reason' => $validated['admin_reason'],
@@ -132,13 +133,14 @@ class AdminRequestActionsController extends Controller
         ];
 
         if ($request->hasFile('images')) {
-            $imageUrls = [];
+            $imageData = [];
             foreach ($request->file('images') as $file) {
-                $path = $file->store('uploads', 'public');
-                $imageUrls[] = '/uploads/' . $path;
+                $mimeType = $file->getMimeType();
+                $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                $imageData[] = $base64;
             }
-            $updateData['image_url'] = count($imageUrls) > 0 ? $imageUrls[0] : null;
-            $updateData['images'] = $imageUrls;
+            $updateData['image_url'] = $imageData[0] ?? null;
+            $updateData['images'] = $imageData;
         }
 
         $option->update($updateData);

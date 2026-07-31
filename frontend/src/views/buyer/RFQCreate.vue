@@ -268,52 +268,23 @@
             <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ $t('request_details.references') }}</h2>
           </div>
 
-          <div
-            @click="triggerFileUpload"
-            @dragover.prevent
-            @dragenter.prevent
-            @drop.prevent="handleDrop"
-            class="border-2 border-dashed border-[#4f378a]/30 dark:border-indigo-500/30 bg-[#4f378a]/5 dark:bg-indigo-950/20 rounded-2xl p-10 text-center cursor-pointer hover:border-[#4f378a]/60 dark:hover:border-indigo-500/60 hover:bg-[#4f378a]/10 dark:hover:bg-indigo-950/40 transition-all group"
-          >
-            <input
-              ref="fileInput"
-              type="file"
-              multiple
-              accept=".svg,.png,.jpg,.jpeg,.pdf"
-              @change="handleFileSelect"
-              class="hidden"
-            />
-            <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-3xl text-[#4f378a] dark:text-indigo-400">upload_file</span>
-            </div>
-            <p class="text-base text-gray-700 dark:text-slate-200 font-bold mb-1">
-              {{ $t('request_details.upload_desc') }}
-            </p>
-            <p class="text-sm text-gray-500 dark:text-slate-400">{{ $t('request_details.upload_hint') }} {{ $t('rfq_create.max_files_hint') }}</p>
-          </div>
+          <!-- File Upload Component -->
+          <FileUpload
+            ref="fileUploadRef"
+            :max-files="10"
+            :max-size="20 * 1024 * 1024"
+            @update:files="handleFilesUpdate"
+            @upload-complete="handleUploadComplete"
+            @error="handleUploadError"
+          />
 
-          <!-- Uploaded Files Preview -->
-          <div v-if="uploadedFiles.length > 0" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div v-for="(file, index) in uploadedFiles" :key="index" class="relative group rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-slate-700">
-              <img
-                v-if="file.type.startsWith('image/')"
-                :src="file.preview"
-                :alt="file.name"
-                class="w-full h-32 object-cover"
-              />
-              <div v-else class="w-full h-32 bg-gray-50 dark:bg-slate-800 flex flex-col items-center justify-center">
-                <span class="material-symbols-outlined text-gray-400 dark:text-slate-500 text-3xl mb-2">description</span>
-                <span class="text-[10px] text-gray-500 dark:text-slate-400 font-medium px-2 text-center line-clamp-1">{{ file.name }}</span>
-              </div>
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <button
-                  @click.prevent="removeFile(index)"
-                  class="w-8 h-8 bg-white/20 hover:bg-red-500 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-colors cursor-pointer"
-                >
-                  <span class="material-symbols-outlined text-[18px]">delete</span>
-                </button>
-              </div>
-            </div>
+          <!-- File Preview Grid -->
+          <div v-if="uploadedFiles.length > 0" class="mt-6">
+            <FilePreviewGrid
+              :files="uploadedFiles"
+              :deletable="true"
+              @delete="handleDeleteFile"
+            />
           </div>
         </div>
 
@@ -360,8 +331,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
+import FileUpload from '../../components/ui/FileUpload.vue'
+import FilePreviewGrid from '../../components/ui/FilePreviewGrid.vue'
 import { requestService } from '../../api/requestService.js'
 
 const router = useRouter()
@@ -383,8 +355,11 @@ const form = ref({
   paymentTerms: ''
 })
 
+// File upload state
 const uploadedFiles = ref([])
-const fileInput = ref(null)
+const fileUploadRef = ref(null)
+const isSubmitting = ref(false)
+const errorMsg = ref('')
 
 // Computed: minimum date is tomorrow
 const minDeliveryDate = computed(() => {
@@ -398,72 +373,24 @@ const goBack = () => {
   router.push('/buyer/dashboard')
 }
 
-const triggerFileUpload = () => {
-  fileInput.value?.click()
+// File upload handlers
+const handleFilesUpdate = (files) => {
+  uploadedFiles.value = files
 }
 
-const handleFileSelect = (event) => {
-  const files = Array.from(event.target.files)
-  processFiles(files)
+const handleUploadComplete = ({ file, response }) => {
+  console.log('File uploaded:', file.name, response)
 }
 
-const handleDrop = (event) => {
-  const files = Array.from(event.dataTransfer.files)
-  processFiles(files)
+const handleUploadError = ({ errors }) => {
+  errorMsg.value = errors.join(', ')
 }
 
-const processFiles = (files) => {
-  errorMsg.value = ''
-  files.forEach(file => {
-    if (file.size > 5 * 1024 * 1024) {
-      errorMsg.value = `File ${file.name} exceeds the 5MB limit.`
-      return
-    }
-    
-    // limit to 3 files max
-    if (uploadedFiles.value.length >= 3) {
-      return
-    }
-
-    // Add the file immediately (synchronously) so it is available when
-    // the user submits, even if the preview hasn't finished rendering yet.
-    const entry = {
-      file: file,
-      name: file.name,
-      type: file.type,
-      preview: null
-    }
-    uploadedFiles.value.push(entry)
-
-    // Asynchronously generate the preview. If the read fails, we still
-    // keep the file because submitRequest uses entry.file, not the preview.
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      // Only update the preview slot; do not push again.
-      const idx = uploadedFiles.value.indexOf(entry)
-      if (idx !== -1) {
-        uploadedFiles.value[idx].preview = e.target.result
-      }
-    }
-    reader.onerror = () => {
-      // Leave preview as null; non-image files (e.g. PDF) won't have a preview.
-      const idx = uploadedFiles.value.indexOf(entry)
-      if (idx !== -1) {
-        uploadedFiles.value[idx].preview = null
-      }
-    }
-    if (file.type.startsWith('image/')) {
-      reader.readAsDataURL(file)
-    }
-  })
+const handleDeleteFile = (fileId) => {
+  if (fileUploadRef.value) {
+    fileUploadRef.value.removeFile(fileId)
+  }
 }
-
-const removeFile = (index) => {
-  uploadedFiles.value.splice(index, 1)
-}
-
-const isSubmitting = ref(false)
-const errorMsg = ref('')
 
 const submitRequest = async () => {
   if (isSubmitting.value) return;
@@ -471,6 +398,16 @@ const submitRequest = async () => {
   errorMsg.value = '';
 
   try {
+    // Upload all files first if there are pending uploads
+    if (fileUploadRef.value) {
+      const { results, errors } = await fileUploadRef.value.uploadAll()
+      if (errors && errors.length > 0) {
+        errorMsg.value = 'Some files failed to upload. Please try again.'
+        isSubmitting.value = false
+        return
+      }
+    }
+
     const formData = new FormData();
     formData.append('product_name', form.value.productName);
     formData.append('category', form.value.category);
@@ -486,10 +423,11 @@ const submitRequest = async () => {
     formData.append('shipping_terms', form.value.shippingTerms);
     formData.append('payment_terms', form.value.paymentTerms);
 
-    // Append up to 3 images as requested by backend route
-    uploadedFiles.value.slice(0, 3).forEach(f => {
-      formData.append('images[]', f.file);
-    });
+    // Append uploaded files (up to 10)
+    const uploadedFileUrls = fileUploadRef.value?.getUploadedUrls() || []
+    uploadedFileUrls.forEach((url) => {
+      formData.append('images[]', url)
+    })
 
     await requestService.createRequest(formData);
     

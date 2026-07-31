@@ -13,6 +13,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AdminDriverController;
+use App\Http\Controllers\FileUploadController;
 
 $defineRoutes = function() {
     // Public route for avatar images stored in database
@@ -62,7 +63,7 @@ $defineRoutes = function() {
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'getNotifications']);
-        Route::put('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
 
         // Admin-Restricted operations
@@ -121,6 +122,12 @@ $defineRoutes = function() {
             
             Route::post('/admin/security/password-resets/{requestId}/reject', [PasswordResetController::class, 'rejectResetRequest']);
         });
+
+        // File Upload endpoints (accessible to authenticated users)
+        Route::post('/upload', [FileUploadController::class, 'upload']);
+        Route::post('/upload/multiple', [FileUploadController::class, 'uploadMultiple']);
+        Route::delete('/upload', [FileUploadController::class, 'delete']);
+        Route::get('/upload/{filename}', [FileUploadController::class, 'info']);
     });
 };
 

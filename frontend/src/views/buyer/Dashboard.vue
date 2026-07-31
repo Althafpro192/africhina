@@ -166,8 +166,15 @@ const loading = ref(true)
 const requests = ref([])
 
 onMounted(async () => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-  userName.value = user.full_name ? user.full_name.split(' ')[0] : 'Buyer'
+  // Safe LocalStorage JSON parse with fallback
+  let userName = 'Buyer'
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    userName = user.full_name ? user.full_name.split(' ')[0] : 'Buyer'
+  } catch (e) {
+    console.warn('Failed to parse user from localStorage', e)
+  }
+  userName.value = userName
 
   loading.value = true
   try {

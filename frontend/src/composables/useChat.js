@@ -38,7 +38,7 @@ export function useChat(negotiationId) {
     error.value = null;
     try {
       const token = getAuthToken();
-      const res = await axios.get(`/api/v1/requests/${negotiationId}/messages`, {
+      const res = await axios.get(`/api/requests/${negotiationId}/messages`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       messages.value = Array.isArray(res.data) ? res.data : (res.data.data || []);
@@ -70,13 +70,13 @@ export function useChat(negotiationId) {
       if (file) formData.append('media', file);
 
       const token = getAuthToken();
-      const res = await axios.post(`/api/v1/requests/${negotiationId}/messages`, formData, {
+      const res = await axios.post(`/api/requests/${negotiationId}/messages`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         }
       });
-      
+
       // Local optimistic append if not received via socket
       const exists = messages.value.some(m => m.id === res.data.id);
       if (!exists) {
@@ -92,7 +92,7 @@ export function useChat(negotiationId) {
   const startTyping = () => {
     if (!sharedSocket || !negotiationId) return;
     sharedSocket.emit('typing_start', { roomId: `room:nego-${negotiationId}` });
-    
+
     if (typingTimeout) clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
       stopTyping();

@@ -86,6 +86,46 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 2b. Demo Driver Users
+        $driver1 = User::firstOrCreate(
+            ['email' => 'driver@africhina.com'],
+            [
+                'full_name' => 'Abebe Kebede',
+                'password_hash' => Hash::make('driver123'),
+                'role' => 'driver',
+                'country' => 'Ethiopia',
+                'country_code' => '+251',
+                'phone' => '911234567',
+                'company_name' => 'AfriChina Logistics - Addis Ababa',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'driver2@africhina.com'],
+            [
+                'full_name' => 'Fatima Diallo',
+                'password_hash' => Hash::make('driver123'),
+                'role' => 'driver',
+                'country' => 'Senegal',
+                'country_code' => '+221',
+                'phone' => '771234567',
+                'company_name' => 'AfriChina Logistics - Dakar',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'driver3@africhina.com'],
+            [
+                'full_name' => 'Chen Hua',
+                'password_hash' => Hash::make('driver123'),
+                'role' => 'driver',
+                'country' => 'China',
+                'country_code' => '+86',
+                'phone' => '13812345678',
+                'company_name' => 'Guangzhou Freight Co.',
+            ]
+        );
+
         // 3. Sample Suppliers
         $supplier1 = Supplier::firstOrCreate(
             ['company_name' => 'Guangzhou Industrial Machinery Co., Ltd.'],

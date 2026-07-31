@@ -1106,6 +1106,8 @@ const finalizeForm = ref({
 
 const getMediaUrl = (path) => {
   if (!path) return ''
+  // Handle base64 data URLs (data:image/png;base64,...)
+  if (path.startsWith('data:')) return path
   if (path.startsWith('http')) return path
   // Use relative path so it resolves through Vite dev server / Nginx proxy
   return path.startsWith('/') ? path : `/${path}`

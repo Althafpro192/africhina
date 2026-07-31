@@ -43,7 +43,7 @@ class AdminDriverController extends Controller
                 ->where('assigned_driver_id', $driver->id)
                 ->count();
             if ($driver->avatar_data) {
-                $driver->avatar_data = base64_encode($driver->avatar_data);
+                $driver->avatar_data = base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $driver->avatar_data) ?: '');
             }
         }
 
@@ -104,7 +104,7 @@ class AdminDriverController extends Controller
             ->count();
             
         if ($driver->avatar_data) {
-            $driver->avatar_data = base64_encode($driver->avatar_data);
+            $driver->avatar_data = base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $driver->avatar_data) ?: '');
         }
 
         return response()->json($driver);
@@ -217,7 +217,7 @@ class AdminDriverController extends Controller
             ->get(['id', 'full_name', 'email', 'phone', 'country', 'country_code', 'avatar_url', 'avatar_data', 'avatar_mime_type']);
 
         foreach ($drivers as $driver) {
-            $driver->avatar_data = $driver->avatar_data ? base64_encode($driver->avatar_data) : null;
+            $driver->avatar_data = $driver->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $driver->avatar_data) ?: '') : null;
         }
 
         return response()->json([

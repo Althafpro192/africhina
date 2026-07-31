@@ -302,8 +302,8 @@ class AdminController extends Controller
                 ->first();
             $buyer->last_message = $lastMsg ? $lastMsg->content : null;
             $buyer->last_message_at = $lastMsg ? $lastMsg->created_at : null;
-            // Add base64 encoded avatar data for direct display
-            $buyer->avatar_data = $buyer->avatar_data ? base64_encode($buyer->avatar_data) : null;
+            // Add base64 encoded avatar data for direct display (UTF-8 safe)
+            $buyer->avatar_data = $buyer->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $buyer->avatar_data) ?: '') : null;
         }
 
         return response()->json([
@@ -335,7 +335,7 @@ class AdminController extends Controller
             'email' => $user->email,
             'phone' => $user->phone,
             'avatar_url' => $user->avatar_url,
-            'avatar_data' => $user->avatar_data ? base64_encode($user->avatar_data) : null,
+            'avatar_data' => $user->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $user->avatar_data) ?: '') : null,
             'avatar_mime_type' => $user->avatar_mime_type,
             'company_name' => $user->company_name,
             'country' => $user->country,

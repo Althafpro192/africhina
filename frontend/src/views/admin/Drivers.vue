@@ -64,7 +64,7 @@
                     </div>
                     <div>
                       <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        {{ driver.name }}
+                        {{ driver.full_name || driver.name }}
                         <span v-if="driver.is_blocked" class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 uppercase">{{ $t('admin_drivers.blocked') }}</span>
                       </p>
                       <p class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">{{ driver.email }}</p>
@@ -220,6 +220,9 @@
 import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
 
+import { useConfirm } from '../../composables/useConfirm.js';
+const { confirmDelete, confirmBlock, confirmAction } = useConfirm();
+
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
@@ -246,11 +249,11 @@ const form = ref({
 const tempPasswordVisible = ref(false)
 const tempPasswordValue = ref('')
 
-const filteredDrivers = computed(() => {
+  const filteredDrivers = computed(() => {
   if (!searchQuery.value) return drivers.value
   const q = searchQuery.value.toLowerCase()
   return drivers.value.filter(d =>
-    d.name?.toLowerCase().includes(q) ||
+    (d.full_name || d.name)?.toLowerCase().includes(q) ||
     d.email?.toLowerCase().includes(q) ||
     d.phone?.toLowerCase().includes(q)
   )
@@ -259,9 +262,16 @@ const filteredDrivers = computed(() => {
 const loadDrivers = async () => {
   loading.value = true
   try {
-    drivers.value = await adminService.listDrivers()
+    const result = await adminService.listDrivers()
+    console.log('[Drivers] Raw API result:', result)
+    console.log('[Drivers] Result type:', Array.isArray(result) ? 'array' : typeof result)
+    // Backend returns { data: [...], total: N } - extract the data array
+    drivers.value = Array.isArray(result) ? result : (result?.data?.data || result?.data || result || [])
+    console.log('[Drivers] Set drivers.value:', drivers.value)
+    console.log('[Drivers] Drivers count:', drivers.value.length)
   } catch (error) {
-    console.error('Failed to load drivers:', error)
+    console.error('[Drivers] Failed to load drivers:', error)
+    console.error('[Drivers] Error response:', error.response?.data)
     showToast(error.response?.data?.message || t('common.error'))
   } finally {
     loading.value = false
@@ -294,7 +304,7 @@ const openEditModal = (driver) => {
   isViewing.value = false
   editingId.value = driver.id
   form.value = {
-    name: driver.name,
+    name: driver.full_name || driver.name,
     email: driver.email,
     phone: driver.phone || '',
     password: ''
@@ -307,7 +317,7 @@ const openViewModal = (driver) => {
   isViewing.value = true
   editingId.value = driver.id
   form.value = {
-    name: driver.name,
+    name: driver.full_name || driver.name,
     email: driver.email,
     phone: driver.phone || '',
     password: ''
@@ -324,13 +334,13 @@ const saveDriver = async () => {
   try {
     if (isEditing.value) {
       await adminService.updateDriver(editingId.value, {
-        name: form.value.name,
+        full_name: form.value.name,
         email: form.value.email,
         phone: form.value.phone
       })
     } else {
       const payload = {
-        name: form.value.name,
+        full_name: form.value.name,
         email: form.value.email,
         phone: form.value.phone
       }
@@ -350,11 +360,9 @@ const saveDriver = async () => {
 }
 
 const toggleBlockDriverItem = async (driver) => {
-  const actionText = driver.is_blocked ? t('admin_drivers.unblock') : t('admin_drivers.block')
-  const confirmMsg = driver.is_blocked
-    ? t('admin_drivers.unblock_confirm', { name: driver.name })
-    : t('admin_drivers.block_confirm', { name: driver.name })
-  if (!confirm(confirmMsg)) return
+  const driverName = driver.full_name || driver.name
+  const confirmed = await confirmBlock(driverName, driver.is_blocked)
+  if (!confirmed) return
   try {
     const res = await adminService.toggleBlockDriver(driver.id)
     showToast(res.message || t('common.success'))
@@ -365,8 +373,9 @@ const toggleBlockDriverItem = async (driver) => {
 }
 
 const deleteDriverItem = async (driver) => {
-  const confirmMsg = t('admin_drivers.delete_confirm', { name: driver.name })
-  if (!confirm(confirmMsg)) return
+  const driverName = driver.full_name || driver.name
+  const confirmed = await confirmDelete(driverName)
+  if (!confirmed) return
   try {
     const res = await adminService.deleteDriver(driver.id)
     showToast(res.message || t('common.success'))
@@ -377,8 +386,13 @@ const deleteDriverItem = async (driver) => {
 }
 
 const generateTempPassword = async (driver) => {
-  const confirmMsg = t('admin_drivers.temp_password_confirm', { name: driver.name })
-  if (!confirm(confirmMsg)) return
+  const driverName = driver.full_name || driver.name
+  const confirmed = await confirmAction(
+    t('admin_drivers.temp_password_title'),
+    t('admin_drivers.temp_password_confirm', { name: driverName }),
+    'warning'
+  )
+  if (!confirmed) return
   try {
     const res = await adminService.generateDriverTempPassword(driver.id)
     if (res && res.temp_password) {

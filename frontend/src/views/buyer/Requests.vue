@@ -66,8 +66,9 @@
                   <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md">{{ req.category }}</span>
                   <span class="text-[10px] text-slate-400 font-medium">{{ formatDate(req.created_at) }}</span>
                 </div>
-                <span :class="['font-bold text-[10px] px-2.5 py-0.5 rounded-full text-white whitespace-nowrap shadow-xs', getStatusClass(req.status)]">
-                  {{ req.status === 'quoted' ? $t('buyer_requests.quote_received') : (req.status === 'batal' ? $t('status.batal') : $t('buyer_requests.awaiting_quotes')) }}
+                <span :class="['font-bold text-[10px] px-2.5 py-0.5 rounded-full text-white whitespace-nowrap shadow-xs flex items-center gap-1', getStatusClass(req.status)]">
+                  <span class="material-symbols-outlined text-[10px]">{{ getStatusIcon(req.status) }}</span>
+                  {{ getStatusLabel(req.status) }}
                 </span>
               </div>
               
@@ -133,7 +134,7 @@ const loadingRequests = ref(true)
 
 // Filter for active statuses
 const filteredRequests = computed(() => {
-  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved', 'batal']
+  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved', 'batal', 'completed', 'shipped', 'cancelled']
   let filtered = requests.value.filter(r => activeStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
@@ -166,12 +167,76 @@ const formatDate = (dateStr) => {
 }
 
 const getStatusClass = (status) => {
-  const classes = {
-    'pending': 'bg-amber-500',
-    'quoted': 'bg-indigo-600',
-    'batal': 'bg-red-500',
+  // GREEN: Completed/Success states
+  const greenClasses = ['quoted', 'deal_finalized', 'dp_verified', 'approved', 'completed', 'completed_deal', 'success']
+  // YELLOW: Waiting/Pending states
+  const yellowClasses = ['pending', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'menunggu_verifikasi_admin']
+  // BLUE: Processing/In Progress states
+  const blueClasses = ['processing', 'sedang_diproses', 'in_progress']
+  // PURPLE: Shipped/Delivery states
+  const purpleClasses = ['dikirim', 'shipped', 'shipped_out']
+  // RED: Cancelled/Error states
+  const redClasses = ['batal', 'cancelled', 'rejected', 'dispute', 'failed']
+  
+  if (greenClasses.includes(status)) return 'bg-green-500'
+  if (yellowClasses.includes(status)) return 'bg-yellow-500'
+  if (blueClasses.includes(status)) return 'bg-blue-500'
+  if (purpleClasses.includes(status)) return 'bg-purple-500'
+  if (redClasses.includes(status)) return 'bg-red-500'
+  return 'bg-slate-500'
+}
+
+const getStatusLabel = (status) => {
+  const labels = {
+    'pending': 'Pending',
+    'awaiting_quotes': 'Awaiting Quotes',
+    'quoted': 'Quote Received',
+    'batal': 'Cancelled',
+    'cancelled': 'Cancelled',
+    'rejected': 'Rejected',
+    'deal_finalized': 'Deal Finalized',
+    'menunggu_penawaran_admin': 'Awaiting Admin Quote',
+    'menunggu_pemilihan_buyer': 'Awaiting Buyer Choice',
+    'menunggu_kesepakatan_final': 'Awaiting Final Agreement',
+    'menunggu_pembayaran': 'Awaiting Payment',
+    'menunggu_verifikasi_pembayaran': 'Verifying Payment',
+    'sedang_diproses': 'Processing',
+    'processing': 'Processing',
+    'dikirim': 'Shipped',
+    'shipped': 'Shipped',
+    'menunggu_verifikasi_admin': 'Admin Verification',
+    'dp_verified': 'DP Verified',
+    'approved': 'Approved',
+    'completed': 'Completed',
+    'completed_deal': 'Completed',
+    'dispute': 'Dispute',
+    'failed': 'Failed',
+    'in_progress': 'In Progress',
   }
-  return classes[status] || 'bg-slate-500'
+  return labels[status] || status
+}
+
+const getStatusIcon = (status) => {
+  const icons = {
+    'pending': 'schedule',
+    'awaiting_quotes': 'hourglass_empty',
+    'quoted': 'done',
+    'batal': 'cancel',
+    'deal_finalized': 'handshake',
+    'menunggu_penawaran_admin': 'edit_document',
+    'menunggu_pemilihan_buyer': 'list_alt',
+    'menunggu_kesepakatan_final': 'forum',
+    'menunggu_pembayaran': 'payments',
+    'menunggu_verifikasi_pembayaran': 'pending_actions',
+    'sedang_diproses': 'inventory',
+    'dikirim': 'local_shipping',
+    'menunggu_verifikasi_admin': 'fact_check',
+    'dp_verified': 'verified',
+    'approved': 'task_alt',
+    'completed': 'task_alt',
+    'shipped': 'local_shipping',
+  }
+  return icons[status] || 'help'
 }
 
 const createNewRequest = () => { router.push('/buyer/rfq/create') }

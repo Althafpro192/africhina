@@ -1,0 +1,35 @@
+{
+    "name": "africhina-web",
+    "version": "1.0.0",
+    "description": "AfriChina B2B Cross-Border Trade Platform - One Command Development Setup",
+    "private": true,
+    "scripts": {
+        "start": "npm run dev",
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && npm run dev",
+        "build": "npm run build:frontend && npm run build:backend",
+        "build:frontend": "cd frontend && npm run build",
+        "build:backend": "cd backend && npm run build",
+        "setup": "npm install && cd backend && composer install && cp .env.example .env && php artisan key:generate && php artisan migrate",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:restart": "docker-compose restart"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "php": ">=8.2"
+    },
+    "keywords": [
+        "laravel",
+        "vue",
+        "africhina",
+        "b2b",
+        "trade"
+    ],
+    "author": "AfriChina Team",
+    "license": "MIT"
+}
