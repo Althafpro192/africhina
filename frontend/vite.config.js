@@ -17,11 +17,15 @@ export default defineConfig({
       // If you run Laravel via `php artisan serve --port=5000` (matches the
       // production Dockerfile), change the targets below to `:5000`.
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/storage': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
     },

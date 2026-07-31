@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+  <Code>SignatureDoesNotMatch</Code>
+  <Message>The request signature we calculated does not match the signature you provided. Check your key and signing method.</Message>
+  <RequestId>6A6CCEBC7DB65B373322395A</RequestId>
+  <HostId>minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com</HostId>
+  <OSSAccessKeyId>LTAI5tCpJNKCf5EkQHSuL9xg</OSSAccessKeyId>
+  <SignatureProvided>/w7XIRAa+yktQfMKLQ0Lv4foy/E=</SignatureProvided>
+  <StringToSign>GET
+
+
+1785602142
+/minimax-algeng-chat-tts-us/ccv2/2026-08-01/MiniMax-M2.7/2053467052613570722/11e894fb11fb6a4aa4aa4727c189d4bfe8c445819c5022c71eb0161cbebc4f45..png</StringToSign>
+  <StringToSignBytes>47 45 54 0A 0A 0A 31 37 38 35 36 30 32 31 34 32 0A 2F 6D 69 6E 69 6D 61 78 2D 61 6C 67 65 6E 67 2D 63 68 61 74 2D 74 74 73 2D 75 73 2F 63 63 76 32 2F 32 30 32 36 2D 30 38 2D 30 31 2F 4D 69 6E 69 4D 61 78 2D 4D 32 2E 37 2F 32 30 35 33 34 36 37 30 35 32 36 31 33 35 37 30 37 32 32 2F 31 31 65 38 39 34 66 62 31 31 66 62 36 61 34 61 61 34 61 61 34 37 32 37 63 31 38 39 64 34 62 66 65 38 63 34 34 35 38 31 39 63 35 30 32 32 63 37 31 65 62 30 31 36 31 63 62 65 62 63 34 66 34 35 2E 2E 70 6E 67 </StringToSignBytes>
+  <EC>0002-00000040</EC>
+  <RecommendDoc>https://api.alibabacloud.com/troubleshoot?q=0002-00000040</RecommendDoc>
+</Error>

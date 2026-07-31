@@ -16,17 +16,17 @@ class RequestController extends Controller
     public function createRequest(Request $request)
     {
         $validated = $request->validate([
-            'product_name' => 'required|string|max:200',
-            'category' => 'required|string|max:50',
+            'product_name' => 'sometimes|required|string|max:200',
+            'category' => 'sometimes|required|string|max:50',
             'specifications' => 'nullable|string',
-            'quantity' => 'required|integer|min:1',
-            'budget_range' => 'required|string|max:50',
+            'quantity' => 'sometimes|required|integer|min:1',
+            'budget_range' => 'sometimes|required|string|max:50',
             'sub_category' => 'nullable|string|max:100',
             'unit' => 'nullable|string|max:50',
             'currency' => 'nullable|string|max:20',
             'delivery_timeline' => 'nullable|date|after_or_equal:today',
-            'shipping_terms' => 'required|string|max:50',
-            'payment_terms' => 'required|string|max:50',
+            'shipping_terms' => 'sometimes|required|string|max:50',
+            'payment_terms' => 'sometimes|required|string|max:50',
             'quality_requirements' => 'nullable|string',
             'certifications' => 'nullable|string',
         ]);
@@ -134,23 +134,23 @@ class RequestController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        if ($rfq->status !== 'menunggu_penawaran_admin') {
+        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pilihan_buyer'])) {
             return response()->json(['message' => 'Cannot edit request at this stage'], 400);
         }
 
         $validated = $request->validate([
-            'product_name' => 'required|string|max:200',
-            'category' => 'required|string|max:50',
+            'product_name' => 'sometimes|required|string|max:200',
+            'category' => 'sometimes|required|string|max:50',
             'sub_category' => 'nullable|string|max:100',
             'specifications' => 'nullable|string',
             'quality_requirements' => 'nullable|string',
             'certifications' => 'nullable|string',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'sometimes|required|integer|min:1',
             'unit' => 'nullable|string|max:50',
-            'budget_range' => 'required|string|max:50',
-            'target_delivery' => 'nullable|date|after_or_equal:today',
-            'shipping_terms' => 'required|string|max:50',
-            'payment_terms' => 'required|string|max:50',
+            'budget_range' => 'sometimes|required|string|max:50',
+            'target_delivery' => 'nullable|date',
+            'shipping_terms' => 'sometimes|required|string|max:50',
+            'payment_terms' => 'sometimes|required|string|max:50',
             'images' => 'nullable|array',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
         ]);

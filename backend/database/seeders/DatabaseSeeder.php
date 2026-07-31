@@ -179,6 +179,9 @@ class DatabaseSeeder extends Seeder
             ['request_id' => $rfq->id, 'status' => 'menunggu_penawaran_admin'],
             ['notes' => 'Sample RFQ initialized. Awaiting admin review and options.']
         );
+
+        // 5. Seed Messages
+        $this->call(MessagesTableSeeder::class);
     }
 }
 

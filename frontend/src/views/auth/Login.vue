@@ -371,6 +371,9 @@ const handleSubmit = async () => {
       // Login
       const data = await authService.login(email.value, password.value)
       localStorage.setItem('user', JSON.stringify(data.user))
+      if (data.token) {
+        localStorage.setItem('token', data.token)
+      }
       
       if (data.user.role === 'admin') {
         router.push('/admin/dashboard')

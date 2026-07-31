@@ -1,0 +1,1527 @@
+{
+  "summary": {
+    "total": 325,
+    "passed": 176,
+    "failed": 149,
+    "skipped": 0,
+    "byRole": {
+      "buyer": {
+        "total": 0,
+        "passed": 80,
+        "failed": 0
+      },
+      "admin": {
+        "total": 0,
+        "passed": 66,
+        "failed": 0
+      },
+      "driver": {
+        "total": 0,
+        "passed": 24,
+        "failed": 0
+      },
+      "supplier": {
+        "total": 0,
+        "passed": 6,
+        "failed": 0
+      }
+    },
+    "byDevice": {
+      "desktopHD": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "desktop": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "tablet": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "mobileLarge": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "mobileSmall": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "mobileAndroid": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      }
+    },
+    "byFeature": {}
+  },
+  "findings": [
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Desktop (1366x768)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop (1366x768)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop (1366x768)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Desktop (1366x768)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Desktop (1366x768)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to buyer dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to requests list",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to orders",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to sourcing",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to logistics",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to settings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Get buyer ratings via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "RFQ CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Read all messages",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Message CRUD operations",
+      "details": "CRUD failed",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to admin dashboard",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to admin suppliers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to admin drivers",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to admin ratings",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to password resets",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to admin messages",
+      "details": "",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "admin",
+      "device": "Mobile Android (360x640)",
+      "testName": "Send email to supplier",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile Android (360x640)",
+      "testName": "Navigate to driver messages",
+      "details": "URL=http://localhost:5173/login",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile Android (360x640)",
+      "testName": "Get driver messages via API",
+      "details": 0,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "driver",
+      "device": "Mobile Android (360x640)",
+      "testName": "Driver has correct role",
+      "details": "Wrong role",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "supplier",
+      "device": "Mobile Android (360x640)",
+      "testName": "Supplier registration via API",
+      "details": 405,
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "EN: Language switcher present",
+      "details": "Missing",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "ID: Language switcher present",
+      "details": "Missing",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "FR: Language switcher present",
+      "details": "Missing",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "ZH: Language switcher present",
+      "details": "Missing",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop HD (1920x1080)",
+      "testName": "Desktop HD (1920x1080): Touch targets >= 44px",
+      "details": "11 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Desktop (1366x768)",
+      "testName": "Desktop (1366x768): Touch targets >= 44px",
+      "details": "11 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Tablet iPad (768x1024)",
+      "testName": "Tablet iPad (768x1024): Touch targets >= 44px",
+      "details": "11 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone 11 (414x896)",
+      "testName": "Mobile iPhone 11 (414x896): Touch targets >= 44px",
+      "details": "10 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile iPhone X (375x812)",
+      "testName": "Mobile iPhone X (375x812): Touch targets >= 44px",
+      "details": "10 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "Mobile Android (360x640)",
+      "testName": "Mobile Android (360x640): Touch targets >= 44px",
+      "details": "6 too small",
+      "status": "Open"
+    },
+    {
+      "severity": "HIGH",
+      "category": "Functional",
+      "role": "buyer",
+      "device": "security",
+      "testName": "Block SQL injection attempts",
+      "details": "Vulnerable",
+      "status": "Open"
+    }
+  ],
+  "screenshots": [
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-requests.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-orders.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-messages.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-logistics.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__buyer-settings.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-dashboard.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-requests.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-suppliers.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-drivers.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-ratings.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-password-resets.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__admin-messages.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__driver-messages.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__supplier-register.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-requests.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-orders.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-messages.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-logistics.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__buyer-settings.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-dashboard.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-requests.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-suppliers.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-drivers.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-ratings.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-password-resets.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__admin-messages.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__driver-messages.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__supplier-register.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-requests.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-orders.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-messages.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-logistics.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__buyer-settings.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-dashboard.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-requests.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-suppliers.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-drivers.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-ratings.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-password-resets.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__admin-messages.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__driver-messages.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__supplier-register.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-requests.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-orders.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-logistics.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__buyer-settings.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-requests.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-drivers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-ratings.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-password-resets.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__admin-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__driver-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__supplier-register.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-requests.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-orders.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-logistics.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__buyer-settings.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-requests.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-drivers.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-ratings.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-password-resets.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__admin-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__driver-messages.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__supplier-register.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-rfq-create.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-requests.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-orders.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-messages.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-sourcing.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-logistics.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__buyer-settings.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-dashboard.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-requests.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-suppliers.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-drivers.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-ratings.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-password-resets.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__admin-messages.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__driver-messages.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__supplier-register.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__accessibility-check.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__landing-en.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__landing-id.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__landing-fr.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__landing-zh.png",
+    "test-results/qa-comprehensive/Desktop_HD__1920x1080__responsive-desktopHD.png",
+    "test-results/qa-comprehensive/Desktop__1366x768__responsive-desktop.png",
+    "test-results/qa-comprehensive/Tablet_iPad__768x1024__responsive-tablet.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_11__414x896__responsive-mobileLarge.png",
+    "test-results/qa-comprehensive/Mobile_iPhone_X__375x812__responsive-mobileSmall.png",
+    "test-results/qa-comprehensive/Mobile_Android__360x640__responsive-mobileAndroid.png"
+  ]
+}

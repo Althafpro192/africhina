@@ -193,7 +193,7 @@ return new class extends Migration
                 $table->uuid('sender_id')->nullable();
                 $table->text('content');
                 $table->json('translations')->nullable();
-                $table->text('media_url')->nullable();
+                $table->longText('media_url')->nullable();
                 $table->string('media_type', 50)->nullable();
                 $table->boolean('is_edited')->default(false);
                 $table->boolean('is_deleted')->default(false);

@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-07-31T16:14:38.056Z",
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "errors": 1
+  },
+  "details": {
+    "passed": [
+      "Login as buyer",
+      "No console errors",
+      "Screenshot captured"
+    ],
+    "failed": [],
+    "errors": [
+      "Could not get valid request ID"
+    ]
+  }
+}

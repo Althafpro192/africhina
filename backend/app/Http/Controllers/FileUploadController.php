@@ -89,8 +89,8 @@ class FileUploadController extends Controller
         // Store file
         $path = $file->storeAs('uploads', $filename, 'public');
 
-        // Get file URL
-        $url = '/uploads/' . $filename;
+        // Get file URL - use /storage prefix for Laravel storage link
+        $url = '/storage/uploads/' . $filename;
 
         return response()->json([
             'success' => true,
@@ -163,8 +163,8 @@ class FileUploadController extends Controller
             // Store file
             $path = $file->storeAs('uploads', $filename, 'public');
 
-            // Get file URL
-            $url = '/uploads/' . $filename;
+            // Get file URL - use /storage prefix for Laravel storage link
+            $url = '/storage/uploads/' . $filename;
 
             $results[] = [
                 'id' => Str::uuid()->toString(),
@@ -252,7 +252,7 @@ class FileUploadController extends Controller
             'success' => true,
             'data' => [
                 'filename' => $filename,
-                'url' => '/uploads/' . $filename,
+                'url' => '/storage/uploads/' . $filename,
                 'type' => $category,
                 'mimeType' => $mimeType,
                 'size' => $size,

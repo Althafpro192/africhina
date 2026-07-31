@@ -172,6 +172,8 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { requestService } from '../../api/requestService.js'
 import { adminService } from '../../api/adminService.js'
+import { getMediaUrl } from '../../utils/mediaUrl.js';
+import { compressImage } from '../../utils/imageCompressor.js'
 
 const props = defineProps({
   requestId: { type: String, required: true },
@@ -221,13 +223,7 @@ const formatTime = (dateStr) => {
   return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
-const getMediaUrl = (path) => {
-  if (!path) return ''
-  // Handle base64 data URLs directly
-  if (path.startsWith('data:')) return path
-  if (path.startsWith('http')) return path
-  return `${window.location.origin}${path.startsWith('/') ? '' : '/'}${path}`
-}
+// getMediaUrl is now imported from mediaUrl.js utility
 
 const openMediaInNewTab = (url) => {
   if (!url) return
@@ -264,8 +260,6 @@ const scrollToBottom = () => {
     }
   })
 }
-
-import { compressImage } from '../../utils/imageCompressor.js'
 
 // File Handling
 const handleFileSelect = async (e) => {

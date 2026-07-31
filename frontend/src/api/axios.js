@@ -19,8 +19,9 @@ export function clearStoredAuth() {
 }
 
 const api = axios.create({
-  // Prefer an explicit env var, then a sensible local fallback.
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  // Prefer an explicit env var, then use /api (relative) for Vite proxy in dev,
+  // or fallback to localhost:8000/api for production built assets.
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

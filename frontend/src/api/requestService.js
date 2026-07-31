@@ -36,9 +36,13 @@ export const requestService = {
   },
 
   async updateRequestDetails(id, formData) {
-    // Use PUT method directly for Laravel
-    const { data } = await api.put(`/requests/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+    // Laravel method spoofing requires X-HTTP-Method-Override header (not FormData _method)
+    // when Content-Type is multipart/form-data. The _method in FormData is ignored.
+    const { data } = await api.post(`/requests/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'X-HTTP-Method-Override': 'PUT'
+      }
     });
     return data;
   },

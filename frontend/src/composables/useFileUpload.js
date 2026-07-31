@@ -13,7 +13,7 @@ import { ref, computed } from 'vue';
 import { getMediaUrl, isImage, isVideo, formatFileSize } from '../utils/mediaUrl.js';
 
 // API base URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://backend:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://backend:8000';
 
 // Allowed MIME types
 const ALLOWED_TYPES = {
@@ -133,7 +133,7 @@ export function useFileUpload(options = {}) {
   const addFiles = async (newFiles) => {
     const fileArray = Array.from(newFiles);
     const remainingSlots = maxFiles - files.value.length;
-    
+
     if (fileArray.length > remainingSlots) {
       errors.value.push(`Maximum ${maxFiles} files allowed. ${fileArray.length - remainingSlots} files will be ignored.`);
     }
@@ -143,7 +143,7 @@ export function useFileUpload(options = {}) {
 
     for (const file of filesToAdd) {
       const validation = validateFile(file);
-      
+
       if (!validation.valid) {
         errors.value.push(...validation.errors.map(e => `${file.name}: ${e}`));
         continue;
@@ -155,7 +155,7 @@ export function useFileUpload(options = {}) {
     }
 
     files.value = [...files.value, ...newFileObjects];
-    
+
     return newFileObjects;
   };
 
@@ -178,14 +178,14 @@ export function useFileUpload(options = {}) {
 
     try {
       const xhr = new XMLHttpRequest();
-      
+
       // Track progress
       xhr.upload.addEventListener('progress', (e) => {
         if (e.lengthComputable) {
           const progress = Math.round((e.loaded / e.total) * 100);
           uploadProgress.value[fileObj.id] = progress;
           fileObj.progress = progress;
-          
+
           if (onProgress) {
             onProgress(fileObj.id, progress);
           }
@@ -200,10 +200,10 @@ export function useFileUpload(options = {}) {
             reject(new Error(xhr.responseText || 'Upload failed'));
           }
         };
-        
+
         xhr.onerror = () => reject(new Error('Network error'));
         xhr.ontimeout = () => reject(new Error('Upload timed out'));
-        
+
         xhr.open('POST', `${API_URL}/api/upload`);
         xhr.timeout = 120000; // 2 minutes
         xhr.send(formData);
@@ -229,11 +229,11 @@ export function useFileUpload(options = {}) {
     } catch (error) {
       fileObj.error = error.message;
       fileObj.uploaded = false;
-      
+
       if (onError) {
         onError(fileObj, error);
       }
-      
+
       throw error;
     }
   };
@@ -241,7 +241,7 @@ export function useFileUpload(options = {}) {
   // Upload all pending files
   const uploadAll = async () => {
     const pendingFiles = files.value.filter(f => !f.uploaded);
-    
+
     if (pendingFiles.length === 0) {
       return [];
     }
@@ -260,7 +260,7 @@ export function useFileUpload(options = {}) {
     }
 
     isUploading.value = false;
-    
+
     return { results, errors: uploadErrors };
   };
 
@@ -274,12 +274,12 @@ export function useFileUpload(options = {}) {
   const handleDragLeave = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Only set to false if leaving the drop zone entirely
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX;
     const y = e.clientY;
-    
+
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
       isDragging.value = false;
     }
@@ -349,12 +349,12 @@ export function useFileUpload(options = {}) {
     uploadProgress,
     errors,
     isDragging,
-    
+
     // Computed
     hasFiles,
     fileCount,
     canAddMore,
-    
+
     // Methods
     validateFile,
     addFiles,

@@ -38,9 +38,9 @@ const routes = [
   { path: '/supplier/register', component: SupplierRegister, meta: { public: true } },
   { path: '/set-new-password', component: SetNewPassword, meta: { requiresAuth: true } },
   { path: '/buyer/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { 
-    path: '/buyer/requests', 
-    component: Requests, 
+  {
+    path: '/buyer/requests',
+    component: Requests,
     meta: { requiresAuth: true },
     children: [
       { path: '/buyer/rfq/:id', component: RequestDetail, meta: { requiresAuth: true } }
@@ -65,10 +65,16 @@ const routes = [
   { path: '/driver/messages', component: DriverMessages, meta: { requiresAuth: true, requiresDriver: true } }
 ];
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+// Expose router for testing - allows Playwright to use Vue Router navigation
+if (typeof window !== 'undefined') {
+  window.__VUE_ROUTER__ = router;
+  window.router = router;
+}
 
 router.beforeEach((to, from, next) => {
   const userString = localStorage.getItem('user');
@@ -83,7 +89,7 @@ router.beforeEach((to, from, next) => {
   if (isAuthenticated && user.mustChangePassword && to.path !== '/set-new-password') {
     return next('/set-new-password');
   }
-  
+
   if (to.meta.requiresAdmin && user?.role !== 'admin') {
     return next('/buyer/dashboard');
   }
@@ -97,7 +103,7 @@ router.beforeEach((to, from, next) => {
   if (isAuthenticated && user?.role === 'driver' && !to.path.startsWith('/driver/')) {
     return next('/driver/messages');
   }
-  
+
   if (to.path === '/login' && isAuthenticated) {
     if (user.mustChangePassword) {
       return next('/set-new-password');

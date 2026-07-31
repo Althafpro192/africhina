@@ -9,7 +9,7 @@
  * 
  * @example
  * // Get full URL for display
- * getMediaUrl('/uploads/file.jpg') // -> 'http://backend:5000/uploads/file.jpg'
+ * getMediaUrl('/storage/uploads/file.jpg') // -> 'http://backend:8000/storage/uploads/file.jpg'
  * getMediaUrl('data:image/png;base64,...') // -> stays as is
  * getMediaUrl('https://cdn.example.com/image.png') // -> stays as is
  */
@@ -17,7 +17,7 @@
 // Get backend URL from environment or use default
 const getBackendUrl = () => {
   // In production/Vite, use the configured backend URL
-  return import.meta.env.VITE_API_URL || 'http://backend:5000';
+  return import.meta.env.VITE_API_URL || 'http://backend:8000';
 };
 
 /**
@@ -65,7 +65,7 @@ export const isLocalPath = (url) => {
  */
 export const getMediaUrl = (url, options = {}) => {
   const { fallback = '', defaultType = 'image/png' } = options;
-  
+
   // Handle null/undefined/empty
   if (!url) {
     return fallback;
@@ -163,17 +163,17 @@ export const getMimeTypeFromType = (type) => {
  */
 export const getTypeFromMime = (mimeType) => {
   if (!mimeType) return 'other';
-  
+
   if (mimeType.startsWith('image/')) return 'image';
   if (mimeType.startsWith('video/')) return 'video';
   if (mimeType.startsWith('audio/')) return 'audio';
-  if (mimeType === 'application/pdf' || 
-      mimeType.includes('word') || 
-      mimeType.includes('excel') ||
-      mimeType.includes('spreadsheet')) {
+  if (mimeType === 'application/pdf' ||
+    mimeType.includes('word') ||
+    mimeType.includes('excel') ||
+    mimeType.includes('spreadsheet')) {
     return 'document';
   }
-  
+
   return 'other';
 };
 
@@ -185,10 +185,10 @@ export const getTypeFromMime = (mimeType) => {
  */
 export const formatFileSize = (bytes) => {
   if (!bytes || bytes === 0) return '0 B';
-  
+
   const units = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  
+
   return `${(bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0)} ${units[i]}`;
 };
 
@@ -221,9 +221,9 @@ export const isVideo = (mimeType) => {
 export const isDocument = (mimeType) => {
   if (!mimeType) return false;
   return mimeType === 'application/pdf' ||
-         mimeType.includes('word') ||
-         mimeType.includes('excel') ||
-         mimeType.includes('spreadsheet');
+    mimeType.includes('word') ||
+    mimeType.includes('excel') ||
+    mimeType.includes('spreadsheet');
 };
 
 /**

@@ -4,11 +4,17 @@
   "type": "module",
   "main": "ws-bridge.js",
   "scripts": {
-    "start": "node ws-bridge.js"
+    "start": "node ws-bridge.js",
+    "dev": "bash start-server.sh",
+    "build": "echo 'No build step for backend bridge'",
+    "serve": "php artisan serve --host=localhost --port=8000"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
     "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
   }
 }
