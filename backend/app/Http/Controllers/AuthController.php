@@ -294,6 +294,7 @@ class AuthController extends Controller
                 return response()->json([
                     'message' => 'Avatar updated successfully',
                     'avatar_url' => null,
+                    'avatar_data' => $user->avatar_data,
                     'avatar_mime_type' => $user->avatar_mime_type,
                 ]);
             }

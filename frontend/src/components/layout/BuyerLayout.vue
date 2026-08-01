@@ -319,7 +319,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { io } from 'socket.io-client'
 import LanguageSwitcher from '../LanguageSwitcher.vue'
@@ -330,6 +330,27 @@ import { getAvatarUrl } from '../../utils/avatar'
 
 const { isDark, toggleTheme } = useTheme()
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
+
+// Watch for localStorage changes to update user avatar
+const updateUserFromStorage = () => {
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
+  if (storedUser.avatar_data !== user.value.avatar_data ||
+      storedUser.avatar_mime_type !== user.value.avatar_mime_type) {
+    user.value = storedUser
+  }
+}
+
+onMounted(() => {
+  // Listen for storage events from other tabs/windows
+  window.addEventListener('storage', updateUserFromStorage)
+  
+  // Also poll periodically for changes in same tab (like after avatar upload)
+  const pollInterval = setInterval(updateUserFromStorage, 1000)
+  onUnmounted(() => {
+    clearInterval(pollInterval)
+    window.removeEventListener('storage', updateUserFromStorage)
+  })
+})
 
 const props = defineProps({
   activeRoute: {

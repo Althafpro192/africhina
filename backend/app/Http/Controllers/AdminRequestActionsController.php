@@ -40,13 +40,32 @@ class AdminRequestActionsController extends Controller
             return response()->json(['message' => 'Cannot upload options at this stage'], 400);
         }
 
-        // Store images as base64 in LONGBLOB
+        // Store images as base64 in LONGBLOB or use URLs
         $imageData = [];
+        
+        // Handle file uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $mimeType = $file->getMimeType();
                 $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
                 $imageData[] = $base64;
+            }
+        }
+        
+        // Handle URL strings from frontend (after pre-upload)
+        $imageUrls = $request->input('images');
+        if (is_string($imageUrls)) {
+            $imageUrls = [$imageUrls];
+        }
+        if (is_array($imageUrls)) {
+            foreach ($imageUrls as $url) {
+                if (is_string($url) && !empty($url)) {
+                    if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                        $imageData[] = $url;
+                    } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                        $imageData[] = $url;
+                    }
+                }
             }
         }
 
@@ -132,12 +151,36 @@ class AdminRequestActionsController extends Controller
             'is_fixed_price' => ($validated['is_fixed_price'] ?? 'false') === 'true',
         ];
 
-        if ($request->hasFile('images')) {
+        // Handle image uploads (files or URLs)
+        $hasFiles = $request->hasFile('images');
+        $hasUrls = $request->input('images');
+        
+        if ($hasFiles) {
             $imageData = [];
             foreach ($request->file('images') as $file) {
                 $mimeType = $file->getMimeType();
                 $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
                 $imageData[] = $base64;
+            }
+            $updateData['image_url'] = $imageData[0] ?? null;
+            $updateData['images'] = $imageData;
+        } elseif ($hasUrls) {
+            // Handle URL strings from frontend
+            $imageUrls = $request->input('images');
+            if (is_string($imageUrls)) {
+                $imageUrls = [$imageUrls];
+            }
+            $imageData = [];
+            if (is_array($imageUrls)) {
+                foreach ($imageUrls as $url) {
+                    if (is_string($url) && !empty($url)) {
+                        if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                            $imageData[] = $url;
+                        } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                            $imageData[] = $url;
+                        }
+                    }
+                }
             }
             $updateData['image_url'] = $imageData[0] ?? null;
             $updateData['images'] = $imageData;

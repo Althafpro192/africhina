@@ -31,17 +31,64 @@ class RequestController extends Controller
             'certifications' => 'nullable|string',
         ]);
 
-        // Handle images - accept both 'images' (array field) and 'images[]' formats
+        // Handle images - accept both file uploads and pre-uploaded URLs
         $imageData = [];
         $files = $request->allFiles();
         
-        // Check for 'images' as array
+        // Handle file uploads (actual files)
         if (isset($files['images']) && is_array($files['images'])) {
             foreach ($files['images'] as $file) {
                 if ($file && $file->isValid()) {
                     $mimeType = $file->getMimeType();
                     $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
                     $imageData[] = $base64;
+                }
+            }
+        }
+        
+        // Handle 'images[]' array (from frontend formData)
+        if (isset($files['images[]']) && is_array($files['images[]'])) {
+            foreach ($files['images[]'] as $file) {
+                if ($file && $file->isValid()) {
+                    $mimeType = $file->getMimeType();
+                    $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                    $imageData[] = $base64;
+                }
+            }
+        }
+        
+        // Handle pre-uploaded URLs (strings from frontend after file upload)
+        $imageUrls = $request->input('images');
+        if (is_string($imageUrls)) {
+            $imageUrls = [$imageUrls];
+        }
+        if (is_array($imageUrls)) {
+            foreach ($imageUrls as $url) {
+                if (is_string($url) && !empty($url)) {
+                    // Accept both storage URLs and base64 data URLs
+                    if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                        // Convert storage path to full URL for display
+                        $imageData[] = $url;
+                    } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                        $imageData[] = $url;
+                    }
+                }
+            }
+        }
+        
+        // Handle 'images[]' string array (from formData.append('images[]', url))
+        $imageUrlsArray = $request->input('images[]');
+        if (is_string($imageUrlsArray)) {
+            $imageUrlsArray = [$imageUrlsArray];
+        }
+        if (is_array($imageUrlsArray)) {
+            foreach ($imageUrlsArray as $url) {
+                if (is_string($url) && !empty($url)) {
+                    if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                        $imageData[] = $url;
+                    } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                        $imageData[] = $url;
+                    }
                 }
             }
         }
@@ -157,9 +204,10 @@ class RequestController extends Controller
 
         $imageData = $rfq->image_urls ?? [];
         $hasNewImages = $request->hasFile('images');
+        $hasNewUrls = $request->input('images') || $request->input('images[]');
         
         // Check if we should keep existing images
-        if ($request->input('keep_images') === 'true' && !$hasNewImages) {
+        if ($request->input('keep_images') === 'true' && !$hasNewImages && !$hasNewUrls) {
             // Keep existing images - do nothing
         } else if ($hasNewImages) {
             // Replace existing images with new ones - store as base64
@@ -168,6 +216,43 @@ class RequestController extends Controller
                 $mimeType = $file->getMimeType();
                 $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
                 $imageData[] = $base64;
+            }
+        } else if ($hasNewUrls) {
+            // Handle URL strings from frontend
+            $imageData = [];
+            
+            // Handle 'images' array
+            $imageUrls = $request->input('images');
+            if (is_string($imageUrls)) {
+                $imageUrls = [$imageUrls];
+            }
+            if (is_array($imageUrls)) {
+                foreach ($imageUrls as $url) {
+                    if (is_string($url) && !empty($url)) {
+                        if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                            $imageData[] = $url;
+                        } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                            $imageData[] = $url;
+                        }
+                    }
+                }
+            }
+            
+            // Handle 'images[]' array
+            $imageUrlsArray = $request->input('images[]');
+            if (is_string($imageUrlsArray)) {
+                $imageUrlsArray = [$imageUrlsArray];
+            }
+            if (is_array($imageUrlsArray)) {
+                foreach ($imageUrlsArray as $url) {
+                    if (is_string($url) && !empty($url)) {
+                        if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
+                            $imageData[] = $url;
+                        } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                            $imageData[] = $url;
+                        }
+                    }
+                }
             }
         }
 
