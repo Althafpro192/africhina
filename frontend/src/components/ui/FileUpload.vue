@@ -30,6 +30,9 @@
           <svg v-if="isDragging" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
             <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V16.5h-2.25a.75.75 0 010-1.5h2.25v-2.25a.75.75 0 011.5 0z" clip-rule="evenodd" />
           </svg>
+          <svg v-else-if="isCompressing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48" class="animate-spin">
+            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+          </svg>
           <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
             <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
           </svg>
@@ -37,14 +40,15 @@
         
         <p class="drop-zone__text">
           <span v-if="isDragging">{{ $t('upload.dropHere') || 'Drop files here' }}</span>
+          <span v-else-if="isCompressing">{{ $t('upload.optimizing') || 'Optimizing images...' }}</span>
           <span v-else>{{ $t('upload.dragDrop') || 'Drag & drop files here or' }}</span>
         </p>
         
-        <button 
+        <button
           type="button"
           class="drop-zone__button"
           @click="triggerFileSelect"
-          :disabled="!canAddMore"
+          :disabled="!canAddMore || isCompressing"
         >
           {{ $t('upload.selectFiles') || 'Select Files' }}
         </button>
@@ -55,8 +59,8 @@
       </div>
 
       <!-- Add more files button when has files -->
-      <div class="drop-zone__add-more" v-else>
-        <button 
+      <div class="drop-zone__add-more" v-else-if="!isCompressing">
+        <button
           type="button"
           class="add-more-button"
           @click="triggerFileSelect"
@@ -67,6 +71,12 @@
           </svg>
           {{ $t('upload.addMore') || 'Add More Files' }}
         </button>
+      </div>
+      
+      <!-- Compressing indicator when has files -->
+      <div v-else class="drop-zone__compressing">
+        <span class="material-symbols-outlined animate-spin text-indigo-600 dark:text-indigo-400 text-3xl">progress_activity</span>
+        <span class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm">{{ $t('upload.optimizing') || 'Optimizing...' }}</span>
       </div>
     </div>
 
@@ -153,6 +163,7 @@ const {
   setFileInputRef,
   triggerFileSelect,
   formatFileSize,
+  isCompressing,
 } = useFileUpload({
   maxFiles: props.maxFiles,
   maxSize: props.maxSize,
@@ -352,6 +363,62 @@ defineExpose({
 .add-more-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Compressing indicator */
+.drop-zone__compressing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .drop-zone {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  
+  .drop-zone:hover {
+    background: #0f172a;
+    border-color: #6366f1;
+  }
+  
+  .drop-zone--dragging {
+    background: #1e1b4b;
+  }
+  
+  .drop-zone__icon {
+    color: #64748b;
+  }
+  
+  .drop-zone__text {
+    color: #94a3b8;
+  }
+  
+  .drop-zone__hint {
+    color: #64748b;
+  }
+  
+  .add-more-button {
+    background: #334155;
+    color: #e2e8f0;
+    border-color: #475569;
+  }
+  
+  .add-more-button:hover:not(:disabled) {
+    background: #475569;
+    border-color: #64748b;
+  }
 }
 
 /* Error Messages */

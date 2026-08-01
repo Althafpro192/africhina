@@ -11,6 +11,7 @@
 
 import { ref, computed } from 'vue';
 import { getMediaUrl, isImage, isVideo, formatFileSize } from '../utils/mediaUrl.js';
+import { compressImage } from '../utils/imageCompressor.js';
 
 // API base URL
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -38,6 +39,7 @@ export function useFileUpload(options = {}) {
   // Reactive state
   const files = ref([]);
   const isUploading = ref(false);
+  const isCompressing = ref(false);
   const uploadProgress = ref({});
   const errors = ref([]);
   const isDragging = ref(false);
@@ -141,20 +143,40 @@ export function useFileUpload(options = {}) {
     const filesToAdd = fileArray.slice(0, remainingSlots);
     const newFileObjects = [];
 
-    for (const file of filesToAdd) {
-      const validation = validateFile(file);
-
-      if (!validation.valid) {
-        errors.value.push(...validation.errors.map(e => `${file.name}: ${e}`));
-        continue;
-      }
-
-      const previewData = await generatePreview(file);
-      const fileObj = createFileObject(file, null, previewData);
-      newFileObjects.push(fileObj);
+    // Check if any files need compression
+    const needsCompression = filesToAdd.some(f => isImage(f.type));
+    if (needsCompression) {
+      isCompressing.value = true;
     }
 
-    files.value = [...files.value, ...newFileObjects];
+    try {
+      for (const file of filesToAdd) {
+        const validation = validateFile(file);
+
+        if (!validation.valid) {
+          errors.value.push(...validation.errors.map(e => `${file.name}: ${e}`));
+          continue;
+        }
+
+        // Compress images before adding
+        let fileToUse = file;
+        if (isImage(file.type)) {
+          try {
+            fileToUse = await compressImage(file);
+          } catch (e) {
+            console.warn('Image compression failed, using original:', e);
+          }
+        }
+
+        const previewData = await generatePreview(fileToUse);
+        const fileObj = createFileObject(fileToUse, null, previewData);
+        newFileObjects.push(fileObj);
+      }
+
+      files.value = [...files.value, ...newFileObjects];
+    } finally {
+      isCompressing.value = false;
+    }
 
     return newFileObjects;
   };
@@ -346,6 +368,7 @@ export function useFileUpload(options = {}) {
     // State
     files,
     isUploading,
+    isCompressing,
     uploadProgress,
     errors,
     isDragging,

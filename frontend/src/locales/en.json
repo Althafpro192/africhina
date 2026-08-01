@@ -154,7 +154,9 @@
     "voice_note": "Voice Note",
     "recording": "Recording Voice Note...",
     "finish": "Finish",
-    "type_placeholder": "Type your message..."
+    "type_placeholder": "Type your message...",
+    "optimizing_image": "Optimizing image...",
+    "optimizing": "Optimizing..."
   },
   "buyer_messages": {
     "title": "Chat Admin Support",

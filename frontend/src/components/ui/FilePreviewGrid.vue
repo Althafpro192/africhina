@@ -64,16 +64,14 @@
             </svg>
           </div>
 
-          <!-- Delete button -->
+          <!-- Delete button - always visible -->
           <button
             type="button"
             class="file-card__delete"
             @click.stop="handleDelete(file.id)"
             :title="$t('upload.delete') || 'Delete'"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-              <path fill-rule="evenodd" d="M16.5 4.5v3a.75.75 0 01-1.5 0v-3h-3a.75.75 0 010-1.5h3v-3a.75.75 0 011.5 0v3h3a.75.75 0 010 1.5h-3zm4.5 0h-15v18h15v-18z" clip-rule="evenodd" />
-            </svg>
+            <span class="material-symbols-outlined text-base">close</span>
           </button>
 
           <!-- Upload progress overlay -->
@@ -290,21 +288,19 @@ const handleDelete = (fileId) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   border: none;
-  border-radius: 6px;
+  border-radius: 50%;
   color: white;
   cursor: pointer;
-  opacity: 0;
-  transition: all 0.2s ease;
-}
-
-.file-card:hover .file-card__delete {
   opacity: 1;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .file-card__delete:hover {
   background: #ef4444;
+  transform: scale(1.1);
 }
 
 .file-card__upload-overlay {
@@ -416,5 +412,81 @@ const handleDelete = (fileId) => {
     opacity: 0;
     transform: scale(0.9);
   }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .file-preview-grid {
+    /* Container inherits background */
+  }
+
+  .file-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .file-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  }
+
+  .file-card__thumbnail {
+    background: #0f172a;
+  }
+
+  .file-card__icon-wrapper {
+    color: #64748b;
+  }
+
+  .file-card__info {
+    background: #1e293b;
+  }
+
+  .file-card__name {
+    color: #f1f5f9;
+  }
+
+  .file-card__size {
+    color: #94a3b8;
+  }
+
+  .file-card__upload-overlay {
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  .empty-state {
+    color: #64748b;
+    background: transparent;
+  }
+
+  .empty-state p {
+    color: #94a3b8;
+  }
+}
+
+/* Additional dark mode support via class */
+.dark .file-preview-grid .file-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark .file-preview-grid .file-card__thumbnail {
+  background: #0f172a;
+}
+
+.dark .file-preview-grid .file-card__info {
+  background: #1e293b;
+}
+
+.dark .file-preview-grid .file-card__name {
+  color: #f1f5f9;
+}
+
+.dark .file-preview-grid .file-card__size {
+  color: #94a3b8;
+}
+
+.dark .file-preview-grid .file-card__icon-wrapper {
+  color: #64748b;
 }
 </style>

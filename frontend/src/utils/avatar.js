@@ -17,7 +17,8 @@
 export function getAvatarUrl(url, name, userId, avatarData, mimeType) {
   // If avatar_data is provided, construct data URL directly
   if (avatarData && mimeType) {
-    return `data:${mimeType};base64,${avatarData}`
+    // Add timestamp to data URL for cache busting when avatar updates
+    return `data:${mimeType};base64,${avatarData}#t=${Date.now()}`
   }
 
   // Fallback to UI Avatars if no image data in MySQL

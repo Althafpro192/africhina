@@ -125,7 +125,9 @@
     "voice_note": "语音消息",
     "recording": "正在录制语音消息...",
     "finish": "完成",
-    "type_placeholder": "输入消息..."
+    "type_placeholder": "输入消息...",
+    "optimizing_image": "正在优化图片...",
+    "optimizing": "正在优化..."
   },
   "buyer_messages": {
     "title": "管理员客服沟通",

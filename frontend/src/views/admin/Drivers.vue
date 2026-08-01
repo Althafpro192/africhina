@@ -59,8 +59,9 @@
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div :class="['w-10 h-10 rounded-xl border flex items-center justify-center shrink-0', driver.is_blocked ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400' : 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400']">
-                      <span class="material-symbols-outlined text-xl">{{ driver.is_blocked ? 'block' : 'local_shipping' }}</span>
+                    <div class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 overflow-hidden bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800">
+                      <img v-if="driver.photo_url" :src="driver.photo_url" :alt="driver.full_name || driver.name" class="w-full h-full object-cover" />
+                      <span v-else class="material-symbols-outlined text-xl text-indigo-600 dark:text-indigo-400">{{ driver.is_blocked ? 'block' : 'local_shipping' }}</span>
                     </div>
                     <div>
                       <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
@@ -178,6 +179,24 @@
               </div>
             </div>
 
+            <!-- Driver photo uploader (edit only) -->
+            <div v-if="isEditing && editingId" class="pt-2 border-t border-slate-200 dark:border-slate-800">
+              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2">Driver Photo</label>
+              <ImageGallery
+                :entity-id="editingId"
+                :image-url="form.photo_url || ''"
+                :upload-endpoint="(id) => `/admin/drivers/${id}/photo`"
+                :delete-endpoint="(id) => `/admin/drivers/${id}/photo`"
+                field-name="photo"
+                :readonly="isViewing"
+                alt="Driver photo"
+                placeholder-text="No photo"
+                @uploaded="onPhotoUploaded"
+                @deleted="onPhotoDeleted"
+                @error="onPhotoError"
+              />
+            </div>
+
             <div class="flex justify-end gap-3 pt-4">
               <button type="button" @click="closeModal" class="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 {{ isViewing ? $t('common.close') : $t('common.cancel') }}
@@ -228,6 +247,21 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 import { adminService } from '../../api/adminService.js'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
+import ImageGallery from '../../components/ui/ImageGallery.vue'
+
+const onPhotoUploaded = ({ url }) => {
+  form.value.photo_url = url
+  showToast('Photo uploaded successfully')
+}
+
+const onPhotoDeleted = () => {
+  form.value.photo_url = ''
+  showToast('Photo deleted')
+}
+
+const onPhotoError = ({ error }) => {
+  showToast(error || 'Photo operation failed')
+}
 
 const searchQuery = ref('')
 const loading = ref(true)

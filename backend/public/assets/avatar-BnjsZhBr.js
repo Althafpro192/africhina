@@ -1,0 +1,1 @@
+function e(e,t,n,r,i){return r&&i?`data:${i};base64,${r}#t=${Date.now()}`:`https://ui-avatars.com/api/?name=${encodeURIComponent(t||`User`)}&background=6366f1&color=fff`}export{e as t};

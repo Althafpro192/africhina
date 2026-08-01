@@ -104,7 +104,17 @@
       <button @click="cancelEdit" class="hover:bg-indigo-100 dark:hover:bg-indigo-900/60 p-1 rounded-full text-indigo-700 dark:text-indigo-300 cursor-pointer"><span class="material-symbols-outlined text-[16px]">close</span></button>
     </div>
     
-    <div v-if="previewUrl && !isRecording" class="bg-slate-100 dark:bg-slate-800/80 p-2.5 px-4 flex items-center justify-between border-t border-slate-200 dark:border-slate-700">
+    <!-- Compression indicator -->
+    <div v-if="compressing" class="bg-indigo-50 dark:bg-indigo-950/60 p-3 px-4 flex items-center justify-between border-t border-indigo-200 dark:border-indigo-900/50 animate-pulse">
+      <div class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
+        <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+        {{ $t('chat.optimizing_image') || 'Optimizing image...' }}
+      </div>
+      <div class="text-[10px] text-indigo-400 dark:text-indigo-500">Compression in progress</div>
+    </div>
+    
+    <!-- File preview -->
+    <div v-else-if="previewUrl && !isRecording" class="bg-slate-100 dark:bg-slate-800/80 p-2.5 px-4 flex items-center justify-between border-t border-slate-200 dark:border-slate-700">
       <div class="flex items-center gap-2">
         <img v-if="previewType === 'image'" :src="previewUrl" class="h-10 w-10 object-cover rounded-lg shadow-xs" />
         <span v-else class="material-symbols-outlined text-slate-500 dark:text-slate-400">audio_file</span>
@@ -184,6 +194,7 @@ const messages = ref([])
 const newMessage = ref('')
 const loading = ref(true)
 const sending = ref(false)
+const compressing = ref(false) // Show when compressing image
 const messagesContainer = ref(null)
 let echoChannel = null
 
@@ -265,18 +276,29 @@ const scrollToBottom = () => {
 const handleFileSelect = async (e) => {
   const file = e.target.files[0]
   if (!file) return
-  const fileToUse = file.type.startsWith('image/') ? await compressImage(file) : file
-  selectedFile.value = fileToUse
-  if (fileToUse.type.startsWith('image/')) {
-    previewType.value = 'image'
-  } else if (fileToUse.type.startsWith('audio/')) {
-    previewType.value = 'audio'
-  } else if (fileToUse.type.startsWith('video/')) {
-    previewType.value = 'video'
+  
+  // Show compressing indicator for images
+  if (file.type.startsWith('image/')) {
+    compressing.value = true
+    try {
+      const fileToUse = await compressImage(file)
+      selectedFile.value = fileToUse
+      previewType.value = 'image'
+      previewUrl.value = URL.createObjectURL(fileToUse)
+    } finally {
+      compressing.value = false
+    }
   } else {
-    previewType.value = 'document'
+    selectedFile.value = file
+    if (file.type.startsWith('audio/')) {
+      previewType.value = 'audio'
+    } else if (file.type.startsWith('video/')) {
+      previewType.value = 'video'
+    } else {
+      previewType.value = 'document'
+    }
+    previewUrl.value = URL.createObjectURL(file)
   }
-  previewUrl.value = URL.createObjectURL(fileToUse)
 }
 
 const clearFile = () => {

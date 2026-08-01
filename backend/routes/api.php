@@ -94,6 +94,8 @@ $defineRoutes = function() {
             Route::put('/admin/suppliers/{id}', [SupplierController::class, 'updateSupplier']);
             Route::delete('/admin/suppliers/{id}', [SupplierController::class, 'deleteSupplier']);
             Route::post('/admin/suppliers/{id}/toggle-block', [SupplierController::class, 'toggleBlockSupplier']);
+            Route::post('/admin/suppliers/{id}/logo', [SupplierController::class, 'uploadLogo']);
+            Route::delete('/admin/suppliers/{id}/logo', [SupplierController::class, 'deleteLogo']);
 
             // Drivers (delivery personnel) management
             Route::get('/admin/drivers/available', [AdminDriverController::class, 'listAvailable']);
@@ -104,6 +106,8 @@ $defineRoutes = function() {
             Route::delete('/admin/drivers/{id}', [AdminDriverController::class, 'destroy']);
             Route::post('/admin/drivers/{id}/toggle-block', [AdminDriverController::class, 'toggleBlock']);
             Route::post('/admin/drivers/{id}/temp-password', [AdminDriverController::class, 'generateTempPassword']);
+            Route::post('/admin/drivers/{id}/photo', [AdminDriverController::class, 'uploadPhoto']);
+            Route::delete('/admin/drivers/{id}/photo', [AdminDriverController::class, 'deletePhoto']);
 
             // Assign a driver (or trusted provider) to a request
             Route::post('/admin/requests/{id}/assign-driver', [AdminRequestActionsController::class, 'assignDriver']);

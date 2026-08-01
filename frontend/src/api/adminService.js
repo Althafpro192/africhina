@@ -192,5 +192,36 @@ export const adminService = {
   async assignDriver(requestId, payload) {
     const { data } = await api.post(`/admin/requests/${requestId}/assign-driver`, payload);
     return data;
-  }
+  },
+
+  // [NEW Image CRUD] Upload / Delete image assets
+  async uploadImage(endpoint, file, fieldName = 'file') {
+    const formData = new FormData();
+    formData.append(fieldName, file);
+    const { data } = await api.post(endpoint, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data;
+  },
+
+  async deleteImage(endpoint) {
+    const { data } = await api.delete(endpoint);
+    return data;
+  },
+
+  // [NEW Image CRUD] Suppliers logo
+  async uploadSupplierLogo(supplierId, file) {
+    return this.uploadImage(`/admin/suppliers/${supplierId}/logo`, file, 'logo');
+  },
+  async deleteSupplierLogo(supplierId) {
+    return this.deleteImage(`/admin/suppliers/${supplierId}/logo`);
+  },
+
+  // [NEW Image CRUD] Driver photo
+  async uploadDriverPhoto(driverId, file) {
+    return this.uploadImage(`/admin/drivers/${driverId}/photo`, file, 'photo');
+  },
+  async deleteDriverPhoto(driverId) {
+    return this.deleteImage(`/admin/drivers/${driverId}/photo`);
+  },
 };

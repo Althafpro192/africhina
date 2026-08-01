@@ -125,7 +125,9 @@
     "voice_note": "Note vocale",
     "recording": "Enregistrement de la note vocale...",
     "finish": "Terminer",
-    "type_placeholder": "Tapez votre message..."
+    "type_placeholder": "Tapez votre message...",
+    "optimizing_image": "Optimisation de l'image...",
+    "optimizing": "Optimisation..."
   },
   "buyer_messages": {
     "title": "Support Admin Chat",

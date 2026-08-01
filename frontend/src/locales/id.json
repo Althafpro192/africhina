@@ -154,7 +154,9 @@
     "voice_note": "Pesan Suara",
     "recording": "Merekam Pesan Suara...",
     "finish": "Selesai",
-    "type_placeholder": "Ketik pesan Anda..."
+    "type_placeholder": "Ketik pesan Anda...",
+    "optimizing_image": "Mengoptimasi gambar...",
+    "optimizing": "Mengoptimasi..."
   },
   "buyer_messages": {
     "title": "Chat Admin Support",
