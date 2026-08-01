@@ -13,7 +13,7 @@ import { ref, computed } from 'vue';
 import { getMediaUrl, isImage, isVideo, formatFileSize } from '../utils/mediaUrl.js';
 
 // API base URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://backend:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Allowed MIME types
 const ALLOWED_TYPES = {

@@ -172,7 +172,7 @@ class AuthController extends Controller
             'company_name' => $user->company_name,
             'role' => $user->role,
             'avatar_url' => $user->avatar_url,
-            'avatar_data' => $user->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $user->avatar_data) ?: '') : null,
+            'avatar_data' => $user->avatar_data, // Already stored as base64
             'avatar_mime_type' => $user->avatar_mime_type,
             'mustChangePassword' => $mustChangePassword,
         ]);
@@ -281,9 +281,12 @@ class AuthController extends Controller
                     return response()->json(['message' => 'Only JPEG, PNG, GIF, and WebP images are allowed'], 400);
                 }
                 
+                // Base64 encode the binary data to avoid encoding issues with PostgreSQL
+                $encodedData = base64_encode($avatarData);
+                
                 // Update user with avatar data stored in database
                 $user->update([
-                    'avatar_data' => $avatarData,
+                    'avatar_data' => $encodedData,
                     'avatar_mime_type' => $mimeType,
                     'avatar_url' => null, // Disable file-based URL usage
                 ]);
@@ -297,9 +300,16 @@ class AuthController extends Controller
 
             return response()->json(['message' => 'No file uploaded'], 400);
         } catch (\Exception $e) {
-            Log::error('Avatar upload error: ' . $e->getMessage());
+            Log::error('Avatar upload error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Don't include exception message as it may contain binary data
             return response()->json([
-                'message' => 'Failed to upload avatar: ' . $e->getMessage(),
+                'message' => 'Failed to upload avatar. Please check file format and size.',
+                'debug' => config('app.debug') ? ['line' => $e->getLine()] : null,
             ], 500);
         }
     }
@@ -315,7 +325,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Avatar not found'], 404);
         }
 
-        return response($user->avatar_data, 200)
+        // Decode base64 data for display
+        $imageData = base64_decode($user->avatar_data);
+
+        return response($imageData, 200)
             ->header('Content-Type', $user->avatar_mime_type ?? 'image/png')
             ->header('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     }
