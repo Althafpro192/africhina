@@ -184,17 +184,40 @@
                 </h2>
               </div>
               <div v-if="request.image_urls && request.image_urls.length > 0" class="flex flex-col gap-3">
-                <a v-for="(file, idx) in request.image_urls" :key="idx" :href="getMediaUrl(file)" target="_blank" class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
-                  <div class="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    <span class="material-symbols-outlined">{{ getFileIcon(file) }}</span>
+                <template v-for="(file, idx) in request.image_urls" :key="idx">
+                  <!-- Image Preview (inline thumbnail, click to open lightbox) -->
+                  <div v-if="isImageFile(file)" @click="openAttachmentLightbox(idx)"
+                       class="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 cursor-zoom-in group aspect-video">
+                    <img :src="getMediaUrl(file)" :alt="file.split('/').pop()"
+                         class="w-full h-full object-contain bg-slate-50 dark:bg-slate-900" />
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center pointer-events-none">
+                      <span class="material-symbols-outlined text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow">zoom_in</span>
+                    </div>
+                    <div class="absolute bottom-2 left-2 right-2 text-[11px] font-semibold text-white truncate opacity-90 drop-shadow">
+                      {{ file.split('/').pop() }}
+                    </div>
                   </div>
-                  <div class="flex-1 overflow-hidden">
-                    <p class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
-                    <p class="text-xs text-slate-400">{{ $t('order_detail.click_view') }}</p>
-                  </div>
-                  <span class="material-symbols-outlined text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">open_in_new</span>
-                </a>
+                  <!-- Non-Image File (PDF, doc, etc.) — keep icon + open in new tab -->
+                  <a v-else :href="getMediaUrl(file)" target="_blank"
+                     class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
+                    <div class="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      <span class="material-symbols-outlined">{{ getFileIcon(file) }}</span>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                      <p class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{{ file.split('/').pop() }}</p>
+                      <p class="text-xs text-slate-400">{{ $t('order_detail.click_view') }}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">open_in_new</span>
+                  </a>
+                </template>
               </div>
+              <!-- Image Lightbox (full-screen preview) -->
+              <ImageLightbox
+                v-if="lightboxOpen"
+                v-model="lightboxOpen"
+                :images="lightboxImages"
+                :start-index="lightboxStartIndex"
+              />
               <div v-else class="text-center py-6 text-slate-400 dark:text-slate-500 text-sm italic">
                 {{ $t('order_detail.no_attachments') }}
               </div>
@@ -728,6 +751,7 @@ import { useRouter, useRoute } from 'vue-router'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import ChatComponent from '../../components/chat/ChatComponent.vue'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
+import ImageLightbox from '../../components/ui/ImageLightbox.vue'
 import { adminService } from '../../api/adminService.js'
 import { requestService } from '../../api/requestService.js'
 import { useToast } from '../../composables/useToast.js'
@@ -1111,6 +1135,38 @@ const getMediaUrl = (path) => {
   if (path.startsWith('http')) return path
   // Use relative path so it resolves through Vite dev server / Nginx proxy
   return path.startsWith('/') ? path : `/${path}`
+}
+
+// Lightbox state for full-screen image preview
+const lightboxOpen = ref(false)
+const lightboxStartIndex = ref(0)
+const lightboxImages = computed(() => {
+  if (!request.value || !Array.isArray(request.value.image_urls)) return []
+  return request.value.image_urls
+    .filter((f) => isImageFile(f))
+    .map((f) => getMediaUrl(f))
+    .filter(Boolean)
+})
+
+const openAttachmentLightbox = (idx) => {
+  // Map attachment index → lightbox index (filter to images only)
+  if (!request.value || !Array.isArray(request.value.image_urls)) return
+  const imageIndices = request.value.image_urls
+    .map((f, i) => (isImageFile(f) ? i : -1))
+    .filter((i) => i !== -1)
+  const target = imageIndices.indexOf(idx)
+  if (target >= 0) {
+    lightboxStartIndex.value = target
+    lightboxOpen.value = true
+  }
+}
+
+// Detect if attachment is an image (data URL or extension)
+const isImageFile = (path) => {
+  if (!path) return false
+  if (path.startsWith('data:')) return path.startsWith('data:image/')
+  const ext = (path.split('.').pop() || '').toLowerCase()
+  return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(ext)
 }
 
 const handleQrSelect = (e) => {

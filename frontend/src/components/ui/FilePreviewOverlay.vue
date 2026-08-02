@@ -151,15 +151,15 @@ const isExcel = computed(() => {
 // Get image source
 const imageSrc = computed(() => {
   if (!props.file) return '';
-  // Priority: thumbnail > url > videoData
+  // Priority: thumbnail > url > videoUrl
   return props.file.thumbnail || getMediaUrl(props.file.url) || '';
 });
 
 // Get video source
 const videoSrc = computed(() => {
   if (!props.file) return '';
-  // Priority: videoData (local preview) > url (uploaded)
-  return props.file.videoData || getMediaUrl(props.file.url) || '';
+  // Priority: videoUrl (local preview) > url (uploaded)
+  return props.file.videoUrl || getMediaUrl(props.file.url) || '';
 });
 
 // Get PDF source

@@ -62,7 +62,7 @@ class AdminDriverController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:120',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:40',
+            'phone' => 'nullable|string|max:30|regex:/^\+?[0-9](?:[0-9 ()\-]{5,29}[0-9])$/',
             'country' => 'nullable|string|max:80',
             'country_code' => 'nullable|string|max:8',
             'password' => 'nullable|string|min:6',
@@ -93,7 +93,7 @@ class AdminDriverController extends Controller
         return response()->json([
             'message' => 'Driver created successfully',
             'driver' => $driver,
-            'temporary_password' => $validated['password'] ? null : $password,
+            'temporary_password' => empty($validated['password']) ? $password : null,
         ], 201);
     }
 
@@ -130,7 +130,7 @@ class AdminDriverController extends Controller
 
         $validated = $request->validate([
             'full_name' => 'sometimes|required|string|max:120',
-            'phone' => 'nullable|string|max:40',
+            'phone' => 'nullable|string|max:30|regex:/^\+?[0-9](?:[0-9 ()\-]{5,29}[0-9])$/',
             'country' => 'nullable|string|max:80',
             'country_code' => 'nullable|string|max:8',
             'photo_url' => 'nullable|string|max:500',

@@ -60,6 +60,8 @@ $defineRoutes = function() {
         Route::post('/ratings', [RatingController::class, 'createRating']);
         Route::get('/ratings/supplier/{supplierId}', [RatingController::class, 'getRatingsBySupplier']);
         Route::get('/ratings/request/{requestId}', [RatingController::class, 'getRatingByRequest']);
+        // List all ratings (admin moderation queue)
+        Route::get('/ratings', [RatingController::class, 'getAllRatings']);
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'getNotifications']);

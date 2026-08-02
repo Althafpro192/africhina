@@ -7,20 +7,67 @@
  * - Progress tracking
  * - Preview generation
  * - Multiple file support
+ * - Parallel processing without compression
  */
 
 import { ref, computed } from 'vue';
 import { getMediaUrl, isImage, isVideo, formatFileSize } from '../utils/mediaUrl.js';
-import { compressImage } from '../utils/imageCompressor.js';
+import { getStoredToken } from '../api/axios.js';
+import { i18n as globalI18n } from '../i18n.js';
 
 // API base URL
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Resolve the i18n instance available to this composable. The composable is a
+// plain JS file (no `<script setup>`), so we lazily grab the global i18n
+// instance created in `i18n.js`. If anything goes wrong (test environment,
+// bundled differently) we fall back to a no-op translation helper so the
+// composable still works.
+let _i18nInstance = null;
+try {
+  _i18nInstance = globalI18n?.global ?? globalI18n ?? null;
+} catch (_e) {
+  _i18nInstance = null;
+}
+
+/**
+ * Translate a dotted key (e.g. "upload.addFailed") against the global i18n
+ * instance. Returns `fallback` when the key is missing or i18n is unavailable.
+ */
+const t = (key, fallback, params) => {
+  try {
+    if (_i18nInstance && typeof _i18nInstance.t === 'function') {
+      const translated = _i18nInstance.t(key, params);
+      // vue-i18n returns the key itself when missing; treat that as a miss.
+      if (translated && translated !== key) return translated;
+    }
+  } catch (_e) {
+    // ignore — fall through to fallback
+  }
+  return fallback;
+};
 
 // Allowed MIME types
 const ALLOWED_TYPES = {
   images: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif'],
   videos: ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'],
   documents: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+};
+
+// Cross-context safe ID generator.
+// `crypto.randomUUID()` is undefined in non-secure contexts (e.g. when the
+// app is served over plain HTTP from a remote server / LAN IP / IP address, or
+// inside iframes without a secure context). Falling back to a Math.random-based
+// ID keeps the upload pipeline functional in every environment.
+const safeId = () => {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+  } catch (_) {
+    // ignore - fall through to fallback
+  }
+  return `file-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 11)}`;
 };
 
 // Max file size (20MB)
@@ -39,7 +86,7 @@ export function useFileUpload(options = {}) {
   // Reactive state
   const files = ref([]);
   const isUploading = ref(false);
-  const isCompressing = ref(false);
+  const isProcessing = ref(false);
   const uploadProgress = ref({});
   const errors = ref([]);
   const isDragging = ref(false);
@@ -53,9 +100,13 @@ export function useFileUpload(options = {}) {
   const validateFile = (file) => {
     const validationErrors = [];
 
-    // Check file type
-    if (!acceptedTypes.includes(file.type)) {
-      validationErrors.push(`File type "${file.type}" is not allowed`);
+    // Check file type. Extension fallback handles files whose MIME type is
+    // empty or incorrectly reported by the operating system/browser.
+    const typeAllowed = acceptedTypes.includes(file.type)
+      || (looksLikeImage(file) && acceptedTypes.some(type => type.startsWith('image/')))
+      || (looksLikeVideo(file) && acceptedTypes.some(type => type.startsWith('video/')));
+    if (!typeAllowed) {
+      validationErrors.push(`File type "${file.type || getExtension(file.name)}" is not allowed`);
     }
 
     // Check file size
@@ -69,69 +120,155 @@ export function useFileUpload(options = {}) {
     };
   };
 
-  // Get file category from MIME type
-  const getFileCategory = (mimeType) => {
-    if (ALLOWED_TYPES.images.includes(mimeType)) return 'images';
-    if (ALLOWED_TYPES.videos.includes(mimeType)) return 'videos';
+  // Get file category from MIME type, with an extension fallback applied
+  // after the extension helpers are initialized below.
+  const getFileCategory = (mimeType, file = null) => {
+    if (ALLOWED_TYPES.images.includes(mimeType) || (file && looksLikeImage(file))) return 'images';
+    if (ALLOWED_TYPES.videos.includes(mimeType) || (file && looksLikeVideo(file))) return 'videos';
     if (ALLOWED_TYPES.documents.includes(mimeType)) return 'documents';
     return 'other';
   };
 
-  // Generate preview for a file
+  // Track blob URLs for cleanup
+  const blobUrls = new Map();
+
+  // File extensions fallback (some screenshot tools leave MIME empty)
+  const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'avif', 'bmp', 'heic', 'heif', 'ico'];
+  const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'm4v'];
+
+  const getExtension = (filename) => {
+    if (!filename || typeof filename !== 'string') return '';
+    const idx = filename.lastIndexOf('.');
+    return idx >= 0 ? filename.slice(idx + 1).toLowerCase() : '';
+  };
+
+  const looksLikeImage = (file) => {
+    if (isImage(file.type)) return true;
+    const ext = getExtension(file.name);
+    return IMAGE_EXTENSIONS.includes(ext);
+  };
+
+  const looksLikeVideo = (file) => {
+    if (isVideo(file.type)) return true;
+    const ext = getExtension(file.name);
+    return VIDEO_EXTENSIONS.includes(ext);
+  };
+
+  // Safely create a blob URL; returns null on failure (e.g., memory pressure)
+  const safeCreateObjectURL = (file) => {
+    try {
+      if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+        return null;
+      }
+      return URL.createObjectURL(file);
+    } catch (err) {
+      console.warn('URL.createObjectURL failed for', file.name, err);
+      return null;
+    }
+  };
+
+  // Generate preview for a file using Blob URL (instant, no memory bloat).
+  // IMPORTANT: This function NEVER rejects. Even if URL.createObjectURL
+  // throws or the file has an unknown MIME type, it resolves with a
+  // safe fallback so the upload UI never blocks on a single file.
   const generatePreview = (file) => {
     return new Promise((resolve) => {
-      if (isImage(file.type)) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve({
-            thumbnail: e.target.result,
-            isImage: true,
-          });
-        };
-        reader.readAsDataURL(file);
-      } else if (isVideo(file.type)) {
-        // For videos, we'll use a placeholder or first frame later
-        const reader = new FileReader();
-        reader.onload = (e) => {
+      try {
+        if (looksLikeImage(file)) {
+          const blobUrl = safeCreateObjectURL(file);
+          if (blobUrl) {
+            blobUrls.set(file.name + file.size, blobUrl);
+            resolve({
+              thumbnail: blobUrl,
+              isImage: true,
+              warning: null,
+            });
+          } else {
+            // Could not create blob URL (memory pressure, very large file, etc.)
+            // Still allow the file to be added — preview will fall back to icon.
+            resolve({
+              thumbnail: null,
+              isImage: true,
+              warning: 'preview_unavailable',
+            });
+          }
+        } else if (looksLikeVideo(file)) {
+          const blobUrl = safeCreateObjectURL(file);
+          if (blobUrl) {
+            blobUrls.set(file.name + file.size, blobUrl);
+            resolve({
+              thumbnail: null,
+              videoUrl: blobUrl,
+              isVideo: true,
+              warning: null,
+            });
+          } else {
+            resolve({
+              thumbnail: null,
+              videoUrl: null,
+              isVideo: true,
+              warning: 'preview_unavailable',
+            });
+          }
+        } else {
           resolve({
             thumbnail: null,
-            videoData: e.target.result,
-            isVideo: true,
+            isDocument: true,
+            warning: null,
           });
-        };
-        reader.readAsDataURL(file);
-      } else {
+        }
+      } catch (err) {
+        // Last-resort safety net — should never trigger, but if anything
+        // synchronous throws inside the executor, swallow it so the file
+        // is still added (without preview) instead of being rejected.
+        console.warn('generatePreview encountered an error for', file.name, err);
         resolve({
           thumbnail: null,
           isDocument: true,
+          warning: 'preview_unavailable',
         });
       }
     });
   };
 
+  // Cleanup blob URL for a file
+  const cleanupBlobUrl = (file) => {
+    const key = file.name + file.size;
+    if (blobUrls.has(key)) {
+      URL.revokeObjectURL(blobUrls.get(key));
+      blobUrls.delete(key);
+    }
+  };
+
   // Create a file object with all needed properties
   const createFileObject = (file, serverResponse = null, previewData = null) => {
+    // Use extension fallback when MIME is empty (common for Linux screenshot tools)
+    const detectedIsImage = previewData?.isImage ?? looksLikeImage(file);
+    const detectedIsVideo = previewData?.isVideo ?? looksLikeVideo(file);
+    const detectedType = detectedIsImage ? 'image' : (detectedIsVideo ? 'video' : null);
+
     return {
-      id: serverResponse?.id || crypto.randomUUID(),
+      id: serverResponse?.id || safeId(),
       file: file,
       name: file.name,
       size: file.size,
       type: file.type,
-      category: serverResponse?.type || getFileCategory(file.type),
-      extension: file.name.split('.').pop().toLowerCase(),
+      category: serverResponse?.type || getFileCategory(file.type || detectedType, file),
+      extension: getExtension(file.name),
       url: serverResponse?.url || null,
       thumbnail: previewData?.thumbnail || null,
-      videoData: previewData?.videoData || null,
-      isImage: previewData?.isImage || isImage(file.type),
-      isVideo: previewData?.isVideo || isVideo(file.type),
-      isDocument: previewData?.isDocument || false,
+      videoUrl: previewData?.videoUrl || null,
+      isImage: detectedIsImage,
+      isVideo: detectedIsVideo,
+      isDocument: previewData?.isDocument ?? !(detectedIsImage || detectedIsVideo),
+      previewWarning: previewData?.warning || null,
       uploaded: !!serverResponse,
       progress: serverResponse ? 100 : 0,
       formattedSize: formatFileSize(file.size),
     };
   };
 
-  // Add files to the list
+  // Add files to the list (parallel processing without compression)
   const addFiles = async (newFiles) => {
     const fileArray = Array.from(newFiles);
     const remainingSlots = maxFiles - files.value.length;
@@ -141,53 +278,72 @@ export function useFileUpload(options = {}) {
     }
 
     const filesToAdd = fileArray.slice(0, remainingSlots);
-    const newFileObjects = [];
-
-    // Check if any files need compression
-    const needsCompression = filesToAdd.some(f => isImage(f.type));
-    if (needsCompression) {
-      isCompressing.value = true;
-    }
 
     try {
-      for (const file of filesToAdd) {
-        const validation = validateFile(file);
+      // Show processing state
+      isProcessing.value = true;
 
+      // Process all files in parallel for better performance
+      const processingPromises = filesToAdd.map(async (file) => {
+        const validation = validateFile(file);
         if (!validation.valid) {
           errors.value.push(...validation.errors.map(e => `${file.name}: ${e}`));
-          continue;
+          return null;
         }
 
-        // Compress images before adding
-        let fileToUse = file;
-        if (isImage(file.type)) {
-          try {
-            fileToUse = await compressImage(file);
-          } catch (e) {
-            console.warn('Image compression failed, using original:', e);
-          }
+        // Per-file isolation: a failure in preview generation OR in
+        // createFileObject must NEVER reject the surrounding Promise.all, so
+        // the outer `Failed to add files` error cannot fire from this path.
+        let previewData = null;
+        try {
+          // generatePreview is resilient and NEVER rejects; the catch is
+          // purely defensive.
+          previewData = await generatePreview(file);
+        } catch (e) {
+          console.warn('Unexpected error while generating preview for', file.name, e);
+          previewData = {
+            thumbnail: null,
+            isDocument: !looksLikeImage(file) && !looksLikeVideo(file),
+            warning: 'preview_unavailable',
+          };
         }
 
-        const previewData = await generatePreview(fileToUse);
-        const fileObj = createFileObject(fileToUse, null, previewData);
-        newFileObjects.push(fileObj);
-      }
-
-      files.value = [...files.value, ...newFileObjects];
+        try {
+          return createFileObject(file, null, previewData);
+        } catch (e) {
+          console.error('Unexpected error while creating file object for', file.name, e);
+          errors.value.push(
+            t('upload.fileAddFailed', `${file.name}: failed_to_add`)
+          );
+          return null;
+        }
+      });
+  
+      const results = await Promise.all(processingPromises);
+      const validFiles = results.filter(f => f !== null);
+      files.value = [...files.value, ...validFiles];
+    } catch (error) {
+      console.error('Error adding files:', error);
+      errors.value.push(t('upload.addFailed', 'Failed to add files'));
     } finally {
-      isCompressing.value = false;
+      isProcessing.value = false;
     }
-
-    return newFileObjects;
   };
 
   // Remove a file by ID
   const removeFile = (fileId) => {
+    const fileToRemove = files.value.find(f => f.id === fileId);
+    if (fileToRemove) {
+      cleanupBlobUrl(fileToRemove);
+    }
     files.value = files.value.filter(f => f.id !== fileId);
   };
 
   // Clear all files
   const clearFiles = () => {
+    // Cleanup all blob URLs
+    files.value.forEach(file => cleanupBlobUrl(file));
+    blobUrls.clear();
     files.value = [];
     errors.value = [];
     uploadProgress.value = {};
@@ -228,6 +384,11 @@ export function useFileUpload(options = {}) {
 
         xhr.open('POST', `${API_URL}/api/upload`);
         xhr.timeout = 120000; // 2 minutes
+        xhr.withCredentials = true;
+        const token = getStoredToken();
+        if (token) {
+          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
         xhr.send(formData);
       });
 
@@ -368,7 +529,7 @@ export function useFileUpload(options = {}) {
     // State
     files,
     isUploading,
-    isCompressing,
+    isProcessing,
     uploadProgress,
     errors,
     isDragging,

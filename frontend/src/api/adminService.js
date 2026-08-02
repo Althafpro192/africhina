@@ -1,8 +1,8 @@
 import api from './axios.js';
 
 export const adminService = {
-  async getAdminRequests() {
-    const { data } = await api.get('/admin/requests');
+  async getAdminRequests(params = {}) {
+    const { data } = await api.get('/admin/requests', { params });
     return data;
   },
 

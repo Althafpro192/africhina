@@ -16,12 +16,38 @@ class AdminController extends Controller
 {
     public function getAdminRequests(Request $request)
     {
-        $limit = intval($request->query('limit', 10));
+        // Support `limit=all` to fetch every request (admin dashboard requirement)
+        $rawLimit = $request->query('limit', 10);
+        $limit = $rawLimit === 'all' ? 100000 : intval($rawLimit);
         $cursor = $request->query('cursor');
         $statusFilter = $request->query('status');
         $page = $request->query('page');
 
-        $query = RFQRequest::select('requests.*')
+        // Exclude LONGBLOB columns (image_urls, production_media) from SELECT.
+        // Loading the full base64 payload in the LIST endpoint exceeds MySQL's
+        // tiny sort_buffer_size (256KB default) when ORDER BY created_at runs,
+        // raising SQLSTATE[HY001] Out of sort memory. The detail endpoint
+        // (getAdminRequestById) still loads them via the model.
+        $requestColumns = [
+            'requests.id', 'requests.user_id', 'requests.product_name',
+            'requests.category', 'requests.specifications', 'requests.quantity',
+            'requests.budget_range', 'requests.sub_category', 'requests.unit',
+            'requests.currency', 'requests.delivery_timeline',
+            'requests.shipping_terms', 'requests.payment_terms',
+            'requests.quality_requirements', 'requests.certifications',
+            'requests.status', 'requests.assigned_supplier_id',
+            'requests.quoted_price', 'requests.quote_accepted_at',
+            'requests.production_progress', 'requests.estimated_arrival_date',
+            'requests.internal_notes', 'requests.deal_finalized_at',
+            'requests.payment_proof_url', 'requests.buyer_notes',
+            'requests.final_price', 'requests.price_breakdown',
+            'requests.bank_name', 'requests.bank_account_number',
+            'requests.bank_account_name', 'requests.payment_qr_url',
+            'requests.payment_notes', 'requests.payment_rejection_reason',
+            'requests.created_at', 'requests.updated_at',
+        ];
+
+        $query = RFQRequest::select($requestColumns)
             ->join('users', 'requests.user_id', '=', 'users.id')
             ->leftJoin('suppliers', 'requests.assigned_supplier_id', '=', 'suppliers.id')
             ->selectRaw('users.full_name as buyer_name, users.company_name as buyer_company, suppliers.company_name as supplier_name');
@@ -183,7 +209,8 @@ class AdminController extends Controller
         ])->count();
         $processing = RFQRequest::whereIn('status', ['sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin'])->count();
         $completed = RFQRequest::where('status', 'selesai')->count();
-        
+        $canceled = RFQRequest::where('status', 'batal')->count();
+
         $statusBreakdown = RFQRequest::select('status')
             ->selectRaw('count(*) as count')
             ->groupBy('status')
@@ -199,6 +226,7 @@ class AdminController extends Controller
             'pending_requests' => $pending,
             'processing_requests' => $processing,
             'completed_requests' => $completed,
+            'canceled_requests' => $canceled,
             'statusBreakdown' => $statusBreakdown,
             'categoryBreakdown' => $categoryBreakdown,
             'avgResponseTime' => '24h'
@@ -302,8 +330,9 @@ class AdminController extends Controller
                 ->first();
             $buyer->last_message = $lastMsg ? $lastMsg->content : null;
             $buyer->last_message_at = $lastMsg ? $lastMsg->created_at : null;
-            // Add base64 encoded avatar data for direct display (UTF-8 safe)
-            $buyer->avatar_data = $buyer->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $buyer->avatar_data) ?: '') : null;
+            // avatar_data is ALREADY base64-encoded when stored (see AuthController::uploadAvatar).
+            // Pass it through as-is so the frontend can build a data URL directly.
+            // (Do NOT call base64_encode again — that produces base64-of-base64 which fails to render.)
         }
 
         return response()->json([
@@ -335,7 +364,9 @@ class AdminController extends Controller
             'email' => $user->email,
             'phone' => $user->phone,
             'avatar_url' => $user->avatar_url,
-            'avatar_data' => $user->avatar_data ? base64_encode(@iconv('UTF-8', 'UTF-8//IGNORE', $user->avatar_data) ?: '') : null,
+            // avatar_data is ALREADY base64-encoded when stored (see AuthController::uploadAvatar).
+            // Pass it through as-is so the frontend can build a data URL directly.
+            'avatar_data' => $user->avatar_data,
             'avatar_mime_type' => $user->avatar_mime_type,
             'company_name' => $user->company_name,
             'country' => $user->country,

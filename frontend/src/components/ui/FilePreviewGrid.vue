@@ -24,8 +24,8 @@
           <!-- Video preview -->
           <div v-else-if="file.isVideo" class="file-card__video-placeholder">
             <video
-              v-if="file.videoData"
-              :src="file.videoData"
+              v-if="file.videoUrl"
+              :src="file.videoUrl"
               class="file-card__video-preview"
               muted
               @loadeddata="captureVideoFrame(file)"
@@ -158,7 +158,7 @@ const captureVideoFrame = (file) => {
 
 // Open preview
 const openPreview = (file) => {
-  if (file.uploaded || file.thumbnail || file.videoData) {
+  if (file.uploaded || file.thumbnail || file.videoUrl) {
     previewFile.value = file;
     emit('preview', file);
   }

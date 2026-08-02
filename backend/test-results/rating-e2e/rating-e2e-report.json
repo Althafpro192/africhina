@@ -1,0 +1,67 @@
+{
+  "pass": 12,
+  "fail": 0,
+  "results": [
+    {
+      "name": "GET /api/ratings returns JSON (not HTML shell)",
+      "ok": true,
+      "detail": "status=401 content-type=application/json startsWith={\"success\":false,\"message\":\"Unauthentica"
+    },
+    {
+      "name": "Admin login redirects away from /login",
+      "ok": true,
+      "detail": "now at http://127.0.0.1:8000/admin/dashboard"
+    },
+    {
+      "name": "Page does NOT show \"No buyer ratings found\" empty state",
+      "ok": true,
+      "detail": "table populated"
+    },
+    {
+      "name": "Buyer name from DB is rendered",
+      "ok": true,
+      "detail": "expected \"Updated Buyer Name\" in body"
+    },
+    {
+      "name": "Buyer company from DB is rendered",
+      "ok": true,
+      "detail": "expected \"West Africa Traders Ltd\""
+    },
+    {
+      "name": "Supplier company from DB is rendered (NEW column)",
+      "ok": true,
+      "detail": "expected \"Yiwu Smart Solar Technology Co., Ltd.\""
+    },
+    {
+      "name": "Reviews count is 1 (not 0)",
+      "ok": true,
+      "detail": "looking for \"1 reviews\" or \"1 review\""
+    },
+    {
+      "name": "Supplier column header exists",
+      "ok": true,
+      "detail": "found 1 <th>Supplier</th>"
+    },
+    {
+      "name": "Star rating rendered in table",
+      "ok": true,
+      "detail": "star cells: 1"
+    },
+    {
+      "name": "Publish/Unpublish button toggles",
+      "ok": true,
+      "detail": "before=\"Unpublish\" after=\"Publish\""
+    },
+    {
+      "name": "GET /api/ratings returns the same data (with supplier_company)",
+      "ok": true,
+      "detail": "count=1 first.supplier_company=Yiwu Smart Solar Technology Co., Ltd."
+    },
+    {
+      "name": "GET /api/ratings/supplier/{id} returns supplier_company",
+      "ok": true,
+      "detail": "count=1"
+    }
+  ],
+  "timestamp": "2026-08-02T01:40:02.695Z"
+}

@@ -1,0 +1,62 @@
+{
+  "passed": 8,
+  "failed": 0,
+  "total": 8,
+  "assertions": [
+    {
+      "name": "Admin login navigates away from /login",
+      "pass": true,
+      "detail": "url=http://0.0.0.0:8000/admin/dashboard"
+    },
+    {
+      "name": "API GET /admin/buyers/profile returns 200",
+      "pass": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "avatar_data present in response",
+      "pass": true,
+      "detail": "len=57960"
+    },
+    {
+      "name": "avatar_mime_type is image/*",
+      "pass": true,
+      "detail": "mime=image/jpeg"
+    },
+    {
+      "name": "avatar_data decodes to a real image (JPEG/PNG header)",
+      "pass": true,
+      "detail": "header=ffd8ffe000104a46"
+    },
+    {
+      "name": "Avatar <img> exists on page (data URL)",
+      "pass": true,
+      "detail": "count=5"
+    },
+    {
+      "name": "Avatar <img> src is a data: URL",
+      "pass": true,
+      "detail": "src=data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAAB"
+    },
+    {
+      "name": "Avatar image has non-zero naturalWidth (renders successfully)",
+      "pass": true,
+      "detail": "naturalWidth=450"
+    }
+  ],
+  "apiCheck": {
+    "status": 200,
+    "mime": "image/jpeg",
+    "b64Length": 57960,
+    "b64Head": "/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAA",
+    "decodable": true,
+    "headerHex": "ffd8ffe000104a46"
+  },
+  "imgCheck": {
+    "found": false,
+    "dataUrlImgCount": 5,
+    "firstSrcHead": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAAB",
+    "firstNaturalWidth": 450,
+    "firstComplete": true
+  }
+}

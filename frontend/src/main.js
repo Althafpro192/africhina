@@ -1,22 +1,8 @@
 import { createApp } from 'vue';
-import { createI18n } from 'vue-i18n';
 import App from './App.vue';
 import router from './router';
+import { i18n } from './i18n.js';
 import './style.css';
-
-import en from './locales/en.json';
-import id from './locales/id.json';
-import zh from './locales/zh.json';
-import fr from './locales/fr.json';
-
-const savedLocale = localStorage.getItem('locale') || 'en';
-
-const i18n = createI18n({
-  legacy: false,
-  locale: savedLocale,
-  fallbackLocale: 'en',
-  messages: { en, id, zh, fr }
-});
 
 const app = createApp(App);
 

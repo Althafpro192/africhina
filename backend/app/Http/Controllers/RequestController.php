@@ -137,9 +137,35 @@ class RequestController extends Controller
 
     public function getBuyerRequests(Request $request)
     {
+        // Exclude heavy base64 columns (image_urls, production_media) from
+        // the SELECT itself. The rows carry 100s of KB of inline base64, and
+        // loading them in the LIST endpoint makes MySQL exceed its tiny
+        // sort_buffer_size (256KB default) on ORDER BY created_at, raising
+        // SQLSTATE[HY001] Out of sort memory. The detail endpoint still loads
+        // them via getRequestDetail().
+        //
+        // NOTE: Column list is the EXACT set declared in the `requests`
+        // CREATE TABLE from africhina.sql (37 columns). The model's
+        // $fillable contains a few extra fields (delivery_method,
+        // assigned_driver_at, assigned_driver_id) which are NOT present in
+        // the live schema, so requesting them raises "Unknown column"
+        // and breaks the entire endpoint.
         $requests = RFQRequest::where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get([
+                'id', 'user_id', 'product_name', 'category', 'specifications',
+                'quantity', 'budget_range', 'sub_category', 'unit', 'currency',
+                'delivery_timeline', 'shipping_terms', 'payment_terms',
+                'quality_requirements', 'certifications', 'status',
+                'assigned_supplier_id', 'quoted_price', 'quote_accepted_at',
+                'production_progress', 'estimated_arrival_date',
+                'internal_notes', 'deal_finalized_at', 'payment_proof_url',
+                'buyer_notes', 'final_price', 'price_breakdown',
+                'bank_name', 'bank_account_number', 'bank_account_name',
+                'payment_qr_url', 'payment_notes',
+                'payment_rejection_reason',
+                'created_at', 'updated_at',
+            ]);
 
         return response()->json($requests);
     }

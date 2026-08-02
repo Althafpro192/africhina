@@ -70,8 +70,14 @@ class RatingController extends Controller
 
     public function getRatingsBySupplier($supplierId)
     {
-        $ratings = Rating::select('ratings.*', 'users.full_name as buyer_name', 'users.company_name as buyer_company')
+        $ratings = Rating::select(
+                'ratings.*',
+                'users.full_name as buyer_name',
+                'users.company_name as buyer_company',
+                'suppliers.company_name as supplier_company'
+            )
             ->join('users', 'ratings.buyer_id', '=', 'users.id')
+            ->leftJoin('suppliers', 'ratings.supplier_id', '=', 'suppliers.id')
             ->where('ratings.supplier_id', $supplierId)
             ->orderBy('ratings.created_at', 'desc')
             ->get();
@@ -90,8 +96,14 @@ class RatingController extends Controller
 
     public function getAllRatings()
     {
-        $ratings = Rating::select('ratings.*', 'users.full_name as buyer_name', 'users.company_name as buyer_company')
+        $ratings = Rating::select(
+                'ratings.*',
+                'users.full_name as buyer_name',
+                'users.company_name as buyer_company',
+                'suppliers.company_name as supplier_company'
+            )
             ->join('users', 'ratings.buyer_id', '=', 'users.id')
+            ->leftJoin('suppliers', 'ratings.supplier_id', '=', 'suppliers.id')
             ->orderBy('ratings.created_at', 'desc')
             ->get();
 

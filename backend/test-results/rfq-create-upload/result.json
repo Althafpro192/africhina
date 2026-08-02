@@ -1,0 +1,44 @@
+{
+  "steps": [
+    {
+      "name": "login",
+      "ok": true
+    },
+    {
+      "name": "goto_create",
+      "ok": true
+    },
+    {
+      "name": "fill_form",
+      "ok": true
+    },
+    {
+      "name": "upload_file",
+      "ok": true
+    },
+    {
+      "name": "submit_form",
+      "ok": true
+    },
+    {
+      "name": "verify_image",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "error": null,
+  "persisted": {
+    "id": "019fbea7-18c1-73de-b5c6-abe0a6910675",
+    "urls": [
+      "/storage/uploads/3dc60501-09bc-4598-8404-2f7bc61edba2.png"
+    ]
+  },
+  "uploadCalls": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/api/upload",
+      "auth": "Bearer 181|CWkvfPKsXQ71Ux3g2n4k43VZyGgPPQZzy9owqtcU1ab7fe9c",
+      "cookie": "(none)"
+    }
+  ]
+}

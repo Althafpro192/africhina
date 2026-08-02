@@ -27,7 +27,7 @@
       </header>
 
       <!-- STATS GRID -->
-      <section v-if="stats" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <section v-if="stats" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
         <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div class="flex justify-between items-start mb-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
@@ -67,6 +67,16 @@
           </div>
           <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.completed_deals') }}</h3>
           <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.completed_requests }}</p>
+        </div>
+
+        <div v-lazy-render class="bg-white/80 dark:bg-slate-900/80 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+          <div class="flex justify-between items-start mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center border border-rose-200 dark:border-rose-800">
+              <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-2xl" style="font-variation-settings: 'FILL' 1;">cancel</span>
+            </div>
+          </div>
+          <h3 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{{ $t('admin.canceled_requests') }}</h3>
+          <p class="text-3xl sm:text-4xl font-black mt-1 text-slate-900 dark:text-white">{{ stats.canceled_requests }}</p>
         </div>
       </section>
 
@@ -433,8 +443,9 @@ const filteredRequests = computed(() => {
 const loadData = async () => {
   loading.value = true
   try {
-    const data = await adminService.getAdminRequests()
-    requests.value = Array.isArray(data) ? data : (data.data || [])
+    const data = await adminService.getAdminRequests({ limit: 'all' })
+    const allData = Array.isArray(data) ? data : (data.data || [])
+    requests.value = allData
     stats.value = await adminService.getStatistics()
     suppliers.value = await supplierService.getAll()
   } catch (error) {

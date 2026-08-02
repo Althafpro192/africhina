@@ -17,7 +17,8 @@ export const ratingService = {
   },
 
   async getRatings() {
-    const { data } = await api.get('/ratings');
+    // Admin-only: list all ratings for moderation (joins supplier + buyer)
+    const { data } = await api.get('/admin/ratings');
     return data;
   }
 };

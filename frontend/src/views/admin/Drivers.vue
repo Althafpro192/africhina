@@ -166,7 +166,22 @@
               </div>
               <div>
                 <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_drivers.phone') }}</label>
-                <input v-model="form.phone" :disabled="isViewing" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60" />
+                <input
+                  v-model="form.phone"
+                  type="tel"
+                  inputmode="numeric"
+                  :pattern="PHONE_PATTERN"
+                  :title="$t('admin_drivers.phone_title')"
+                  :placeholder="$t('admin_drivers.phone_placeholder')"
+                  maxlength="30"
+                  autocomplete="tel"
+                  :disabled="isViewing"
+                  @beforeinput="onPhoneBeforeInput"
+                  @keypress="onPhoneKeypress"
+                  @paste.prevent="onPhonePaste"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
+                />
+                <p class="text-[10px] text-slate-400 mt-1">{{ $t('admin_drivers.phone_hint') }}</p>
               </div>
               <div class="col-span-1 sm:col-span-2">
                 <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{{ $t('admin_drivers.email') }}</label>
@@ -248,6 +263,46 @@ const { t } = useI18n()
 import { adminService } from '../../api/adminService.js'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
 import ImageGallery from '../../components/ui/ImageGallery.vue'
+
+// Phone validation: optional leading '+' then 6-20 digits, allowing spaces/dashes between groups.
+// Examples accepted: +62 812 3456 7890, 0812-3456-7890, 6281234567890
+const PHONE_PATTERN = '[+]?[0-9 ()-]{6,30}'
+const PHONE_REGEX = /^\+?[0-9](?:[0-9 ()-]{5,29}[0-9])$/
+
+const sanitizePhone = (raw) => {
+  if (raw == null) return ''
+  // Step 1: keep only digits, spaces, dashes, and '+'.
+  const cleaned = String(raw).replace(/[^\d+\- ]/g, '')
+  // Step 2: extract a single leading '+' if present, then drop ALL '+' from the rest.
+  const hasLeadingPlus = cleaned.startsWith('+')
+  const digitsAndSep = cleaned.replace(/\+/g, '')
+  // Step 3: re-attach the '+' at the start if it was there originally.
+  return hasLeadingPlus ? '+' + digitsAndSep : digitsAndSep
+}
+
+const onPhoneBeforeInput = (e) => {
+  if (!e.data) return
+  const next = (e.target.value || '') + e.data
+  const sanitized = sanitizePhone(next)
+  if (sanitized !== next) {
+    e.preventDefault()
+    form.value.phone = sanitized
+  }
+}
+
+const onPhoneKeypress = (e) => {
+  const ch = e.key
+  if (ch === 'Backspace' || ch === 'Delete' || ch === 'Tab' || ch === 'ArrowLeft' || ch === 'ArrowRight' || ch === 'Home' || ch === 'End') return
+  if (/^[0-9 +\- ]$/.test(ch)) return
+  e.preventDefault()
+}
+
+const onPhonePaste = (e) => {
+  const text = (e.clipboardData || window.clipboardData).getData('text') || ''
+  const sanitized = sanitizePhone(text)
+  form.value.phone = (form.value.phone || '') + sanitized
+  showToast(t('admin_drivers.phone_hint'))
+}
 
 const onPhotoUploaded = ({ url }) => {
   form.value.photo_url = url
@@ -364,19 +419,28 @@ const closeModal = () => {
 }
 
 const saveDriver = async () => {
+  // Client-side phone format guard: numbers only, optional leading '+',
+  // spaces/dashes allowed between groups (e.g. +62 812-3456-7890).
+  const rawPhone = (form.value.phone || '').trim()
+  if (rawPhone && !PHONE_REGEX.test(rawPhone)) {
+    showToast(t('admin_drivers.phone_invalid'))
+    return
+  }
+  const normalizedPhone = rawPhone ? sanitizePhone(rawPhone) : ''
+
   saving.value = true
   try {
     if (isEditing.value) {
       await adminService.updateDriver(editingId.value, {
         full_name: form.value.name,
         email: form.value.email,
-        phone: form.value.phone
+        phone: normalizedPhone || null
       })
     } else {
       const payload = {
         full_name: form.value.name,
         email: form.value.email,
-        phone: form.value.phone
+        phone: normalizedPhone || null
       }
       if (form.value.password && form.value.password.trim() !== '') {
         payload.password = form.value.password

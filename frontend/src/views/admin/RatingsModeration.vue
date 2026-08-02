@@ -26,6 +26,7 @@
               <tr class="text-slate-400 dark:text-slate-500 uppercase text-[10px] font-bold tracking-widest bg-slate-50/80 dark:bg-slate-950/40 border-b border-slate-200/60 dark:border-slate-800">
                 <th class="px-6 py-4">{{ $t('ratings.date') }}</th>
                 <th class="px-6 py-4">{{ $t('ratings.buyer') }}</th>
+                <th class="px-6 py-4">Supplier</th>
                 <th class="px-6 py-4">{{ $t('ratings.rating') }}</th>
                 <th class="px-6 py-4">{{ $t('ratings.comment') }}</th>
                 <th class="px-6 py-4">{{ $t('ratings.status') }}</th>
@@ -49,6 +50,13 @@
                       <p class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ rating.buyer_name }}</p>
                       <p class="text-xs text-slate-500 dark:text-slate-400">{{ rating.buyer_company }}</p>
                     </div>
+                  </div>
+                </td>
+
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-emerald-600 dark:text-emerald-400">factory</span>
+                    <p class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">{{ rating.supplier_company || '—' }}</p>
                   </div>
                 </td>
 
@@ -83,7 +91,7 @@
               </tr>
 
               <tr v-if="ratings.length === 0">
-                <td colspan="6" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
+                <td colspan="7" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
                   No buyer ratings found for moderation.
                 </td>
               </tr>
@@ -91,7 +99,7 @@
 
             <tbody v-else>
               <tr>
-                <td colspan="6" class="px-6 py-16 text-center">
+                <td colspan="7" class="px-6 py-16 text-center">
                   <span class="material-symbols-outlined animate-spin text-indigo-600 dark:text-indigo-400 text-3xl">progress_activity</span>
                 </td>
               </tr>
