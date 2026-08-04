@@ -26,6 +26,12 @@ class RequestOption extends Model
         'is_fixed_price',
         'is_selected',
         'images',
+        // Backward-compat: AdminRequestActionsController stores the FIRST
+        // image of an option in BOTH `image_url` (single) and `images`
+        // (array). Without this in $fillable, Eloquent mass-assignment
+        // silently drops `image_url`, breaking any frontend code that
+        // still reads opt.image_url as a fallback when opt.images is empty.
+        'image_url',
     ];
 
     protected $casts = [

@@ -25,11 +25,19 @@ class RequestController extends Controller
             'unit' => 'nullable|string|max:50',
             'currency' => 'nullable|string|max:20',
             'delivery_timeline' => 'nullable|date|after_or_equal:today',
+            'target_delivery' => 'nullable|date|after_or_equal:today',
             'shipping_terms' => 'sometimes|required|string|max:50',
             'payment_terms' => 'sometimes|required|string|max:50',
             'quality_requirements' => 'nullable|string',
             'certifications' => 'nullable|string',
         ]);
+
+        // Frontend uses `target_delivery` as the label, the DB column is
+        // `delivery_timeline`. Accept either key, prefer the explicit form
+        // label. Keeps the rest of the method writing to a single key.
+        $validated['delivery_timeline'] = $validated['target_delivery']
+            ?? $validated['delivery_timeline']
+            ?? null;
 
         // Handle images - accept both file uploads and pre-uploaded URLs
         $imageData = [];
@@ -172,7 +180,7 @@ class RequestController extends Controller
 
     public function getRequestDetail(Request $request, $id)
     {
-        $rfq = RFQRequest::with(['options', 'trackingLogs', 'messages.sender', 'rating'])->find($id);
+        $rfq = RFQRequest::with(['trackingLogs', 'messages.sender', 'rating'])->find($id);
 
         if (!$rfq) {
             return response()->json(['message' => 'Request not found'], 404);
@@ -207,10 +215,13 @@ class RequestController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pilihan_buyer'])) {
+        if (!in_array($rfq->status, ['menunggu_penawaran_admin'])) {
             return response()->json(['message' => 'Cannot edit request at this stage'], 400);
         }
 
+        // Frontend sends `target_delivery` (label) and the DB column is
+        // `delivery_timeline`. Validate both keys for safety and resolve to
+        // a single value the rest of the method can rely on.
         $validated = $request->validate([
             'product_name' => 'sometimes|required|string|max:200',
             'category' => 'sometimes|required|string|max:50',
@@ -222,11 +233,26 @@ class RequestController extends Controller
             'unit' => 'nullable|string|max:50',
             'budget_range' => 'sometimes|required|string|max:50',
             'target_delivery' => 'nullable|date',
+            'delivery_timeline' => 'nullable|date',
             'shipping_terms' => 'sometimes|required|string|max:50',
             'payment_terms' => 'sometimes|required|string|max:50',
             'images' => 'nullable|array',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
+            // Optional: URLs (data:, http(s)://, /storage/..., /uploads/...)
+            // that the buyer marked for removal from the existing
+            // `image_urls` array. Backend will splice them out before
+            // persisting. Accepting the array under both keys mirrors the
+            // existing tolerant pattern used for `images`.
+            'removed_image_urls' => 'nullable|array',
+            'removed_image_urls.*' => 'string',
+            'removed_image_urls[]' => 'nullable|string',
         ]);
+
+        // Normalize: prefer the explicit `target_delivery` from the form, fall
+        // back to `delivery_timeline` if the caller used the DB column name.
+        $validated['delivery_timeline'] = $validated['target_delivery']
+            ?? $validated['delivery_timeline']
+            ?? null;
 
         $imageData = $rfq->image_urls ?? [];
         $hasNewImages = $request->hasFile('images');
@@ -282,6 +308,23 @@ class RequestController extends Controller
             }
         }
 
+        // Splice out any existing image URLs the buyer marked for removal.
+        // This applies in all branches above (keep / replace / new URLs) so
+        // "remove some, add some" flows work too. We do a simple
+        // case-sensitive exact match on the URL string. Data URIs are long
+        // and exact, /storage/ and /uploads/ paths are stable, and the
+        // frontend sends the value it received from the server verbatim, so
+        // exact equality is reliable here.
+        $removed = array_merge(
+            (array) $request->input('removed_image_urls', []),
+            (array) $request->input('removed_image_urls[]', [])
+        );
+        if (!empty($removed) && !empty($imageData)) {
+            $imageData = array_values(array_filter($imageData, function ($existing) use ($removed) {
+                return !in_array($existing, $removed, true);
+            }));
+        }
+
         $rfq->update([
             'product_name' => $validated['product_name'],
             'category' => $validated['category'],
@@ -312,7 +355,7 @@ class RequestController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final'])) {
+        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_kesepakatan_final'])) {
             return response()->json(['message' => 'Cannot cancel request at this stage'], 400);
         }
 

@@ -6,10 +6,13 @@ use App\Models\User;
 use App\Models\Request as RFQRequest;
 use App\Models\Supplier;
 use App\Models\PasswordResetRequest;
+use App\Models\TrackingLog;
+use App\Models\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Carbon\Carbon;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Extended Admin Test Suite
@@ -219,13 +222,13 @@ class AdminExtendedTest extends TestCase
         $response = $this->withHeaders([
             'Authorization' => "Bearer {$token}",
         ])->putJson("/api/admin/requests/{$request->id}", [
-            'status' => 'menunggu_pemilihan_buyer',
+            'status' => 'menunggu_kesempatan_final',
         ]);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('requests', [
             'id' => $request->id,
-            'status' => 'menunggu_pemilihan_buyer',
+            'status' => 'menunggu_kesempatan_final',
         ]);
     }
 
@@ -642,5 +645,130 @@ class AdminExtendedTest extends TestCase
             'id' => $resetRequest->id,
             'status' => 'processed',
         ]);
+    }
+
+    // ========================================
+    // ADM-09: Admin opens discussion (transitions
+    // menunggu_penawaran_admin -> menunggu_kesepakatan_final)
+    // ========================================
+
+    #[Test]
+    public function admin_can_open_discussion_from_initial_status()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $buyer = User::factory()->create(['role' => 'buyer']);
+
+        $rfq = RFQRequest::factory()->create([
+            'user_id' => $buyer->id,
+            'status' => 'menunggu_penawaran_admin',
+        ]);
+
+        $token = $admin->createToken('admin', ['*'])->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->postJson("/api/admin/requests/{$rfq->id}/open-discussion");
+
+        $response->assertStatus(200);
+        $response->assertJson(['status' => 'menunggu_kesepakatan_final']);
+
+        $this->assertDatabaseHas('requests', [
+            'id' => $rfq->id,
+            'status' => 'menunggu_kesepakatan_final',
+        ]);
+    }
+
+    #[Test]
+    public function opening_discussion_creates_tracking_log_and_notifies_buyer()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $buyer = User::factory()->create(['role' => 'buyer']);
+
+        $rfq = RFQRequest::factory()->create([
+            'user_id' => $buyer->id,
+            'status' => 'menunggu_penawaran_admin',
+            'product_name' => 'Steel Bolts M8',
+        ]);
+
+        $token = $admin->createToken('admin', ['*'])->plainTextToken;
+
+        $this->withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->postJson("/api/admin/requests/{$rfq->id}/open-discussion")
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('tracking_logs', [
+            'request_id' => $rfq->id,
+            'status' => 'menunggu_kesepakatan_final',
+        ]);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $buyer->id,
+            'title' => 'Discussion Opened',
+            'icon' => 'forum',
+        ]);
+    }
+
+    #[Test]
+    public function admin_cannot_open_discussion_from_non_initial_status()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $buyer = User::factory()->create(['role' => 'buyer']);
+
+        // Status already past initial stage.
+        $rfq = RFQRequest::factory()->pending()->create([
+            'user_id' => $buyer->id,
+        ]);
+
+        $token = $admin->createToken('admin', ['*'])->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->postJson("/api/admin/requests/{$rfq->id}/open-discussion");
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message']);
+
+        // Status must remain unchanged.
+        $this->assertDatabaseHas('requests', [
+            'id' => $rfq->id,
+            'status' => 'menunggu_pembayaran',
+        ]);
+    }
+
+    #[Test]
+    public function non_admin_cannot_open_discussion()
+    {
+        $buyer = User::factory()->create(['role' => 'buyer']);
+        $rfq = RFQRequest::factory()->create([
+            'user_id' => $buyer->id,
+            'status' => 'menunggu_penawaran_admin',
+        ]);
+
+        $token = $buyer->createToken('buyer', ['*'])->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->postJson("/api/admin/requests/{$rfq->id}/open-discussion");
+
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('requests', [
+            'id' => $rfq->id,
+            'status' => 'menunggu_penawaran_admin',
+        ]);
+    }
+
+    #[Test]
+    public function opening_discussion_returns_404_for_missing_request()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $token = $admin->createToken('admin', ['*'])->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->postJson('/api/admin/requests/00000000-0000-0000-0000-000000000000/open-discussion');
+
+        $response->assertStatus(404);
     }
 }

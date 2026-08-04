@@ -134,7 +134,7 @@ const loadingRequests = ref(true)
 
 // Filter for active statuses
 const filteredRequests = computed(() => {
-  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved', 'batal', 'completed', 'shipped', 'cancelled']
+  const activeStatuses = ['pending', 'quoted', 'deal_finalized', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'sedang_diproses', 'dikirim', 'menunggu_verifikasi_admin', 'dp_verified', 'approved', 'batal', 'completed', 'shipped', 'cancelled']
   let filtered = requests.value.filter(r => activeStatuses.includes(r.status))
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
@@ -170,7 +170,7 @@ const getStatusClass = (status) => {
   // GREEN: Completed/Success states
   const greenClasses = ['quoted', 'deal_finalized', 'dp_verified', 'approved', 'completed', 'completed_deal', 'success']
   // YELLOW: Waiting/Pending states
-  const yellowClasses = ['pending', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'menunggu_verifikasi_admin']
+  const yellowClasses = ['pending', 'awaiting_quotes', 'menunggu_penawaran_admin', 'menunggu_kesepakatan_final', 'menunggu_pembayaran', 'menunggu_verifikasi_pembayaran', 'menunggu_verifikasi_admin']
   // BLUE: Processing/In Progress states
   const blueClasses = ['processing', 'sedang_diproses', 'in_progress']
   // PURPLE: Shipped/Delivery states
@@ -196,7 +196,6 @@ const getStatusLabel = (status) => {
     'rejected': 'Rejected',
     'deal_finalized': 'Deal Finalized',
     'menunggu_penawaran_admin': 'Awaiting Admin Quote',
-    'menunggu_pemilihan_buyer': 'Awaiting Buyer Choice',
     'menunggu_kesepakatan_final': 'Awaiting Final Agreement',
     'menunggu_pembayaran': 'Awaiting Payment',
     'menunggu_verifikasi_pembayaran': 'Verifying Payment',
@@ -224,7 +223,6 @@ const getStatusIcon = (status) => {
     'batal': 'cancel',
     'deal_finalized': 'handshake',
     'menunggu_penawaran_admin': 'edit_document',
-    'menunggu_pemilihan_buyer': 'list_alt',
     'menunggu_kesepakatan_final': 'forum',
     'menunggu_pembayaran': 'payments',
     'menunggu_verifikasi_pembayaran': 'pending_actions',

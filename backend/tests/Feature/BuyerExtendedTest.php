@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Request as RFQRequest;
-use App\Models\RequestOption;
 use App\Models\TrackingLog;
 use App\Models\Notification;
 use App\Models\Payment;
@@ -434,39 +433,6 @@ class BuyerExtendedTest extends TestCase
     // BUY-09 & BUY-10: Proposal Acceptance/Rejection
     // ========================================
     
-    /** @test */
-    public function buyer_can_select_option()
-    {
-        $buyer = User::factory()->create(['role' => 'buyer']);
-        $request = RFQRequest::factory()->create([
-            'user_id' => $buyer->id,
-            'status' => 'menunggu_pemilihan_buyer',
-        ]);
-        
-        $option = RequestOption::create([
-            'request_id' => $request->id,
-            'supplier_name' => 'Test Supplier',
-            'price' => 5000.00,
-            'currency' => 'USD',
-            'lead_time' => '14 days',
-            'notes' => 'Test option',
-        ]);
-
-        $token = $buyer->createToken('test', ['*'])->plainTextToken;
-
-        $response = $this->withHeaders([
-            'Authorization' => "Bearer {$token}",
-        ])->postJson("/api/requests/{$request->id}/select-option", [
-            'option_id' => $option->id,
-        ]);
-
-        $response->assertStatus(200);
-        
-        $option->refresh();
-        $request->refresh();
-        $this->assertTrue($option->is_selected);
-        $this->assertEquals('menunggu_kesepakatan_final', $request->status);
-    }
 
     /** @test */
     public function buyer_can_cancel_request_at_allowed_stages()
@@ -476,7 +442,6 @@ class BuyerExtendedTest extends TestCase
         // Test multiple allowed stages
         $allowedStatuses = [
             'menunggu_penawaran_admin',
-            'menunggu_pemilihan_buyer',
             'menunggu_kesepakatan_final',
         ];
 

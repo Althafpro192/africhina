@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request as RFQRequest;
-use App\Models\RequestOption;
 use App\Models\TrackingLog;
 use App\Models\Notification;
 use App\Models\Rating;
@@ -15,194 +14,6 @@ use Carbon\Carbon;
 
 class AdminRequestActionsController extends Controller
 {
-    public function uploadRequestOptions(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'product_name' => 'required|string|max:200',
-            'description' => 'nullable|string',
-            'price_min' => 'nullable|numeric',
-            'price_max' => 'nullable|numeric',
-            'admin_reason' => 'required|string',
-            'target_delivery' => 'nullable|date',
-            'shipping_method' => 'nullable|string|max:50',
-            'est_time_sea' => 'nullable|string|max:100',
-            'est_time_air' => 'nullable|string|max:100',
-            'is_fixed_price' => 'nullable|string',
-            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB per file
-        ]);
-
-        $rfq = RFQRequest::find($id);
-        if (!$rfq) {
-            return response()->json(['message' => 'Request not found'], 404);
-        }
-
-        if (!in_array($rfq->status, ['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer'])) {
-            return response()->json(['message' => 'Cannot upload options at this stage'], 400);
-        }
-
-        // Store images as base64 in LONGBLOB or use URLs
-        $imageData = [];
-        
-        // Handle file uploads
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                $mimeType = $file->getMimeType();
-                $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
-                $imageData[] = $base64;
-            }
-        }
-        
-        // Handle URL strings from frontend (after pre-upload)
-        $imageUrls = $request->input('images');
-        if (is_string($imageUrls)) {
-            $imageUrls = [$imageUrls];
-        }
-        if (is_array($imageUrls)) {
-            foreach ($imageUrls as $url) {
-                if (is_string($url) && !empty($url)) {
-                    if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
-                        $imageData[] = $url;
-                    } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
-                        $imageData[] = $url;
-                    }
-                }
-            }
-        }
-
-        DB::beginTransaction();
-        try {
-            RequestOption::create([
-                'request_id' => $id,
-                'product_name' => $validated['product_name'],
-                'description' => $validated['description'] ?? null,
-                'image_url' => $imageData[0] ?? null,
-                'images' => $imageData,
-                'price_min' => $validated['price_min'] ?? null,
-                'price_max' => $validated['price_max'] ?? null,
-                'admin_reason' => $validated['admin_reason'],
-                'target_delivery' => $validated['target_delivery'] ?? null,
-                'shipping_method' => $validated['shipping_method'] ?? null,
-                'est_time_sea' => $validated['est_time_sea'] ?? null,
-                'est_time_air' => $validated['est_time_air'] ?? null,
-                'is_fixed_price' => ($validated['is_fixed_price'] ?? 'false') === 'true',
-            ]);
-
-            $rfq->update(['status' => 'menunggu_pemilihan_buyer']);
-
-            TrackingLog::create([
-                'request_id' => $rfq->id,
-                'status' => 'menunggu_pemilihan_buyer',
-                'notes' => 'Admin has provided product options',
-            ]);
-
-            // Notify buyer
-            Notification::create([
-                'user_id' => $rfq->user_id,
-                'title' => 'New Supplier Quote Received',
-                'message' => "RFQ #{$rfq->id} for {$rfq->product_name} has received factory quotation options.",
-                'icon' => 'request_quote',
-                'path' => '/buyer/requests',
-            ]);
-
-            DB::commit();
-            return response()->json($rfq);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Failed: ' . $e->getMessage()], 500);
-        }
-    }
-
-    public function updateRequestOption(Request $request, $id, $optionId)
-    {
-        $validated = $request->validate([
-            'product_name' => 'required|string|max:200',
-            'description' => 'nullable|string',
-            'price_min' => 'nullable|numeric',
-            'price_max' => 'nullable|numeric',
-            'admin_reason' => 'required|string',
-            'target_delivery' => 'nullable|date',
-            'shipping_method' => 'nullable|string|max:50',
-            'est_time_sea' => 'nullable|string|max:100',
-            'est_time_air' => 'nullable|string|max:100',
-            'is_fixed_price' => 'nullable|string',
-            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
-        ]);
-
-        $rfq = RFQRequest::find($id);
-        if (!$rfq) {
-            return response()->json(['message' => 'Request not found'], 404);
-        }
-
-        $option = RequestOption::where('id', $optionId)->where('request_id', $id)->first();
-        if (!$option) {
-            return response()->json(['message' => 'Option not found'], 404);
-        }
-
-        $updateData = [
-            'product_name' => $validated['product_name'],
-            'description' => $validated['description'] ?? null,
-            'price_min' => $validated['price_min'] ?? null,
-            'price_max' => $validated['price_max'] ?? null,
-            'admin_reason' => $validated['admin_reason'],
-            'target_delivery' => $validated['target_delivery'] ?? null,
-            'shipping_method' => $validated['shipping_method'] ?? null,
-            'est_time_sea' => $validated['est_time_sea'] ?? null,
-            'est_time_air' => $validated['est_time_air'] ?? null,
-            'is_fixed_price' => ($validated['is_fixed_price'] ?? 'false') === 'true',
-        ];
-
-        // Handle image uploads (files or URLs)
-        $hasFiles = $request->hasFile('images');
-        $hasUrls = $request->input('images');
-        
-        if ($hasFiles) {
-            $imageData = [];
-            foreach ($request->file('images') as $file) {
-                $mimeType = $file->getMimeType();
-                $base64 = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
-                $imageData[] = $base64;
-            }
-            $updateData['image_url'] = $imageData[0] ?? null;
-            $updateData['images'] = $imageData;
-        } elseif ($hasUrls) {
-            // Handle URL strings from frontend
-            $imageUrls = $request->input('images');
-            if (is_string($imageUrls)) {
-                $imageUrls = [$imageUrls];
-            }
-            $imageData = [];
-            if (is_array($imageUrls)) {
-                foreach ($imageUrls as $url) {
-                    if (is_string($url) && !empty($url)) {
-                        if (str_starts_with($url, '/storage/') || str_starts_with($url, '/uploads/')) {
-                            $imageData[] = $url;
-                        } elseif (str_starts_with($url, 'data:') || str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
-                            $imageData[] = $url;
-                        }
-                    }
-                }
-            }
-            $updateData['image_url'] = $imageData[0] ?? null;
-            $updateData['images'] = $imageData;
-        }
-
-        $option->update($updateData);
-
-        return response()->json($option);
-    }
-
-    public function deleteRequestOption(Request $request, $id, $optionId)
-    {
-        $option = RequestOption::where('id', $optionId)->where('request_id', $id)->first();
-        if (!$option) {
-            return response()->json(['message' => 'Option not found'], 404);
-        }
-
-        $option->delete();
-
-        return response()->json(['message' => 'Option deleted successfully']);
-    }
-
     public function finalizeDeal(Request $request, $id)
     {
         $rfq = RFQRequest::find($id);
@@ -267,7 +78,7 @@ class AdminRequestActionsController extends Controller
         return response()->json($rfq);
     }
 
-    public function proceedToNegotiate(Request $request, $id)
+    public function openDiscussion(Request $request, $id)
     {
         $rfq = RFQRequest::find($id);
         if (!$rfq) {
@@ -276,28 +87,29 @@ class AdminRequestActionsController extends Controller
 
         if ($rfq->status !== 'menunggu_penawaran_admin') {
             return response()->json([
-                'message' => 'Can only proceed from menunggu_penawaran_admin status. Current status: ' . $rfq->status
-            ], 400);
+                'message' => "Discussion cannot be opened from status {$rfq->status}.",
+            ], 422);
         }
 
-        $rfq->update(['status' => 'negosiasi']);
+        DB::transaction(function () use ($rfq) {
+            $rfq->update(['status' => 'menunggu_kesepakatan_final']);
 
-        TrackingLog::create([
-            'request_id' => $rfq->id,
-            'status' => 'negosiasi',
-            'notes' => 'Admin decided to proceed directly to negotiation phase (without separate option quotation).',
-        ]);
+            TrackingLog::create([
+                'request_id' => $rfq->id,
+                'status' => 'menunggu_kesepakatan_final',
+                'notes' => 'Admin opened a discussion session with the buyer.',
+            ]);
 
-        // Notify buyer
-        Notification::create([
-            'user_id' => $rfq->user_id,
-            'title' => 'Negotiation Phase Started',
-            'message' => "RFQ #{$rfq->id} for {$rfq->product_name} has entered the negotiation phase. Admin will contact you for the final deal.",
-            'icon' => 'handshake',
-            'path' => '/buyer/requests',
-        ]);
+            Notification::create([
+                'user_id' => $rfq->user_id,
+                'title' => 'Discussion Opened',
+                'message' => "A discussion session has been opened for RFQ #{$rfq->id} ({$rfq->product_name}).",
+                'icon' => 'forum',
+                'path' => "/buyer/requests/{$rfq->id}",
+            ]);
+        });
 
-        return response()->json($rfq);
+        return response()->json($rfq->fresh());
     }
 
     public function shipOrder(Request $request, $id)
@@ -472,5 +284,36 @@ class AdminRequestActionsController extends Controller
 
         $rfq->refresh();
         return response()->json($rfq);
+    }
+
+    /**
+     * Collect uploaded files for a multipart field, regardless of whether the
+     * browser sent it as `field`, `field[]`, or with one vs many files.
+     *
+     * Why: PHP's multipart parser only forms a real array when the field name
+     * ends in `[]`. When the frontend sends `images` (no brackets) the request
+     * contains a single UploadedFile instance (or the LAST value when several
+     * are sent). This helper normalizes all three cases to UploadedFile[]. We
+     * also accept both spellings so legacy and updated frontends both work.
+     */
+    private function collectUploadedFiles(Request $request, array $keys): array
+    {
+        $collected = [];
+        foreach ($keys as $key) {
+            if (!$request->hasFile($key)) {
+                continue;
+            }
+            $files = $request->file($key);
+            if ($files instanceof \Illuminate\Http\UploadedFile) {
+                $collected[] = $files;
+            } elseif (is_array($files)) {
+                foreach ($files as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $collected[] = $file;
+                    }
+                }
+            }
+        }
+        return $collected;
     }
 }

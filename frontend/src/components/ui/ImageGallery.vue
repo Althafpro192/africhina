@@ -95,6 +95,8 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useConfirm } from '../../composables/useConfirm.js'
 import { useImageUpload, buildImageUrl } from '@/composables/useImageUpload'
 import axios from '@/api/axios'
 
@@ -116,6 +118,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['uploaded', 'deleted', 'error'])
+const { t } = useI18n()
+const { confirm } = useConfirm()
 
 const fileInput = ref(null)
 const lightboxOpen = ref(false)
@@ -169,7 +173,14 @@ const onFileChange = async (e) => {
 }
 
 const onDelete = async () => {
-  if (!confirm('Delete this image?')) return
+  const ok = await confirm({
+    title: t('confirm.delete_image_title'),
+    message: t('confirm.delete_image_message'),
+    type: 'danger',
+    confirmText: t('confirm.yes_delete'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
   const result = await remove(props.entityId)
   if (result.success) {
     internalUrl.value = ''

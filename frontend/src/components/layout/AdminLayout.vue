@@ -104,7 +104,7 @@
           </div>
           <div class="flex-1 overflow-hidden">
             <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ adminName }}</p>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Administrator</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">{{ $t('admin_layout.role') }}</p>
           </div>
         </div>
 
@@ -128,11 +128,11 @@
             v-if="!isDesktop"
             @click="toggleSidebar" 
             class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer flex items-center justify-center shrink-0 aspect-square"
-            aria-label="Toggle sidebar"
+            :aria-label="$t('admin_layout.toggle_sidebar')"
           >
             <span class="material-symbols-outlined text-xl sm:text-2xl">{{ isSidebarOpen ? 'close' : 'menu' }}</span>
           </button>
-          <span class="text-base font-bold text-slate-900 dark:text-white lg:hidden">Dashboard</span>
+          <span class="text-base font-bold text-slate-900 dark:text-white lg:hidden">{{ $t('nav.dashboard') }}</span>
         </div>
 
         <!-- Kanan: Theme, Notifikasi, Language -->
@@ -140,7 +140,7 @@
           <button 
             @click="toggleTheme" 
             class="hidden md:flex w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 shadow-sm items-center justify-center cursor-pointer shrink-0 aspect-square"
-            :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+            :title="isDark ? $t('admin_layout.theme_toggle_light') : $t('admin_layout.theme_toggle_dark')"
           >
             <span class="material-symbols-outlined text-lg sm:text-xl">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
           </button>
@@ -149,7 +149,7 @@
             <button 
               @click="toggleNotifications" 
               class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 shadow-sm relative cursor-pointer flex items-center justify-center shrink-0 aspect-square"
-              title="Admin Notifications"
+              :title="$t('admin_layout.notifications_title')"
             >
               <span class="material-symbols-outlined text-lg sm:text-xl">notifications</span>
               <span v-if="unreadCount > 0" class="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"></span>
@@ -170,7 +170,7 @@
               >
                 <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
                   <div class="flex items-center gap-2">
-                    <h4 class="text-sm font-black text-slate-900 dark:text-white">Admin Alerts</h4>
+                    <h4 class="text-sm font-black text-slate-900 dark:text-white">{{ $t('admin_layout.alerts_title') }}</h4>
                     <span v-if="unreadCount > 0" class="px-2 py-0.5 text-[10px] font-extrabold bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 rounded-full border border-rose-200 dark:border-rose-800">
                       {{ unreadCount }} pending
                     </span>

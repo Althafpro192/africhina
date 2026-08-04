@@ -11,7 +11,9 @@
     "delete": "Hapus",
     "edit": "Edit",
     "back": "Kembali",
-    "submit": "Kirim"
+    "submit": "Kirim",
+    "brand": "AfriChina Bridge",
+    "unknownError": "Terjadi kesalahan. Silakan coba lagi."
   },
   "auth": {
     "title": "AfriChina Bridge",
@@ -29,7 +31,11 @@
     "company_name": "Nama Perusahaan",
     "contact_person": "Nama Kontak",
     "phone": "Nomor Telepon",
-    "footer": "© 2026 AfriChina Bridge"
+    "footer": "© 2026 AfriChina Bridge",
+    "passwords_do_not_match": "Kata sandi dan konfirmasi kata sandi tidak cocok.",
+    "password_min": "Kata sandi minimal 6 karakter.",
+    "registration_failed": "Pendaftaran gagal. Silakan coba lagi.",
+    "invalid_credentials": "Kredensial tidak valid. Silakan periksa email dan kata sandi Anda."
   },
   "supplier_register": {
     "title": "Pendaftaran Pemasok",
@@ -52,6 +58,7 @@
     "business_license_placeholder": "Nomor lisensi (opsional)",
     "factory_address": "Alamat Pabrik",
     "factory_address_placeholder": "Masukkan alamat pabrik Anda di Tiongkok",
+    "must_accept_terms": "Anda harus menyetujui syarat dan kebijakan privasi.",
     "terms_agreement": "Saya menyetujui",
     "terms_link": "Ketentuan Layanan",
     "terms_and": "dan",
@@ -160,7 +167,17 @@
     "finish": "Selesai",
     "type_placeholder": "Ketik pesan Anda...",
     "optimizing_image": "Mengoptimasi gambar...",
-    "optimizing": "Mengoptimasi..."
+    "optimizing": "Mengoptimasi...",
+    "live_negotiation": "Chat Negosiasi Langsung",
+    "subtitle_id": "ID: {id}",
+    "typing": "Mengetik",
+    "loading_history": "Memuat riwayat obrolan...",
+    "no_messages_negotiation": "Belum ada pesan. Kirim pesan untuk memulai negosiasi!",
+    "attachment_alt": "Lampiran",
+    "edited": "(diedit)",
+    "compression_in_progress": "Kompresi sedang berlangsung",
+    "attach_file": "Lampirkan file",
+    "hold_to_record": "Tahan atau klik untuk merekam"
   },
   "buyer_messages": {
     "title": "Chat Admin Support",
@@ -363,7 +380,24 @@
     "trust_guarantee": "Jaminan Kepercayaan",
     "trust_desc": "Semua pemasok di AfriChina Bridge diverifikasi untuk lisensi bisnis dan standar kualitas. RFQ Anda akan dicocokkan dengan 5 pabrik terbaik dalam waktu 48 jam.",
     "submit": "Kirim Permintaan",
-    "terms": "Dengan mengirimkan, Anda menyetujui Ketentuan Layanan kami."
+    "terms": "Dengan mengirimkan, Anda menyetujui Ketentuan Layanan kami.",
+    "steps": {
+      "rfq": "RFQ Terkirim",
+      "negotiate": "Negosiasi",
+      "payment": "Pembayaran",
+      "process": "Diproses",
+      "shipped": "Dikirim",
+      "complete": "Selesai"
+    },
+    "open_discussion": "Buka Diskusi",
+    "open_discussion_confirm": "Buka sesi diskusi dengan buyer? Buyer akan menerima notifikasi.",
+    "discussion_opened": "Sesi diskusi dibuka. Chat kini aktif.",
+    "unknown_status": "(status tidak dikenal)",
+    "admin_options_message": "Admin telah menyediakan opsi produk",
+    "payment_verified": "Pembayaran berhasil diverifikasi!",
+    "trusted_provider_assigned": "Pengiriman dialihkan ke Trusted Provider",
+    "driver_assigned": "Driver berhasil ditugaskan!",
+    "delivery_confirmed": "Pengiriman berhasil dikonfirmasi!"
   },
   "order_detail": {
     "title": "Detail Permintaan",
@@ -401,14 +435,6 @@
     "attachments_count_plural": "Lampiran ({count} berkas)",
     "click_view": "Klik untuk melihat",
     "no_attachments": "Tidak ada lampiran",
-    "product_options": "Opsi Produk",
-    "add_option": "Tambah Opsi",
-    "no_options_yet": "Belum ada opsi yang ditambahkan.",
-    "proceed_to_negotiate": "Lanjut ke Negosiasi",
-    "proceed_choice_hint": "Anda dapat menambahkan opsi produk di atas, atau langsung lanjut ke fase negosiasi tanpa opsi terpisah.",
-    "no_options_admin": "Belum ada opsi yang ditambahkan. Silakan cari dari pemasok dan tambahkan opsi untuk pembeli.",
-    "select_product_options": "Pilih Opsi Produk untuk Permintaan #{id}",
-    "admin_recommendation": "Rekomendasi Admin",
     "price": "Harga",
     "target": "Target",
     "admin_ops": "Operasi Admin",
@@ -425,7 +451,6 @@
     "production": "Dalam Produksi",
     "completed": "Selesai",
     "menunggu_penawaran_admin": "Menunggu Penawaran Admin",
-    "menunggu_pemilihan_buyer": "Menunggu Pemilihan Pembeli",
     "menunggu_kesepakatan_final": "Menunggu Kesepakatan Final",
     "menunggu_pembayaran": "Menunggu Pembayaran",
     "menunggu_verifikasi_pembayaran": "Menunggu Verifikasi Pembayaran",
@@ -593,7 +618,9 @@
     "success_update": "Password berhasil diganti!",
     "failed_update": "Gagal memperbarui password.",
     "batal": "Batal",
-    "simpan": "Simpan Password Baru"
+    "simpan": "Simpan Password Baru",
+    "update_failed": "Gagal memperbarui profil",
+    "update_success": "Profil berhasil diperbarui!"
   },
   "buyer_suppliers": {
     "subtitle": "Jaringan produsen dan pemasok Tiongkok Anda yang terverifikasi.",
@@ -649,7 +676,9 @@
     "select_shipping": "Pilih syarat pengiriman",
     "payment_terms": "Syarat Pembayaran",
     "select_payment": "Pilih syarat pembayaran",
-    "max_files_hint": "(Maks 3 file, masing-masing 10MB)"
+    "max_files_hint": "(Maks 3 file, masing-masing 10MB)",
+    "some_files_failed": "Beberapa file gagal diunggah. Silakan coba lagi.",
+    "submit_failed": "Gagal mengirim permintaan. Silakan coba lagi."
   },
   "buyer_dashboard": {
     "welcome": "Selamat datang kembali, {name}! 👋",
@@ -688,5 +717,98 @@
     "previewUnavailable": "Pratinjau tidak tersedia, tetapi file siap diunggah",
     "file_count": "{count} file dipilih",
     "file_count_plural": "{count} file dipilih"
+  },
+  "admin_layout": {
+    "role": "Administrator",
+    "toggle_sidebar": "Alihkan sidebar",
+    "theme_toggle_light": "Beralih ke Mode Terang",
+    "theme_toggle_dark": "Beralih ke Mode Gelap",
+    "notifications_title": "Notifikasi Admin",
+    "alerts_title": "Peringatan Admin"
+  },
+  "modal": {
+    "assign_supplier": "Tetapkan Pemasok",
+    "select_supplier": "-- Pilih Pemasok --",
+    "quoted_price": "Harga Penawaran (USD)",
+    "production_progress_label": "Progres Produksi ({percent}%)",
+    "internal_notes_hidden": "⚠️ Catatan Internal (Tersembunyi dari Pembeli)",
+    "upload_qc_media": "Unggah Media QC / Produksi",
+    "send_email_supplier": "Kirim Pembaruan Email ke Pemasok",
+    "status_label": "Status"
+  },
+  "progress": {
+    "production": "Progres Produksi"
+  },
+  "image_lightbox": {
+    "thumbnail_alt": "Thumbnail {idx}"
+  },
+  "validation": {
+    "required": "Kolom ini wajib diisi",
+    "requiredLabel": "{field} wajib diisi",
+    "fillAllFields": "Harap isi semua kolom yang wajib diisi sebelum mengirim",
+    "requiredFieldsAbove": "Harap perbaiki kesalahan di atas",
+    "email": "Harap masukkan alamat email yang valid",
+    "minLength": "Minimal {min} karakter",
+    "maxLength": "Maksimal {max} karakter",
+    "phoneInvalid": "Harap masukkan nomor telepon yang valid",
+    "numberInvalid": "Harap masukkan angka yang valid",
+    "passwordMismatch": "Kata sandi tidak cocok",
+    "invalid": "Nilai tidak valid",
+    "selectOne": "Harap pilih salah satu opsi",
+    "acceptTerms": "Anda harus menyetujui ketentuan untuk melanjutkan",
+    "imageRequired": "Harap unggah minimal satu gambar",
+    "selectDeliveryMethod": "Harap pilih metode pengiriman",
+    "specifyReason": "Harap isi alasan",
+    "driver_required": "Silakan pilih driver",
+    "fix_phone_errors": "Silakan perbaiki kesalahan nomor telepon.",
+    "fix_errors_before_saving": "Silakan perbaiki kesalahan sebelum menyimpan."
+  },
+  "set_new_password": {
+    "title": "Atur Kata Sandi Baru",
+    "subtitle": "Anda masuk menggunakan kata sandi sementara. Silakan atur kata sandi permanen baru untuk melanjutkan.",
+    "new_password_label": "Kata Sandi Permanen Baru",
+    "confirm_password_label": "Konfirmasi Kata Sandi Baru",
+    "new_password_placeholder": "Masukkan minimal 6 karakter",
+    "confirm_password_placeholder": "Masukkan ulang kata sandi baru",
+    "submit": "Simpan & Lanjutkan",
+    "submitting": "Memperbarui Kata Sandi...",
+    "success": "Kata sandi berhasil diperbarui! Mengalihkan ke dasbor...",
+    "failed": "Gagal memperbarui kata sandi. Silakan coba lagi."
+  },
+  "confirm": {
+    "title": "Konfirmasi Tindakan",
+    "message": "Apakah Anda yakin ingin melanjutkan?",
+    "delete_title": "Konfirmasi Hapus",
+    "delete_message": "Apakah Anda yakin ingin menghapus \"{name}\"? Tindakan ini tidak dapat dibatalkan.",
+    "block_title": "Konfirmasi Blokir",
+    "block_message": "Apakah Anda yakin ingin memblokir \"{name}\"?",
+    "unblock_title": "Konfirmasi Buka Blokir",
+    "unblock_message": "Apakah Anda yakin ingin membuka blokir \"{name}\"?",
+    "verify_payment_title": "Verifikasi Pembayaran",
+    "verify_payment_message": "Verifikasi dan setujui bukti pembayaran ini?",
+    "reject_payment_title": "Tolak Pembayaran",
+    "reject_payment_message": "Tolak bukti pembayaran ini? Harap isi alasan.",
+    "complete_order_title": "Selesaikan Pesanan",
+    "complete_order_message": "Selesaikan pesanan? (Sudah verifikasi B/L dan penerimaan?)",
+    "assign_driver_title": "Tetapkan Driver",
+    "assign_driver_trusted": "Kirim via Trusted Provider?",
+    "assign_driver_assigned": "Tugaskan driver ini?",
+    "ship_order_title": "Kirim Pesanan",
+    "ship_order_message": "Tandai pesanan ini sebagai terkirim?",
+    "delete_image_title": "Hapus Gambar",
+    "delete_image_message": "Hapus gambar ini?",
+    "delete_message_title": "Hapus Pesan",
+    "delete_message_message": "Apakah Anda yakin ingin menghapus pesan ini?",
+    "yes_block": "Blokir",
+    "yes_unblock": "Buka Blokir",
+    "yes_delete": "Hapus",
+    "yes_verify": "Verifikasi",
+    "yes_complete": "Selesaikan",
+    "yes_ship": "Kirim",
+    "yes_assign": "Tetapkan",
+    "open_discussion_title": "Buka Diskusi",
+    "yes_open": "Buka",
+    "confirm_delivery_title": "Konfirmasi Penerimaan Barang",
+    "yes_confirm": "Ya, konfirmasi penerimaan"
   }
 }

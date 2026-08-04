@@ -103,6 +103,49 @@
 
           <!-- Attachments Form -->
           <div v-if="activeEditSection === 'attachments'" class="space-y-4">
+            <!-- Existing attachments preview (so buyer can see & selectively remove
+                 before uploading replacements). Without this the modal looked empty
+                 and buyers assumed their images had disappeared. -->
+            <div v-if="existingImageList.length > 0" class="space-y-2">
+              <h4 class="text-sm font-bold text-gray-700 dark:text-slate-200">
+                Current Attachments ({{ existingImageList.length }})
+              </h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div v-for="(file, idx) in existingImageList" :key="'existing-' + idx"
+                     class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 group aspect-square">
+                  <template v-if="isImageFile(file)">
+                    <img :src="getImageUrl(file)" :alt="file.split('/').pop()"
+                         class="w-full h-full object-cover" />
+                  </template>
+                  <template v-else>
+                    <div class="w-full h-full flex items-center justify-center text-gray-500 dark:text-slate-400">
+                      <span class="material-symbols-outlined text-3xl">description</span>
+                    </div>
+                  </template>
+                  <button @click.stop="toggleExistingImage(idx)"
+                          :class="[
+                            'absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center shadow-md transition-all',
+                            removedExistingIndexes.has(idx)
+                              ? 'bg-red-500 text-white hover:bg-red-600'
+                              : 'bg-white/90 dark:bg-slate-900/90 text-gray-700 dark:text-slate-200 hover:bg-red-500 hover:text-white'
+                          ]"
+                          :title="removedExistingIndexes.has(idx) ? 'Restore this file' : 'Remove this file'">
+                    <span class="material-symbols-outlined text-[16px]">
+                      {{ removedExistingIndexes.has(idx) ? 'undo' : 'close' }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-slate-400">
+                <span v-if="removedExistingIndexes.size === 0">
+                  All current files will be kept. Click <span class="material-symbols-outlined text-[12px] align-middle">close</span> to remove any.
+                </span>
+                <span v-else class="text-amber-600 dark:text-amber-400 font-semibold">
+                  {{ removedExistingIndexes.size }} file(s) marked for removal.
+                </span>
+              </p>
+            </div>
+
             <div class="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-xl p-8 text-center hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer" @click="$refs.editPhotoInput.click()">
               <span class="material-symbols-outlined text-4xl text-[#4f378a] dark:text-indigo-400 mb-2">cloud_upload</span>
               <p class="font-bold text-gray-700 dark:text-slate-200 mb-1">Upload New Attachments</p>
@@ -565,80 +608,6 @@
               </div>
             </div>
 
-            <!-- Product Options (Golden Path) -->
-            <div v-if="request.options && request.options.length > 0" class="bg-indigo-50/40 dark:bg-slate-900/90 border border-indigo-100 dark:border-slate-800 rounded-2xl p-4 sm:p-6 mb-6 shadow-sm">
-              <div class="mb-4">
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ $t('order_detail.select_product_options', { id: request.id.split('-')[0].toUpperCase() }) }}</h2>
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">{{ $t('request_details.admin_prepared_options', { count: request.options.length }) }}</p>
-              </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div v-for="opt in request.options" :key="opt.id" 
-                     @click="request.status === 'menunggu_pemilihan_buyer' ? toggleOption(opt.id) : null"
-                     :class="[
-                       'border rounded-2xl overflow-hidden flex flex-col relative transition-all duration-300',
-                       (request.status === 'menunggu_pemilihan_buyer' ? 'cursor-pointer hover:border-indigo-500/50' : ''),
-                       (selectedOptionIds.includes(opt.id) || opt.is_selected) 
-                         ? 'ring-4 ring-indigo-600 dark:ring-indigo-500 shadow-xl border-transparent bg-white dark:bg-slate-800' 
-                         : 'bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80'
-                     ]">
-                     
-                  <!-- Selected Badge -->
-                  <div v-if="selectedOptionIds.includes(opt.id) || opt.is_selected" class="absolute top-2 right-2 z-10 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-md">
-                    <span class="material-symbols-outlined text-[14px]">check_circle</span> {{ $t('request_details.selected') }}
-                  </div>
-
-                  <!-- Image rendering -->
-                  <div v-if="getOptionImages(opt).length > 0" class="w-full h-48 bg-slate-100 dark:bg-slate-800 shrink-0 border-b border-slate-200 dark:border-slate-700 relative overflow-hidden">
-                    <img :src="getOptionImages(opt)[0]" class="w-full h-full object-cover absolute inset-0" alt="Product Option Image" />
-                    <div v-if="getOptionImages(opt).length > 1" class="absolute bottom-2 right-2 z-20 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-xs">
-                      +{{ getOptionImages(opt).length - 1 }} photos
-                    </div>
-                  </div>
-                  <div v-else class="w-full h-48 bg-slate-100 dark:bg-slate-800/60 shrink-0 border-b border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-                    <span class="material-symbols-outlined text-4xl mb-1">inventory_2</span>
-                    <span class="text-xs font-medium">No Image Uploaded</span>
-                  </div>
-
-                  <div class="p-4 flex-1 flex flex-col">
-                    <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-1">{{ opt.product_name }}</h3>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-3 flex-1 leading-relaxed">{{ opt.description }}</p>
-                    
-                    <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 rounded-xl p-3 mb-4">
-                      <div class="flex items-center gap-1 text-amber-700 dark:text-amber-300 font-bold text-xs mb-1">
-                        <span class="material-symbols-outlined text-[16px]">stars</span> {{ $t('order_detail.admin_recommendation') }}:
-                      </div>
-                      <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">{{ opt.admin_reason }}</p>
-                    </div>
-                    
-                    <div class="space-y-2 text-xs sm:text-sm mb-4">
-                      <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-950/80 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0"><span class="material-symbols-outlined text-[14px]">payments</span></span>
-                        <span class="font-bold text-indigo-600 dark:text-indigo-400">
-                          {{ opt.is_fixed_price ? 'USD ' + opt.price_min + ' (Fixed)' : 'USD ' + opt.price_min + ' - ' + opt.price_max + ' (Range)' }}
-                        </span>
-                      </div>
-                      
-                      <div v-if="['sea', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950/80 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0"><span class="material-symbols-outlined text-[14px]">directions_boat</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.sea') }}: {{ opt.est_time_sea }}</span>
-                      </div>
-                      
-                      <div v-if="['air', 'both'].includes(opt.shipping_method)" class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-cyan-100 dark:bg-cyan-950/80 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0"><span class="material-symbols-outlined text-[14px]">flight</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.air') }}: {{ opt.est_time_air }}</span>
-                      </div>
-
-                      <div v-if="opt.target_delivery" class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-950/80 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0"><span class="material-symbols-outlined text-[14px]">calendar_month</span></span>
-                        <span class="font-semibold text-slate-800 dark:text-slate-200">{{ $t('order_detail.target') }}: {{ formatDate(opt.target_delivery).split(',')[0] }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <!-- Payment Details & Upload Payment Proof -->
             <div v-if="request.status === 'menunggu_pembayaran' && request.deal_finalized_at" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-7 shadow-md space-y-6">
               
@@ -799,8 +768,7 @@
               </button>
             </div>
             
-            <!-- Cancel Action -->
-            <div v-if="['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_kesepakatan_final'].includes(request.status)" class="bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 rounded-2xl p-4 sm:p-6 mt-4 shadow-sm">
+            <div v-if="['menunggu_penawaran_admin', 'menunggu_kesepakatan_final'].includes(request.status)" class="bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 rounded-2xl p-4 sm:p-6 mt-4 shadow-sm">
               <h3 class="font-bold text-rose-800 dark:text-rose-300 mb-2">{{ $t('request_details.cancel_request') }}</h3>
               <p class="text-xs sm:text-sm text-rose-600 dark:text-rose-400 mb-4">{{ $t('request_details.cancel_request_desc') }}</p>
               <button @click="showCancelModal = true" class="w-full px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-colors cursor-pointer">
@@ -883,7 +851,7 @@
                   </div>
                   <div class="flex-1 pb-4">
                     <p :class="['font-semibold text-sm', idx === trackingLogs.length - 1 ? 'text-[#4f378a] dark:text-indigo-400' : 'text-gray-800 dark:text-slate-200']">
-                      {{ $t(`status.${log.status.toLowerCase()}`) }}
+                      {{ statusLabel(log.status) }}
                     </p>
                     <p class="text-xs text-gray-500 dark:text-slate-400">{{ formatDate(log.created_at) }}</p>
                     <p v-if="log.notes" class="text-xs text-gray-600 dark:text-slate-300 mt-1">{{ log.notes }}</p>
@@ -924,35 +892,25 @@
       </div>
 
     </main>
-
-    <!-- Multi-Select Options Action Bar -->
-    <div v-if="request && request.status === 'menunggu_pemilihan_buyer'" class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div>
-        <p class="font-bold text-slate-900 dark:text-white text-base sm:text-lg">{{ selectedOptionIds.length }} {{ $t('request_details.your_selection') }}</p>
-        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $t('request_details.click_to_add_selection') }}</p>
-      </div>
-      <div class="flex w-full sm:w-auto gap-3">
-        <button @click="submitSelection([], true)" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold rounded-xl hover:bg-emerald-200 dark:hover:bg-emerald-800 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
-          {{ $t('request_details.direct_approve') }}
-        </button>
-        <button @click="submitSelection([])" :disabled="selectingOption" class="flex-1 sm:flex-none px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 text-xs sm:text-sm cursor-pointer">
-          {{ $t('request_details.request_other_options') }}
-        </button>
-        <button @click="submitSelection(selectedOptionIds)" :disabled="selectingOption || selectedOptionIds.length === 0" class="flex-1 sm:flex-none px-7 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl hover:opacity-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 text-xs sm:text-sm cursor-pointer">
-          <span v-if="selectingOption" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-          <span v-else class="material-symbols-outlined text-sm">check_circle</span>
-          {{ $t('request_details.confirm_selection') }}
-        </button>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
+import { useConfirm } from '../../composables/useConfirm.js';
+const { confirm } = useConfirm();
 import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+const { t, te } = useI18n();
+
+// Safe status label: tries $t() first, falls back to raw string with prefix
+const statusLabel = (status) => {
+  if (!status) return '';
+  const key = `status.${status.toLowerCase()}`;
+  if (te(key)) return t(key);
+  // Legacy fallback for stale statuses (e.g. menunggu_pilihan_buyer)
+  return `${t('request_details.unknown_status')}: ${status}`;
+};
 
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -997,6 +955,30 @@ const activeEditSection = ref('')
 const savingEdit = ref(false)
 const editForm = ref({})
 const editFiles = ref([])
+
+// ---------------------------------------------------------------------------
+// Edit-modal existing attachments preview.
+// We snapshot the current `request.image_urls` into `existingImageList` each
+// time the modal opens so that:
+//   1. The user can see exactly which files are already attached (they used
+//      to disappear from the modal — buyers thought their uploads had been
+//      wiped).
+//   2. The user can selectively mark files for removal via
+//      `removedExistingIndexes`. The set is reset on every modal open.
+//
+// The actual server-side splicing of `removed_image_urls[]` is handled by
+// `RequestController::editRequest`.
+// ---------------------------------------------------------------------------
+const existingImageList = ref([])
+const removedExistingIndexes = ref(new Set())
+const toggleExistingImage = (idx) => {
+  const s = removedExistingIndexes.value
+  if (s.has(idx)) s.delete(idx)
+  else s.add(idx)
+  // Trigger reactivity — Set mutations aren't tracked by Vue 3 reactivity
+  // for `{{ s.size }}` / `v-for` consumers.
+  removedExistingIndexes.value = new Set(s)
+}
 
 // ---------------------------------------------------------------------------
 // Inline edit (one field at a time)
@@ -1209,7 +1191,6 @@ const disputeModalOpen = ref(false)
 const disputeReason = ref('')
 const disputing = ref(false)
 
-const selectingOption = ref(false)
 const paymentProofInput = ref(null)
 const paymentProofFile = ref(null)
 const uploadingProof = ref(false)
@@ -1235,14 +1216,13 @@ const showSidebar = computed(() => isTablet.value || isDesktop.value)
 
 // The Golden Path Stages
 const stages = [
-  'menunggu_penawaran_admin', 
-  'menunggu_pemilihan_buyer', 
-  'menunggu_kesepakatan_final', 
-  'menunggu_pembayaran', 
-  'menunggu_verifikasi_pembayaran', 
-  'sedang_diproses', 
-  'dikirim', 
-  'menunggu_verifikasi_admin', 
+  'menunggu_penawaran_admin',
+  'menunggu_kesepakatan_final',
+  'menunggu_pembayaran',
+  'menunggu_verifikasi_pembayaran',
+  'sedang_diproses',
+  'dikirim',
+  'menunggu_verifikasi_admin',
   'selesai'
 ];
 
@@ -1251,13 +1231,12 @@ const timelineStages = computed(() => {
   const currentIdx = Math.max(0, stages.indexOf(request.value.status));
   
   return [
-    { value: 'menunggu_penawaran_admin', label: 'RFQ Sent', icon: 'edit_document', passed: currentIdx > 0, current: currentIdx === 0 },
-    { value: 'menunggu_pemilihan_buyer', label: 'Options', icon: 'list_alt', passed: currentIdx > 1, current: currentIdx === 1 },
-    { value: 'menunggu_kesepakatan_final', label: 'Negotiate', icon: 'forum', passed: currentIdx > 2, current: currentIdx === 2 },
-    { value: 'menunggu_pembayaran', label: 'Payment', icon: 'payments', passed: currentIdx > 3, current: currentIdx === 3 },
-    { value: 'sedang_diproses', label: 'Process', icon: 'conveyor_belt', passed: currentIdx > 5, current: currentIdx === 5 },
-    { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', passed: currentIdx > 6, current: currentIdx === 6 },
-    { value: 'selesai', label: 'Complete', icon: 'task_alt', passed: currentIdx > 8, current: currentIdx === 8 }
+    { value: 'menunggu_penawaran_admin', label: t('request_details.steps.rfq'), icon: 'edit_document', passed: currentIdx > 0, current: currentIdx === 0 },
+    { value: 'menunggu_kesepakatan_final', label: t('request_details.steps.negotiate'), icon: 'forum', passed: currentIdx > 1, current: currentIdx === 1 },
+    { value: 'menunggu_pembayaran', label: t('request_details.steps.payment'), icon: 'payments', passed: currentIdx > 2, current: currentIdx === 2 },
+    { value: 'sedang_diproses', label: t('request_details.steps.process'), icon: 'conveyor_belt', passed: currentIdx > 4, current: currentIdx === 4 },
+    { value: 'dikirim', label: t('request_details.steps.shipped'), icon: 'local_shipping', passed: currentIdx > 5, current: currentIdx === 5 },
+    { value: 'selesai', label: t('request_details.steps.complete'), icon: 'task_alt', passed: currentIdx > 7, current: currentIdx === 7 }
   ];
 });
 
@@ -1271,34 +1250,9 @@ const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
-const getOptionImages = (opt) => {
-  if (!opt) return []
-  let raw = opt.images || opt.image_url || opt.images_data
-  if (!raw) return []
-  
-  if (typeof raw === 'string') {
-    if (raw.startsWith('data:')) {
-      return [raw]
-    }
-    if (raw.startsWith('[')) {
-      try { raw = JSON.parse(raw) } catch (e) { raw = [raw] }
-    } else {
-      raw = [raw]
-    }
-  }
-  
-  if (!Array.isArray(raw)) raw = [raw]
-  
-  return raw.map(img => {
-    if (!img || typeof img !== 'string') return ''
-    return getMediaUrl(img)
-  }).filter(Boolean)
-}
-
 const getStatusClass = (status) => {
   const classes = {
     'menunggu_penawaran_admin': 'bg-gray-500',
-    'menunggu_pemilihan_buyer': 'bg-blue-500',
     'menunggu_kesepakatan_final': 'bg-indigo-500',
     'menunggu_pembayaran': 'bg-yellow-500',
     'menunggu_verifikasi_pembayaran': 'bg-orange-500',
@@ -1315,7 +1269,6 @@ const getStatusClass = (status) => {
 const getStatusIcon = (status) => {
   const icons = {
     'menunggu_penawaran_admin': 'schedule',
-    'menunggu_pemilihan_buyer': 'list_alt',
     'menunggu_kesepakatan_final': 'handshake',
     'menunggu_pembayaran': 'payments',
     'menunggu_verifikasi_pembayaran': 'pending_actions',
@@ -1331,8 +1284,8 @@ const getStatusIcon = (status) => {
 
 const shouldShowChat = computed(() => {
   if (!request.value) return false;
-  const idx = stages.indexOf(request.value.status);
-  return idx >= 2 && request.value.status !== 'batal'; // Show from 'menunggu_kesepakatan_final'
+  if (request.value.status === 'batal') return false;
+  return true; // Chat visible from RFQ submission through completion
 });
 
 const loadData = async () => {
@@ -1356,9 +1309,6 @@ onMounted(() => {
   loadData()
 })
 onUnmounted(() => window.removeEventListener('resize', updateDeviceType))
-
-const selectedOptionIds = ref([])
-const buyerNote = ref('')
 
 const copyText = (text) => {
   if (!text) return
@@ -1386,33 +1336,6 @@ const openInNewTab = (url) => {
   window.open(url, '_blank')
 }
 
-const toggleOption = (id) => {
-  if (selectedOptionIds.value.includes(id)) {
-    selectedOptionIds.value = selectedOptionIds.value.filter(oid => oid !== id);
-  } else {
-    selectedOptionIds.value.push(id);
-  }
-}
-
-const submitSelection = async (optionIds, isDirectApproval = false) => {
-  if (!isDirectApproval && optionIds.length === 0) {
-    if (!confirm(t('request_details.no_selection_warning'))) return;
-  }
-  
-  selectingOption.value = true;
-  try {
-    await requestService.selectOption(request.value.id, optionIds, buyerNote.value, isDirectApproval);
-    await loadData();
-    selectedOptionIds.value = [];
-    buyerNote.value = '';
-    showToast(isDirectApproval ? t('request_details.acc_direct_confirmed') : t('request_details.response_sent'), 'success');
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to submit selection', 'error');
-  } finally {
-    selectingOption.value = false;
-  }
-}
-
 const handlePaymentProofChange = (e) => {
   if (e.target.files.length > 0) {
     paymentProofFile.value = e.target.files[0];
@@ -1436,13 +1359,21 @@ const submitPaymentProof = async () => {
 }
 
 const confirmDelivery = async () => {
-  if (!confirm(t('request_details.confirm_delivery_confirm'))) return;
+  const ok = await confirm({
+    title: t('confirm.confirm_delivery_title'),
+    message: t('request_details.confirm_delivery_confirm'),
+    type: 'success',
+    confirmText: t('confirm.yes_confirm'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
   confirming.value = true
   try {
     await requestService.confirmDelivery(request.value.id)
     await loadData()
+    showToast(t('request_details.delivery_confirmed'), 'success')
   } catch (err) {
-    showToast(err.response?.data?.message || 'Failed to confirm delivery', 'error')
+    showToast(err.response?.data?.message || t('common.unknownError'), 'error')
   } finally {
     confirming.value = false
   }
@@ -1478,6 +1409,13 @@ const openEditModal = (section) => {
     payment_terms: request.value.payment_terms
   };
   editFiles.value = [];
+  // Snapshot the current attachments so the modal can show them and let the
+  // user selectively remove some. Fresh snapshot per modal open prevents the
+  // preview from drifting if `request` is refreshed mid-edit.
+  existingImageList.value = Array.isArray(request.value.image_urls)
+    ? [...request.value.image_urls]
+    : [];
+  removedExistingIndexes.value = new Set();
   showEditModal.value = true;
 }
 
@@ -1497,12 +1435,25 @@ const submitEdit = async () => {
       }
     }
     
-    if (activeEditSection.value === 'attachments' && editFiles.value.length > 0) {
-      for (const file of editFiles.value) {
-        formData.append('images[]', file);
+    if (activeEditSection.value === 'attachments') {
+      if (editFiles.value.length > 0) {
+        for (const file of editFiles.value) {
+          formData.append('images[]', file);
+        }
+      } else if (removedExistingIndexes.value.size === 0) {
+        // No new uploads AND no removals -> explicitly keep all existing
+        // images. (Backend already defaults to keeping, but sending the flag
+        // is cheaper than a server-side roundtrip and matches the original
+        // contract.)
+        formData.append('keep_images', 'true');
       }
-    } else if (activeEditSection.value === 'attachments' && editFiles.value.length === 0) {
-      formData.append('keep_images', 'true');
+
+      // Tell the backend which existing images the buyer wants to drop.
+      // Backend will splice these out of `image_urls` before persisting.
+      for (const idx of removedExistingIndexes.value) {
+        const url = existingImageList.value[idx]
+        if (url) formData.append('removed_image_urls[]', url)
+      }
     }
 
     // Laravel requires _method=PUT with FormData

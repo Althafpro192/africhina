@@ -62,26 +62,6 @@ export const adminService = {
     return data;
   },
 
-  async uploadOptions(id, formData) {
-    const { data } = await api.post(`/admin/requests/${id}/options`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    return data;
-  },
-
-  async updateOption(requestId, optionId, formData) {
-    formData.append('_method', 'PUT');
-    const { data } = await api.post(`/admin/requests/${requestId}/options/${optionId}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    return data;
-  },
-
-  async deleteOption(requestId, optionId) {
-    const { data } = await api.delete(`/admin/requests/${requestId}/options/${optionId}`);
-    return data;
-  },
-
   async finalizeDeal(id, payload) {
     if (payload instanceof FormData) {
       const { data } = await api.post(`/admin/requests/${id}/finalize`, payload, {
@@ -94,8 +74,8 @@ export const adminService = {
     }
   },
 
-  async proceedToNegotiate(id) {
-    const { data } = await api.post(`/admin/requests/${id}/proceed-to-negotiate`);
+  async openDiscussion(id) {
+    const { data } = await api.post(`/admin/requests/${id}/open-discussion`);
     return data;
   },
 

@@ -129,8 +129,6 @@ class AdminController extends Controller
             return response()->json(['message' => 'Request not found'], 404);
         }
 
-        // Include options
-        $rfq->options = $rfq->options()->orderBy('created_at', 'asc')->get();
 
         return response()->json($rfq);
     }
@@ -202,7 +200,6 @@ class AdminController extends Controller
         $total = RFQRequest::count();
         $pending = RFQRequest::whereIn('status', [
             'menunggu_penawaran_admin', 
-            'menunggu_pemilihan_buyer', 
             'menunggu_kesepakatan_final', 
             'menunggu_pembayaran', 
             'menunggu_verifikasi_pembayaran'

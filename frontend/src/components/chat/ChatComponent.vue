@@ -1,4 +1,4 @@
-<template>
+W<template>
   <div class="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col h-full shadow-sm overflow-hidden transition-colors duration-300">
     <!-- Header -->
     <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between shrink-0">
@@ -62,7 +62,7 @@
           <div v-else>
             <!-- Media Rendering -->
             <div v-if="msg.media_url" class="mb-2">
-              <img v-if="msg.media_type === 'image'" :src="getMediaUrl(msg.media_url)" alt="Attachment" class="max-w-full rounded-xl max-h-56 object-cover cursor-pointer hover:opacity-90 transition-opacity" @click="openMediaInNewTab(getMediaUrl(msg.media_url))" />
+              <img v-if="msg.media_type === 'image'" :src="getMediaUrl(msg.media_url)" :alt="$t('chat.attachment_alt')" class="max-w-full rounded-xl max-h-56 object-cover cursor-pointer hover:opacity-90 transition-opacity" @click="openMediaInNewTab(getMediaUrl(msg.media_url))" />
               <video v-else-if="msg.media_type === 'video'" controls :src="getMediaUrl(msg.media_url)" class="max-w-full rounded-xl max-h-64 cursor-pointer"></video>
               <audio v-else-if="msg.media_type === 'audio'" controls :src="getMediaUrl(msg.media_url)" class="max-w-full h-10"></audio>
               <a v-else :href="getMediaUrl(msg.media_url)" target="_blank" :class="['flex items-center gap-2 underline text-xs font-bold', msg.sender_id === currentUserId ? 'text-white' : 'text-indigo-600 dark:text-indigo-400']">
@@ -86,7 +86,7 @@
                   <span class="material-symbols-outlined text-[12px]">g_translate</span> 
                   {{ expandedTranslation === msg.id ? $t('chat.show_original') : $t('chat.translate') }}
                 </button>
-                <p v-if="msg.is_edited" :class="['text-[9px] italic', msg.sender_id === currentUserId ? 'text-indigo-200' : 'text-slate-400 dark:text-slate-400']">(edited)</p>
+                <p v-if="msg.is_edited" :class="['text-[9px] italic', msg.sender_id === currentUserId ? 'text-indigo-200' : 'text-slate-400 dark:text-slate-400']">{{ $t('chat.edited') }}</p>
               </div>
               <p :class="['text-[10px] text-right font-medium ml-4', msg.sender_id === currentUserId ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-400']">{{ formatTime(msg.created_at) }}</p>
             </div>
@@ -110,7 +110,7 @@
         <span class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
         {{ $t('chat.optimizing_image') || 'Optimizing image...' }}
       </div>
-      <div class="text-[10px] text-indigo-400 dark:text-indigo-500">Compression in progress</div>
+      <div class="text-[10px] text-indigo-400 dark:text-indigo-500">{{ $t('chat.compression_in_progress') }}</div>
     </div>
     
     <!-- File preview -->
@@ -137,7 +137,7 @@
     <div class="p-3 sm:p-4 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-end gap-2 relative shrink-0">
       <input type="file" ref="fileInput" class="hidden" accept="image/*,audio/*,video/mp4,video/webm,video/quicktime,.pdf,.doc,.docx" @change="handleFileSelect" />
       
-      <button v-if="!isRecording" @click="$refs.fileInput.click()" class="p-2.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0 cursor-pointer" title="Attach file">
+      <button v-if="!isRecording" @click="$refs.fileInput.click()" class="p-2.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0 cursor-pointer" :title="$t('chat.attach_file')">
         <span class="material-symbols-outlined text-xl">attach_file</span>
       </button>
 
@@ -156,7 +156,7 @@
           v-if="!newMessage.trim() && !selectedFile && !editingMsg"
           @click="startRecording"
           class="p-2.5 text-slate-500 dark:text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors cursor-pointer"
-          title="Hold or click to record"
+          :title="$t('chat.hold_to_record')"
         >
           <span class="material-symbols-outlined text-xl">mic</span>
         </button>
@@ -177,6 +177,7 @@
 <script setup>
 import { useToast } from '../../composables/useToast.js';
 const { showToast } = useToast();
+import { useConfirm } from '../../composables/useConfirm.js'
 
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -218,7 +219,8 @@ let recordTimer = null
 
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const currentUserId = user.id
-const { locale } = useI18n()
+const { locale, t } = useI18n()
+const { confirm } = useConfirm()
 
 // Outside click handler for menu
 const closeMenu = (e) => {
@@ -364,7 +366,14 @@ const cancelEdit = () => {
 }
 
 const deleteMsg = async (msgId) => {
-  if (!confirm("Are you sure you want to delete this message?")) return
+  const ok = await confirm({
+    title: t('confirm.delete_message_title'),
+    message: t('confirm.delete_message_message'),
+    type: 'danger',
+    confirmText: t('confirm.yes_delete'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
   activeMenu.value = null
   try {
     const service = props.isAdmin ? adminService : requestService
@@ -378,7 +387,7 @@ const deleteMsg = async (msgId) => {
     }
   } catch (err) {
     console.error(err)
-    showToast("Failed to delete message")
+    showToast(err.response?.data?.message || t('common.unknownError'), 'error')
   }
 }
 

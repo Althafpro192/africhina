@@ -93,12 +93,12 @@ onMounted(() => {
       <div class="flex items-center gap-3">
         <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
         <div>
-          <h3 class="text-sm font-semibold text-slate-100">Live Negotiation Chat</h3>
-          <p class="text-xs text-slate-400">ID: {{ negotiationId }}</p>
+          <h3 class="text-sm font-semibold text-slate-100">{{ $t('chat.live_negotiation') }}</h3>
+          <p class="text-xs text-slate-400">{{ $t('chat.subtitle_id', { id: negotiationId }) }}</p>
         </div>
       </div>
       <div v-if="isTyping" class="text-xs text-emerald-400 flex items-center gap-1">
-        <span>Typing</span>
+        <span>{{ $t('chat.typing') }}</span>
         <span class="animate-bounce">.</span>
         <span class="animate-bounce delay-100">.</span>
         <span class="animate-bounce delay-200">.</span>
@@ -108,7 +108,7 @@ onMounted(() => {
     <!-- Messages Container -->
     <div ref="messagesContainer" class="messages-body flex-1 p-4 overflow-y-auto space-y-3 min-h-[350px]">
       <div v-if="isLoading" class="flex justify-center items-center h-full text-slate-500 text-sm">
-        Loading chat history...
+        {{ $t('chat.loading_history') }}
       </div>
 
       <div v-else-if="error" class="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-lg">
@@ -117,7 +117,7 @@ onMounted(() => {
 
       <div v-else-if="messages.length === 0" class="flex flex-col items-center justify-center h-full text-slate-500 text-xs py-10">
         <span class="material-symbols-outlined text-4xl mb-2 text-slate-600">chat_bubble_outline</span>
-        No messages yet. Send a message to start negotiation!
+        {{ $t('chat.no_messages_negotiation') }}
       </div>
 
       <template v-else>
@@ -154,7 +154,7 @@ onMounted(() => {
               <img 
                 v-if="msg.media_type === 'image'" 
                 :src="msg.media_url" 
-                alt="Attachment" 
+                :alt="$t('chat.attachment_alt')"
                 class="max-w-[200px] max-h-[150px] rounded-lg object-cover border border-slate-700 hover:scale-105 transition-transform"
               />
               <a 

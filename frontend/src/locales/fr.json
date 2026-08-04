@@ -11,7 +11,9 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "back": "Retour",
-    "submit": "Soumettre"
+    "submit": "Soumettre",
+    "brand": "AfriChina Bridge",
+    "unknownError": "Une erreur est survenue. Veuillez réessayer."
   },
   "auth": {
     "title": "AfriChina Bridge",
@@ -29,7 +31,11 @@
     "company_name": "Nom de l'entreprise",
     "contact_person": "Personne de contact",
     "phone": "Numéro de téléphone",
-    "footer": "© 2026 AfriChina Bridge"
+    "footer": "© 2026 AfriChina Bridge",
+    "passwords_do_not_match": "Le mot de passe et la confirmation ne correspondent pas.",
+    "password_min": "Le mot de passe doit comporter au moins 6 caractères.",
+    "registration_failed": "L'inscription a échoué. Veuillez réessayer.",
+    "invalid_credentials": "Identifiants invalides. Veuillez vérifier votre e-mail et votre mot de passe."
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -131,7 +137,17 @@
     "finish": "Terminer",
     "type_placeholder": "Tapez votre message...",
     "optimizing_image": "Optimisation de l'image...",
-    "optimizing": "Optimisation..."
+    "optimizing": "Optimisation...",
+    "live_negotiation": "Chat de Négociation en Direct",
+    "subtitle_id": "ID : {id}",
+    "typing": "En train d'écrire",
+    "loading_history": "Chargement de l'historique du chat...",
+    "no_messages_negotiation": "Aucun message pour l'instant. Envoyez un message pour démarrer la négociation !",
+    "attachment_alt": "Pièce jointe",
+    "edited": "(modifié)",
+    "compression_in_progress": "Compression en cours",
+    "attach_file": "Joindre un fichier",
+    "hold_to_record": "Maintenez ou cliquez pour enregistrer"
   },
   "buyer_messages": {
     "title": "Support Admin Chat",
@@ -334,7 +350,24 @@
     "trust_guarantee": "Garantie de confiance",
     "trust_desc": "Tous les fournisseurs sur AfriChina Bridge sont vérifiés pour leurs licences commerciales et normes de qualité. Votre demande sera mise en relation avec les 5 meilleures usines sous 48 heures.",
     "submit": "Soumettre la demande",
-    "terms": "En soumettant, vous acceptez nos conditions d'utilisation du sourcing."
+    "terms": "En soumettant, vous acceptez nos conditions d'utilisation du sourcing.",
+    "steps": {
+      "rfq": "RFQ envoyée",
+      "negotiate": "Négociation",
+      "payment": "Paiement",
+      "process": "En traitement",
+      "shipped": "Expédiée",
+      "complete": "Terminée"
+    },
+    "open_discussion": "Ouvrir la discussion",
+    "open_discussion_confirm": "Ouvrir une session de discussion avec l'acheteur ? Il sera notifié.",
+    "discussion_opened": "Session de discussion ouverte. Le chat est désormais actif.",
+    "unknown_status": "(statut inconnu)",
+    "admin_options_message": "L'administrateur a fourni des options de produits",
+    "payment_verified": "Paiement vérifié avec succès !",
+    "trusted_provider_assigned": "Livraison confiée à un fournisseur de confiance",
+    "driver_assigned": "Chauffeur assigné avec succès !",
+    "delivery_confirmed": "Livraison confirmée avec succès !"
   },
   "order_detail": {
     "title": "Détails de la demande",
@@ -372,14 +405,6 @@
     "attachments_count_plural": "Pièces jointes ({count} fichiers)",
     "click_view": "Cliquez pour voir",
     "no_attachments": "Aucune pièce jointe",
-    "product_options": "Options du produit",
-    "add_option": "Ajouter une option",
-    "no_options_yet": "Aucune option ajoutée pour le moment.",
-    "proceed_to_negotiate": "Procéder à la négociation",
-    "proceed_choice_hint": "Vous pouvez ajouter des options de produit ci-dessus, ou procéder directement à la phase de négociation sans options séparées.",
-    "no_options_admin": "Aucune option ajoutée pour le moment. Veuillez rechercher des fournisseurs et ajouter des options pour l'acheteur.",
-    "select_product_options": "Sélectionnez les options de produit pour la demande #{id}",
-    "admin_recommendation": "Recommandation de l'administrateur",
     "price": "Prix",
     "target": "Cible",
     "admin_ops": "Opérations administrateur",
@@ -396,7 +421,6 @@
     "production": "En production",
     "completed": "Terminé",
     "menunggu_penawaran_admin": "En attente de devis administrateur",
-    "menunggu_pemilihan_buyer": "En attente du choix de l'acheteur",
     "menunggu_kesepakatan_final": "En attente d'accord final",
     "menunggu_pembayaran": "En attente de paiement",
     "menunggu_verifikasi_pembayaran": "En attente de vérification du paiement",
@@ -564,7 +588,9 @@
     "success_update": "Mot de passe mis à jour avec succès !",
     "failed_update": "Échec de la mise à jour du mot de passe.",
     "batal": "Annuler",
-    "simpan": "Enregistrer le nouveau mot de passe"
+    "simpan": "Enregistrer le nouveau mot de passe",
+    "update_failed": "Échec de la mise à jour du profil",
+    "update_success": "Profil mis à jour avec succès !"
   },
   "buyer_suppliers": {
     "subtitle": "Votre réseau de fabricants et fournisseurs chinois vérifiés.",
@@ -620,7 +646,9 @@
     "select_shipping": "Sélectionner les conditions",
     "payment_terms": "Conditions de Paiement",
     "select_payment": "Sélectionner le paiement",
-    "max_files_hint": "(Max 3 fichiers, 10 Mo chacun)"
+    "max_files_hint": "(Max 3 fichiers, 10 Mo chacun)",
+    "some_files_failed": "Certains fichiers n'ont pas pu être téléchargés. Veuillez réessayer.",
+    "submit_failed": "Échec de l'envoi de la demande. Veuillez réessayer."
   },
   "buyer_dashboard": {
     "welcome": "Bon retour, {name} ! 👋",
@@ -659,5 +687,128 @@
     "previewUnavailable": "Aperçu indisponible, mais le fichier est prêt à être envoyé",
     "file_count": "{count} fichier sélectionné",
     "file_count_plural": "{count} fichiers sélectionnés"
+  },
+  "supplier_register": {
+    "title": "Pendaftaran Pemasok",
+    "subtitle": "Bergabung dengan AfriChina Bridge sebagai pemasok pabrik terverifikasi",
+    "full_name": "Nama Lengkap",
+    "full_name_placeholder": "Masukkan nama lengkap Anda",
+    "email": "Alamat Email",
+    "email_placeholder": "Masukkan alamat email Anda",
+    "password": "Kata Sandi",
+    "password_placeholder": "Masukkan kata sandi (min 6 karakter)",
+    "confirm_password": "Konfirmasi Kata Sandi",
+    "confirm_password_placeholder": "Ulangi kata sandi Anda",
+    "phone": "Nomor Telepon",
+    "phone_placeholder": "Masukkan nomor telepon",
+    "company_name": "Nama Perusahaan",
+    "company_name_placeholder": "Masukkan nama perusahaan Anda",
+    "category": "Kategori",
+    "select_category": "Pilih kategori",
+    "business_license": "Lisensi Bisnis",
+    "business_license_placeholder": "Nomor lisensi (opsional)",
+    "factory_address": "Alamat Pabrik",
+    "factory_address_placeholder": "Masukkan alamat pabrik Anda di Tiongkok",
+    "must_accept_terms": "Vous devez accepter les conditions et la politique de confidentialité.",
+    "terms_agreement": "Saya menyetujui",
+    "terms_link": "Ketentuan Layanan",
+    "terms_and": "dan",
+    "privacy_link": "Kebijakan Privasi",
+    "submit": "Daftar sebagai Pemasok",
+    "have_account": "Sudah punya akun?",
+    "login_now": "Masuk sekarang"
+  },
+  "admin_layout": {
+    "role": "Administrateur",
+    "toggle_sidebar": "Basculer la barre latérale",
+    "theme_toggle_light": "Passer en Mode Clair",
+    "theme_toggle_dark": "Passer en Mode Sombre",
+    "notifications_title": "Notifications Admin",
+    "alerts_title": "Alertes Admin"
+  },
+  "modal": {
+    "assign_supplier": "Assigner un Fournisseur",
+    "select_supplier": "-- Sélectionner un Fournisseur --",
+    "quoted_price": "Prix Devisé (USD)",
+    "production_progress_label": "Progression de la Production ({percent}%)",
+    "internal_notes_hidden": "⚠️ Notes Internes (Masqué pour l'Acheteur)",
+    "upload_qc_media": "Téléverser Média QC / Production",
+    "send_email_supplier": "Envoyer E-mail de Mise à Jour au Fournisseur",
+    "status_label": "Statut"
+  },
+  "progress": {
+    "production": "Progression de la Production"
+  },
+  "image_lightbox": {
+    "thumbnail_alt": "Miniature {idx}"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "requiredLabel": "{field} est obligatoire",
+    "fillAllFields": "Veuillez remplir tous les champs obligatoires avant de soumettre",
+    "requiredFieldsAbove": "Veuillez corriger l'erreur ci-dessus",
+    "email": "Veuillez entrer une adresse e-mail valide",
+    "minLength": "Doit contenir au moins {min} caractères",
+    "maxLength": "Doit contenir au plus {max} caractères",
+    "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
+    "numberInvalid": "Veuillez entrer un nombre valide",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "invalid": "Valeur invalide",
+    "selectOne": "Veuillez sélectionner une option",
+    "acceptTerms": "Vous devez accepter les conditions pour continuer",
+    "imageRequired": "Veuillez télécharger au moins une image",
+    "selectDeliveryMethod": "Veuillez sélectionner une méthode de livraison",
+    "specifyReason": "Veuillez préciser la raison",
+    "driver_required": "Veuillez sélectionner un chauffeur",
+    "fix_phone_errors": "Veuillez corriger les erreurs du numéro de téléphone.",
+    "fix_errors_before_saving": "Veuillez corriger les erreurs avant d'enregistrer."
+  },
+  "set_new_password": {
+    "title": "Définir un nouveau mot de passe",
+    "subtitle": "Vous vous connectez avec un mot de passe temporaire. Veuillez définir un nouveau mot de passe permanent pour continuer.",
+    "new_password_label": "Nouveau mot de passe permanent",
+    "confirm_password_label": "Confirmer le nouveau mot de passe",
+    "new_password_placeholder": "Saisissez au moins 6 caractères",
+    "confirm_password_placeholder": "Saisissez à nouveau le nouveau mot de passe",
+    "submit": "Enregistrer & Continuer",
+    "submitting": "Mise à jour du mot de passe...",
+    "success": "Mot de passe mis à jour avec succès ! Redirection vers le tableau de bord...",
+    "failed": "Échec de la mise à jour du mot de passe. Veuillez réessayer."
+  },
+  "confirm": {
+    "title": "Confirmer l'action",
+    "message": "Êtes-vous sûr de vouloir continuer ?",
+    "delete_title": "Confirmation de suppression",
+    "delete_message": "Êtes-vous sûr de vouloir supprimer « {name} » ? Cette action est irréversible.",
+    "block_title": "Confirmation du blocage",
+    "block_message": "Êtes-vous sûr de vouloir bloquer « {name} » ?",
+    "unblock_title": "Confirmation du déblocage",
+    "unblock_message": "Êtes-vous sûr de vouloir débloquer « {name} » ?",
+    "verify_payment_title": "Vérifier le paiement",
+    "verify_payment_message": "Vérifier et approuver cette preuve de paiement ?",
+    "reject_payment_title": "Rejeter le paiement",
+    "reject_payment_message": "Rejeter cette preuve de paiement ? Veuillez préciser la raison.",
+    "complete_order_title": "Terminer la commande",
+    "complete_order_message": "Terminer cette commande ? (Avez-vous vérifié le B/L et la réception ?)",
+    "assign_driver_title": "Assigner un chauffeur",
+    "assign_driver_trusted": "Envoyer via un fournisseur de confiance ?",
+    "assign_driver_assigned": "Assigner ce chauffeur ?",
+    "ship_order_title": "Expédier la commande",
+    "ship_order_message": "Marquer cette commande comme expédiée ?",
+    "delete_image_title": "Supprimer l'image",
+    "delete_image_message": "Supprimer cette image ?",
+    "delete_message_title": "Supprimer le message",
+    "delete_message_message": "Êtes-vous sûr de vouloir supprimer ce message ?",
+    "yes_block": "Bloquer",
+    "yes_unblock": "Débloquer",
+    "yes_delete": "Supprimer",
+    "yes_verify": "Vérifier",
+    "yes_complete": "Terminer",
+    "yes_ship": "Expédier",
+    "yes_assign": "Assigner",
+    "open_discussion_title": "Ouvrir la discussion",
+    "yes_open": "Ouvrir",
+    "confirm_delivery_title": "Confirmer la réception des marchandises",
+    "yes_confirm": "Oui, confirmer la réception"
   }
 }

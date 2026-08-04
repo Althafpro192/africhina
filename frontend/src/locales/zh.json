@@ -11,7 +11,9 @@
     "delete": "删除",
     "edit": "编辑",
     "back": "返回",
-    "submit": "提交"
+    "submit": "提交",
+    "brand": "AfriChina Bridge",
+    "unknownError": "发生错误。请重试。"
   },
   "auth": {
     "title": "AfriChina Bridge",
@@ -29,7 +31,11 @@
     "company_name": "公司名称",
     "contact_person": "联系人",
     "phone": "电话号码",
-    "footer": "© 2026 AfriChina Bridge"
+    "footer": "© 2026 AfriChina Bridge",
+    "passwords_do_not_match": "密码与确认密码不一致。",
+    "password_min": "密码至少需要 6 个字符。",
+    "registration_failed": "注册失败，请重试。",
+    "invalid_credentials": "凭据无效，请检查您的邮箱和密码。"
   },
   "nav": {
     "dashboard": "控制台",
@@ -131,7 +137,17 @@
     "finish": "完成",
     "type_placeholder": "输入消息...",
     "optimizing_image": "正在优化图片...",
-    "optimizing": "正在优化..."
+    "optimizing": "正在优化...",
+    "live_negotiation": "实时洽谈聊天",
+    "subtitle_id": "编号：{id}",
+    "typing": "正在输入",
+    "loading_history": "正在加载聊天记录...",
+    "no_messages_negotiation": "暂无消息。发送消息以开始洽谈！",
+    "attachment_alt": "附件",
+    "edited": "（已编辑）",
+    "compression_in_progress": "压缩进行中",
+    "attach_file": "附加文件",
+    "hold_to_record": "长按或点击录音"
   },
   "buyer_messages": {
     "title": "管理员客服沟通",
@@ -333,7 +349,25 @@
     "upload_note": "注意：上传新文件将替换现有附件。",
     "new_files_upload": "待上传的新文件 ({count})",
     "cancel_edit": "取消",
-    "saving": "保存中..."
+    "saving": "保存中...",
+    "steps": {
+      "rfq": "RFQ已发送",
+      "negotiate": "协商中",
+      "payment": "付款",
+      "process": "处理中",
+      "shipped": "已发货",
+      "complete": "已完成"
+    },
+    "open_discussion": "开启讨论",
+    "open_discussion_confirm": "是否开启与买家的讨论会话？买家将收到通知。",
+    "discussion_opened": "讨论会话已开启，聊天现已激活。",
+    "unknown_status": "（未知状态）",
+    "admin_options_message": "管理员已提供产品选项",
+    "save_changes": "保存更改",
+    "payment_verified": "付款已成功验证！",
+    "trusted_provider_assigned": "已切换至可信供应商配送",
+    "driver_assigned": "司机已成功指派！",
+    "delivery_confirmed": "已成功确认收货！"
   },
   "order_detail": {
     "title": "需求详情",
@@ -371,12 +405,6 @@
     "attachments_count_plural": "附件 ({count} 个文件)",
     "click_view": "点击查看",
     "no_attachments": "无附件",
-    "product_options": "产品选项",
-    "add_option": "添加选项",
-    "no_options_yet": "尚未添加选项。",
-    "no_options_admin": "尚未添加选项。请寻找供应商并为买家添加选项。",
-    "select_product_options": "为需求 #{id} 选择产品选项",
-    "admin_recommendation": "管理员推荐",
     "price": "价格",
     "target": "目标",
     "admin_ops": "管理员操作",
@@ -393,7 +421,6 @@
     "production": "生产制造中",
     "completed": "已完成",
     "menunggu_penawaran_admin": "等待管理员报价",
-    "menunggu_pemilihan_buyer": "等待买家选择",
     "menunggu_kesepakatan_final": "等待最终协议",
     "menunggu_pembayaran": "等待付款",
     "menunggu_verifikasi_pembayaran": "等待付款验证",
@@ -561,7 +588,9 @@
     "success_update": "密码修改成功！",
     "failed_update": "密码修改失败。",
     "batal": "取消",
-    "simpan": "保存新密码"
+    "simpan": "保存新密码",
+    "update_failed": "更新个人资料失败",
+    "update_success": "个人资料已成功更新！"
   },
   "buyer_suppliers": {
     "subtitle": "您已连接的认证中国制造工厂与供应商网络。",
@@ -617,7 +646,9 @@
     "select_shipping": "选择出货条款",
     "payment_terms": "付款方式",
     "select_payment": "选择付款方式",
-    "max_files_hint": "(最多 3 个文件，每个最大 10MB)"
+    "max_files_hint": "(最多 3 个文件，每个最大 10MB)",
+    "some_files_failed": "部分文件上传失败，请重试。",
+    "submit_failed": "提交请求失败，请重试。"
   },
   "buyer_dashboard": {
     "welcome": "欢迎回来，{name}！👋",
@@ -656,5 +687,128 @@
     "previewUnavailable": "暂无法预览，但文件可以上传",
     "file_count": "已选择 {count} 个文件",
     "file_count_plural": "已选择 {count} 个文件"
+  },
+  "supplier_register": {
+    "title": "Pendaftaran Pemasok",
+    "subtitle": "Bergabung dengan AfriChina Bridge sebagai pemasok pabrik terverifikasi",
+    "full_name": "Nama Lengkap",
+    "full_name_placeholder": "Masukkan nama lengkap Anda",
+    "email": "Alamat Email",
+    "email_placeholder": "Masukkan alamat email Anda",
+    "password": "Kata Sandi",
+    "password_placeholder": "Masukkan kata sandi (min 6 karakter)",
+    "confirm_password": "Konfirmasi Kata Sandi",
+    "confirm_password_placeholder": "Ulangi kata sandi Anda",
+    "phone": "Nomor Telepon",
+    "phone_placeholder": "Masukkan nomor telepon",
+    "company_name": "Nama Perusahaan",
+    "company_name_placeholder": "Masukkan nama perusahaan Anda",
+    "category": "Kategori",
+    "select_category": "Pilih kategori",
+    "business_license": "Lisensi Bisnis",
+    "business_license_placeholder": "Nomor lisensi (opsional)",
+    "factory_address": "Alamat Pabrik",
+    "factory_address_placeholder": "Masukkan alamat pabrik Anda di Tiongkok",
+    "must_accept_terms": "您必须同意服务条款和隐私政策。",
+    "terms_agreement": "Saya menyetujui",
+    "terms_link": "Ketentuan Layanan",
+    "terms_and": "dan",
+    "privacy_link": "Kebijakan Privasi",
+    "submit": "Daftar sebagai Pemasok",
+    "have_account": "Sudah punya akun?",
+    "login_now": "Masuk sekarang"
+  },
+  "admin_layout": {
+    "role": "管理员",
+    "toggle_sidebar": "切换侧边栏",
+    "theme_toggle_light": "切换到浅色模式",
+    "theme_toggle_dark": "切换到深色模式",
+    "notifications_title": "管理员通知",
+    "alerts_title": "管理员提醒"
+  },
+  "modal": {
+    "assign_supplier": "指派供应商",
+    "select_supplier": "-- 选择供应商 --",
+    "quoted_price": "报价（美元）",
+    "production_progress_label": "生产进度（{percent}%）",
+    "internal_notes_hidden": "⚠️ 内部备注（对买家隐藏）",
+    "upload_qc_media": "上传质检/生产资料",
+    "send_email_supplier": "向供应商发送邮件更新",
+    "status_label": "状态"
+  },
+  "progress": {
+    "production": "生产进度"
+  },
+  "image_lightbox": {
+    "thumbnail_alt": "缩略图 {idx}"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "requiredLabel": "{field}为必填项",
+    "fillAllFields": "提交前请填写所有必填字段",
+    "requiredFieldsAbove": "请更正上方的错误",
+    "email": "请输入有效的电子邮件地址",
+    "minLength": "至少 {min} 个字符",
+    "maxLength": "最多 {max} 个字符",
+    "phoneInvalid": "请输入有效的电话号码",
+    "numberInvalid": "请输入有效的数字",
+    "passwordMismatch": "密码不匹配",
+    "invalid": "值无效",
+    "selectOne": "请选择一个选项",
+    "acceptTerms": "您必须接受条款才能继续",
+    "imageRequired": "请至少上传一张图片",
+    "selectDeliveryMethod": "请选择配送方式",
+    "specifyReason": "请说明原因",
+    "driver_required": "请选择司机",
+    "fix_phone_errors": "请修正电话号码错误。",
+    "fix_errors_before_saving": "请先修正错误再保存。"
+  },
+  "set_new_password": {
+    "title": "设置新密码",
+    "subtitle": "您正在使用临时密码登录。请设置新的永久密码以继续使用。",
+    "new_password_label": "新的永久密码",
+    "confirm_password_label": "确认新密码",
+    "new_password_placeholder": "请输入至少 6 个字符",
+    "confirm_password_placeholder": "请再次输入新密码",
+    "submit": "保存并继续",
+    "submitting": "正在更新密码...",
+    "success": "密码更新成功！正在跳转到仪表盘...",
+    "failed": "更新密码失败，请重试。"
+  },
+  "confirm": {
+    "title": "确认操作",
+    "message": "您确定要继续吗？",
+    "delete_title": "删除确认",
+    "delete_message": "您确定要删除\"{name}\"吗？此操作无法撤销。",
+    "block_title": "封禁确认",
+    "block_message": "您确定要封禁\"{name}\"吗？",
+    "unblock_title": "解封确认",
+    "unblock_message": "您确定要解封\"{name}\"吗？",
+    "verify_payment_title": "验证付款",
+    "verify_payment_message": "验证并批准此付款证明吗？",
+    "reject_payment_title": "拒绝付款",
+    "reject_payment_message": "拒绝此付款证明？请说明原因。",
+    "complete_order_title": "完成订单",
+    "complete_order_message": "完成此订单？（已验证提单和收货？）",
+    "assign_driver_title": "指派司机",
+    "assign_driver_trusted": "通过可信供应商发送？",
+    "assign_driver_assigned": "指派此司机？",
+    "ship_order_title": "发货",
+    "ship_order_message": "将此订单标记为已发货？",
+    "delete_image_title": "删除图片",
+    "delete_image_message": "删除此图片？",
+    "delete_message_title": "删除消息",
+    "delete_message_message": "您确定要删除此消息吗？",
+    "yes_block": "封禁",
+    "yes_unblock": "解封",
+    "yes_delete": "删除",
+    "yes_verify": "验证",
+    "yes_complete": "完成",
+    "yes_ship": "发货",
+    "yes_assign": "指派",
+    "open_discussion_title": "开启讨论",
+    "yes_open": "开启",
+    "confirm_delivery_title": "确认收货",
+    "yes_confirm": "是的，确认收货"
   }
 }

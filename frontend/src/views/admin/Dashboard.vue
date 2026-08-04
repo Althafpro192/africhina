@@ -88,7 +88,6 @@
             <select v-model="filterStatus" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none text-xs font-semibold text-slate-700 dark:text-slate-200">
               <option value="">All Statuses</option>
               <option value="menunggu_penawaran_admin">Pending</option>
-              <option value="menunggu_pemilihan_buyer">Quoted</option>
               <option value="sedang_diproses">Processing</option>
               <option value="dikirim">Shipped</option>
               <option value="selesai">Completed</option>
@@ -414,7 +413,6 @@ const qcFileInput = ref(null)
 
 const statusOptions = computed(() => [
   { value: 'menunggu_penawaran_admin', label: t('status.menunggu_penawaran_admin'), icon: 'hourglass_empty', color: 'text-amber-500' },
-  { value: 'menunggu_pemilihan_buyer', label: t('status.menunggu_pemilihan_buyer'), icon: 'request_quote', color: 'text-indigo-500' },
   { value: 'sedang_diproses', label: t('status.processing'), icon: 'conveyor_belt', color: 'text-blue-500' },
   { value: 'dikirim', label: t('status.dikirim'), icon: 'local_shipping', color: 'text-purple-500' },
   { value: 'selesai', label: t('status.selesai'), icon: 'task_alt', color: 'text-emerald-500' },
@@ -502,7 +500,6 @@ const getStatusBadgeClass = (status) => {
   const base = 'inline-flex items-center justify-center px-2.5 py-1 rounded-full text-[10px] font-extrabold shadow-xs'
   const map = {
     'menunggu_penawaran_admin': 'text-amber-700 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
-    'menunggu_pemilihan_buyer': 'text-indigo-700 bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
     'menunggu_kesepakatan_final': 'text-indigo-700 bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
     'menunggu_pembayaran': 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
     'menunggu_verifikasi_pembayaran': 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800',

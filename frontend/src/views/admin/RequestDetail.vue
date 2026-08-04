@@ -1,4 +1,4 @@
-<template>
+ <template>
   <AdminLayout>
 
     <main class="flex-1 p-10 max-w-[1600px] mx-auto space-y-10">
@@ -223,85 +223,6 @@
               </div>
             </div>
 
-            <!-- Product Options -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950/60 rounded-2xl flex items-center justify-center">
-                    <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">list_alt</span>
-                  </div>
-                  <h2 class="text-lg font-black text-slate-900 dark:text-white">{{ $t('order_detail.product_options') }}</h2>
-                </div>
-                <button v-if="['menunggu_penawaran_admin', 'menunggu_pemilihan_buyer'].includes(request.status)" @click="showOptionsModal = true" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
-                  <span class="material-symbols-outlined text-base">add</span> + {{ $t('order_detail.add_option') }}
-                </button>
-              </div>
-              
-              <div v-if="request.options && request.options.length > 0" class="space-y-4">
-                <div v-for="opt in request.options" :key="opt.id" class="border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/60 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 relative" :class="{'ring-2 ring-indigo-600 dark:ring-indigo-500': request.selected_option_id === opt.id}">
-                  <div v-if="getOptionImages(opt).length > 0" class="w-full sm:w-32 h-32 relative shrink-0 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
-                    <img :src="getOptionImages(opt)[0]" class="w-full h-full object-cover absolute inset-0" alt="Product Option" />
-                    <div v-if="getOptionImages(opt).length > 1" class="absolute bottom-1 right-1 z-20 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded backdrop-blur-xs">
-                      +{{ getOptionImages(opt).length - 1 }}
-                    </div>
-                  </div>
-                  <div v-else class="w-full sm:w-32 h-32 rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-                    <span class="material-symbols-outlined text-3xl mb-0.5">inventory_2</span>
-                    <span class="text-[10px] font-medium">No Image</span>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex justify-between items-start mb-2">
-                      <h3 class="font-bold text-slate-900 dark:text-white text-base">{{ opt.product_name }}</h3>
-                      <div class="flex items-center gap-2">
-                        <span v-if="request.selected_option_id === opt.id" class="px-2.5 py-1 bg-indigo-600 text-white text-xs font-bold rounded-xl flex items-center gap-1 shadow-xs">
-                          <span class="material-symbols-outlined text-[14px]">check_circle</span> Selected by Buyer
-                        </span>
-                        <div v-if="request.status === 'menunggu_pemilihan_buyer'" class="flex items-center gap-1">
-                          <button @click="editSavedOption(opt)" class="p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 rounded-xl transition-colors cursor-pointer" title="Edit Option">
-                            <span class="material-symbols-outlined text-[18px]">edit</span>
-                          </button>
-                          <button @click="deleteSavedOption(opt.id)" class="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-xl transition-colors cursor-pointer" title="Delete Option">
-                            <span class="material-symbols-outlined text-[18px]">delete</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <p v-if="opt.description" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-3 leading-relaxed">{{ opt.description }}</p>
-                    
-                    <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 rounded-2xl p-3.5 mb-3">
-                      <div class="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-extrabold text-xs mb-1">
-                        <span class="material-symbols-outlined text-base">stars</span> {{ $t('order_detail.admin_recommendation') }}
-                      </div>
-                      <p class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium">{{ opt.admin_reason }}</p>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs sm:text-sm">
-                      <div>
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.price') }}</span>
-                        <span class="font-black text-indigo-600 dark:text-indigo-400">
-                          {{ opt.is_fixed_price ? 'USD ' + opt.price_min + ' (Fixed)' : 'USD ' + opt.price_min + ' - ' + opt.price_max + ' (Range)' }}
-                        </span>
-                      </div>
-                      <div v-if="opt.target_delivery">
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.target') }}</span>
-                        <span class="font-bold text-slate-800 dark:text-slate-200">{{ formatDate(opt.target_delivery).split(',')[0] }}</span>
-                      </div>
-                      <div v-if="opt.shipping_method">
-                        <span class="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider block mb-0.5">{{ $t('order_detail.shipping') }}</span>
-                        <div class="flex items-center gap-3">
-                          <span v-if="['sea', 'both'].includes(opt.shipping_method)" class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1"><span class="material-symbols-outlined text-base text-blue-500">directions_boat</span> {{ opt.est_time_sea }}</span>
-                          <span v-if="['air', 'both'].includes(opt.shipping_method)" class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1"><span class="material-symbols-outlined text-base text-cyan-500">flight</span> {{ opt.est_time_air }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="text-center py-6 text-slate-400 dark:text-slate-500 text-sm">
-                {{ $t('order_detail.no_options_admin') }}
-              </div>
-            </div>
-
             <!-- Negotiation Chat -->
             <div v-if="shouldShowChat">
               <ChatComponent :requestId="request.id" :isAdmin="true" />
@@ -319,7 +240,12 @@
                 {{ $t('order_detail.admin_ops') }}
               </h3>
               <div class="space-y-3">
-                
+
+                <button v-if="request.status === 'menunggu_penawaran_admin'" @click="submitOpenDiscussion" :disabled="loadingAction" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white rounded-2xl transition-all font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50">
+                  <span class="material-symbols-outlined text-lg">forum</span>
+                  {{ $t('request_details.open_discussion') }}
+                </button>
+
                 <button v-if="request.status === 'menunggu_kesepakatan_final'" @click="openFinalizeModal" :disabled="loadingAction" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white rounded-2xl transition-all font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50">
                   <span class="material-symbols-outlined text-lg">gavel</span>
                   Finalisasi Kesepakatan & Kirim Tagihan
@@ -419,15 +345,6 @@
                   Kirim Barang (Ship)
                 </button>
 
-                <div v-if="request.status === 'menunggu_penawaran_admin'" class="space-y-3">
-                  <div class="text-xs text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 p-3 rounded-2xl border border-indigo-200 dark:border-indigo-900/50">
-                    {{ $t('order_detail.proceed_choice_hint') }}
-                  </div>
-                  <button @click="proceedToNegotiate" :disabled="loadingAction" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 text-white rounded-2xl transition-all font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50">
-                    <span class="material-symbols-outlined text-lg">forward_to_inbox</span>
-                    {{ $t('order_detail.proceed_to_negotiate') }}
-                  </button>
-                </div>
 
                 <div v-if="request.status === 'menunggu_verifikasi_admin'" class="space-y-3">
                   <div class="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200 dark:border-amber-900/50">
@@ -439,7 +356,7 @@
                   </button>
                 </div>
                 
-                <div v-if="['selesai', 'batal', 'dispute', 'menunggu_penawaran_admin', 'menunggu_pemilihan_buyer', 'menunggu_pembayaran'].includes(request.status)" class="text-xs text-slate-400 italic text-center py-2">
+                <div v-if="['selesai', 'batal', 'dispute', 'menunggu_pembayaran'].includes(request.status)" class="text-xs text-slate-400 italic text-center py-2">
                   {{ $t('order_detail.no_action_required') }}
                 </div>
 
@@ -466,7 +383,7 @@
                   </div>
                   <div class="flex-1 pb-4">
                     <p :class="['font-bold text-xs sm:text-sm', idx === trackingLogs.length - 1 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-800 dark:text-slate-200']">
-                      {{ $t(`status.${log.status.toLowerCase()}`) }}
+                      {{ statusLabel(log.status) }}
                     </p>
                     <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{{ formatDate(log.created_at) }}</p>
                     <p v-if="log.notes" class="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">{{ log.notes }}</p>
@@ -481,167 +398,6 @@
       </div>
     </main>
     
-    <!-- Options Upload Modal / Editor -->
-    <div v-if="showOptionsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
-        <div class="flex justify-between items-center p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
-          <h2 class="text-xl font-bold text-slate-900 dark:text-white">{{ editingOptionId ? 'Edit Saved Option' : 'Add Product Options' }}</h2>
-          <button @click="closeOptionsModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        
-        <div class="p-6 overflow-y-auto flex-1 bg-slate-50/30 dark:bg-slate-950/20 space-y-5">
-
-          <!-- Pending Options List -->
-          <div v-if="pendingOptions.length > 0 && !editingOptionId" class="space-y-3 mb-6 border-b border-slate-200 dark:border-slate-800 pb-6">
-            <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Options to Save ({{ pendingOptions.length }})</h3>
-            <div v-for="(opt, idx) in pendingOptions" :key="idx" 
-                 @click="editPendingOption(idx)"
-                 class="flex gap-4 p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group relative">
-              
-              <div class="w-16 h-16 relative shrink-0">
-                <div v-for="(preview, i) in opt.photoPreviews" :key="i"
-                     class="absolute inset-0 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
-                     :style="{ zIndex: opt.photoPreviews.length - i, transform: i > 0 ? `translate(${i * 2}px, ${i * 2}px) rotate(${i}deg)` : '' }">
-                  <img :src="preview" class="w-full h-full object-cover" />
-                </div>
-                <div v-if="opt.photoPreviews.length > 1" class="absolute bottom-0 right-0 z-50 bg-black/70 text-white text-[9px] font-bold px-1 py-0.5 rounded-xs">
-                  +{{ opt.photoPreviews.length - 1 }}
-                </div>
-              </div>
-
-              <div class="flex-1 min-w-0">
-                <p class="font-bold text-sm text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{{ opt.data.product_name }}</p>
-                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ opt.data.description || 'No description' }}</p>
-                <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-1">{{ opt.data.is_fixed_price ? 'Fixed: USD ' + opt.data.price_min : 'Range: USD ' + opt.data.price_min + ' - ' + opt.data.price_max }}</p>
-              </div>
-              <div class="flex flex-col gap-2 shrink-0 self-start">
-                <button @click.stop="removePendingOption(idx)" class="text-slate-400 hover:text-rose-600 transition-colors bg-white dark:bg-slate-800 rounded-full p-1 shadow-xs border border-slate-200 dark:border-slate-700">
-                  <span class="material-symbols-outlined text-[16px]">close</span>
-                </button>
-              </div>
-              <div class="absolute inset-0 rounded-2xl ring-2 ring-indigo-600 dark:ring-indigo-400 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"></div>
-            </div>
-          </div>
-
-          <h3 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 mb-2">{{ pendingOptions.length > 0 && !editingOptionId ? 'Add Another Option' : 'New Option Details' }}</h3>
-          
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Option Name *</label>
-            <input v-model="newOption.product_name" type="text" class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/30" placeholder="e.g. Premium Solar Panel 500W">
-          </div>
-          
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Description</label>
-            <textarea v-model="newOption.description" rows="2" class="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/30" placeholder="Brand, specs, materials..."></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Product Photos (Max 5) *</label>
-            <div class="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors cursor-pointer" @click="triggerPhotoUpload" @dragover.prevent @drop.prevent="handlePhotoDrop">
-              <input type="file" ref="photoInput" class="hidden" accept="image/jpeg, image/png, image/webp" multiple @change="handlePhotoSelect" />
-              <div v-if="newOptionPhotoPreviews.length > 0" class="flex flex-wrap gap-2 justify-center">
-                <div v-for="(preview, idx) in newOptionPhotoPreviews" :key="idx" class="relative">
-                  <img :src="preview" class="h-24 w-24 object-cover rounded-xl shadow-xs border border-slate-200 dark:border-slate-700" />
-                  <button @click.stop="removeNewOptionPhoto(idx)" class="absolute -top-2 -right-2 bg-rose-600 text-white rounded-full p-0.5 hover:bg-rose-700 shadow-md cursor-pointer">
-                    <span class="material-symbols-outlined text-[14px] block">close</span>
-                  </button>
-                </div>
-                <div v-if="newOptionPhotoPreviews.length < 5" class="h-24 w-24 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-                  <span class="material-symbols-outlined">add</span>
-                </div>
-              </div>
-              <div v-else class="text-slate-400 dark:text-slate-500">
-                <span class="material-symbols-outlined text-4xl mb-2 text-indigo-600 dark:text-indigo-400">add_photo_alternate</span>
-                <p class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">Drag & drop images here or click to upload</p>
-                <p class="text-[11px] mt-1 text-slate-400 dark:text-slate-500">Format: JPG, PNG, WEBP. Max 5MB per photo.</p>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Admin's Recommendation Reason *</label>
-            <textarea v-model="newOption.admin_reason" rows="2" class="w-full px-4 py-2.5 border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/30 font-medium" placeholder="Why should the buyer choose this option?"></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-2">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Pricing Type</label>
-              <div class="flex gap-4">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" v-model="newOption.is_fixed_price" :value="true" class="text-indigo-600 focus:ring-indigo-500" />
-                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Fixed Price</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" v-model="newOption.is_fixed_price" :value="false" class="text-indigo-600 focus:ring-indigo-500" />
-                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Price Range</span>
-                </label>
-              </div>
-              <div class="flex gap-2 pt-1">
-                <div class="flex-1">
-                  <input v-model="newOption.price_min" type="number" class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white rounded-xl outline-none" :placeholder="newOption.is_fixed_price ? 'Price (USD)' : 'Min (USD)'">
-                </div>
-                <div class="flex-1" v-if="!newOption.is_fixed_price">
-                  <input v-model="newOption.price_max" type="number" class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white rounded-xl outline-none" placeholder="Max (USD)">
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-2">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Target Delivery</label>
-              <input v-model="newOption.target_delivery" type="date" class="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-900 dark:text-white rounded-xl outline-none mb-2">
-              
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Shipping Method</label>
-              <div class="flex gap-4">
-                <label class="flex items-center gap-1.5 cursor-pointer">
-                  <input type="radio" v-model="newOption.shipping_method" value="sea" class="text-indigo-600 focus:ring-indigo-500" /> <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Sea</span>
-                </label>
-                <label class="flex items-center gap-1.5 cursor-pointer">
-                  <input type="radio" v-model="newOption.shipping_method" value="air" class="text-indigo-600 focus:ring-indigo-500" /> <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Air</span>
-                </label>
-                <label class="flex items-center gap-1.5 cursor-pointer">
-                  <input type="radio" v-model="newOption.shipping_method" value="both" class="text-indigo-600 focus:ring-indigo-500" /> <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Both</span>
-                </label>
-              </div>
-              <div class="space-y-2 pt-1">
-                <div v-if="['sea', 'both'].includes(newOption.shipping_method)">
-                  <input v-model="newOption.est_time_sea" type="text" class="w-full px-3 py-1.5 text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl outline-none" placeholder="Est. Sea (e.g. 25-35 days)">
-                </div>
-                <div v-if="['air', 'both'].includes(newOption.shipping_method)">
-                  <input v-model="newOption.est_time_air" type="text" class="w-full px-3 py-1.5 text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl outline-none" placeholder="Est. Air (e.g. 5-7 days)">
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex justify-end pt-2 border-t border-slate-200 dark:border-slate-800 mt-6">
-            <div class="flex justify-end gap-3">
-              <button @click="closeOptionsModal" class="px-5 py-2.5 text-slate-600 dark:text-slate-400 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-xs cursor-pointer">Cancel</button>
-              <button v-if="editingOptionId" @click="updateSavedOption" :disabled="uploadingOption" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2 text-xs cursor-pointer">
-                <span v-if="uploadingOption" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                {{ uploadingOption ? 'Updating...' : 'Update Option' }}
-              </button>
-              <button v-else @click="addToPending" class="px-5 py-2.5 border border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 font-bold rounded-xl transition-all flex items-center gap-2 text-xs cursor-pointer">
-                <span class="material-symbols-outlined text-sm">add</span> Add to List
-              </button>
-            </div>
-          </div>
-          
-          <div v-if="!editingOptionId" class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 rounded-2xl flex justify-between items-center">
-            <div class="text-xs font-bold text-slate-600 dark:text-slate-400">Total Options: <span class="text-indigo-600 dark:text-indigo-400 text-base font-black">{{ pendingOptions.length }}</span></div>
-            <div class="flex gap-3">
-              <button @click="closeOptionsModal" class="px-4 py-2 text-slate-600 dark:text-slate-400 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-xs cursor-pointer">Cancel</button>
-              <button @click="submitAllOptions" :disabled="uploadingOption" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2 text-xs cursor-pointer">
-                <span v-if="uploadingOption" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                {{ uploadingOption ? 'Saving...' : 'Save All Options' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Finalize Deal & Send Invoice Modal -->
     <div v-if="showFinalizeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
@@ -748,6 +504,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import ChatComponent from '../../components/chat/ChatComponent.vue'
 import AdminLayout from '../../components/layout/AdminLayout.vue'
@@ -755,8 +512,10 @@ import ImageLightbox from '../../components/ui/ImageLightbox.vue'
 import { adminService } from '../../api/adminService.js'
 import { requestService } from '../../api/requestService.js'
 import { useToast } from '../../composables/useToast.js'
+import { useConfirm } from '../../composables/useConfirm.js'
 
 const { showToast } = useToast()
+const { confirm } = useConfirm()
 
 const router = useRouter()
 const route = useRoute()
@@ -766,62 +525,6 @@ const request = ref(null)
 const trackingLogs = ref([])
 const loading = ref(true)
 const loadingAction = ref(false)
-const showOptionsModal = ref(false)
-const uploadingOption = ref(false)
-const pendingOptions = ref([])
-const editingOptionId = ref(null)
-
-const getResetOption = () => ({
-  product_name: '', description: '', admin_reason: '', 
-  is_fixed_price: false, price_min: '', price_max: '', 
-  target_delivery: '', shipping_method: 'sea', 
-  est_time_sea: '', est_time_air: '' 
-})
-
-const newOption = ref(getResetOption())
-const newOptionPhotos = ref([])
-const newOptionPhotoPreviews = ref([])
-const photoInput = ref(null)
-
-const closeOptionsModal = () => {
-  showOptionsModal.value = false;
-  editingOptionId.value = null;
-  newOption.value = getResetOption();
-  newOptionPhotos.value = [];
-  newOptionPhotoPreviews.value = [];
-}
-
-const triggerPhotoUpload = () => { photoInput.value?.click() }
-
-const processPhotos = (files) => {
-  const allowedSlots = 5 - newOptionPhotos.value.length;
-  const filesToProcess = Array.from(files).slice(0, allowedSlots);
-  
-  for (const file of filesToProcess) {
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Max 5MB per photo');
-      continue;
-    }
-    newOptionPhotos.value.push(file);
-    const reader = new FileReader();
-    reader.onload = (e) => newOptionPhotoPreviews.value.push(e.target.result);
-    reader.readAsDataURL(file);
-  }
-}
-
-const removeNewOptionPhoto = (idx) => {
-  newOptionPhotos.value.splice(idx, 1);
-  newOptionPhotoPreviews.value.splice(idx, 1);
-}
-
-const handlePhotoSelect = (e) => {
-  if (e.target.files.length) processPhotos(e.target.files)
-  e.target.value = ''; // Reset input so same file can be selected again
-}
-const handlePhotoDrop = (e) => {
-  if (e.dataTransfer.files.length) processPhotos(e.dataTransfer.files)
-}
-
 // Device Detection
 const isTablet = ref(false)
 const isMobile = ref(false)
@@ -843,29 +546,38 @@ const showSidebar = computed(() => isTablet.value || isDesktop.value)
 
 // The Golden Path Stages
 const stages = [
-  'menunggu_penawaran_admin', 
-  'menunggu_pemilihan_buyer', 
-  'menunggu_kesepakatan_final', 
-  'menunggu_pembayaran', 
-  'menunggu_verifikasi_pembayaran', 
-  'sedang_diproses', 
-  'dikirim', 
-  'menunggu_verifikasi_admin', 
+  'menunggu_penawaran_admin',
+  'menunggu_kesepakatan_final',
+  'menunggu_pembayaran',
+  'menunggu_verifikasi_pembayaran',
+  'sedang_diproses',
+  'dikirim',
+  'menunggu_verifikasi_admin',
   'selesai'
 ];
+
+const { t, te } = useI18n();
+
+// Safe status label: tries $t() first, falls back to raw string with prefix
+const statusLabel = (status) => {
+  if (!status) return '';
+  const key = `status.${status.toLowerCase()}`;
+  if (te(key)) return t(key);
+  // Legacy fallback for stale statuses (e.g. menunggu_pilihan_buyer)
+  return `${t('request_details.unknown_status')}: ${status}`;
+};
 
 const timelineStages = computed(() => {
   if (!request.value) return [];
   const currentIdx = Math.max(0, stages.indexOf(request.value.status));
   
   return [
-    { value: 'menunggu_penawaran_admin', label: 'RFQ Sent', icon: 'edit_document', passed: currentIdx > 0, current: currentIdx === 0 },
-    { value: 'menunggu_pemilihan_buyer', label: 'Options', icon: 'list_alt', passed: currentIdx > 1, current: currentIdx === 1 },
-    { value: 'menunggu_kesepakatan_final', label: 'Negotiate', icon: 'forum', passed: currentIdx > 2, current: currentIdx === 2 },
-    { value: 'menunggu_pembayaran', label: 'Payment', icon: 'payments', passed: currentIdx > 3, current: currentIdx === 3 },
-    { value: 'sedang_diproses', label: 'Process', icon: 'conveyor_belt', passed: currentIdx > 5, current: currentIdx === 5 },
-    { value: 'dikirim', label: 'Shipped', icon: 'local_shipping', passed: currentIdx > 6, current: currentIdx === 6 },
-    { value: 'selesai', label: 'Complete', icon: 'task_alt', passed: currentIdx > 8, current: currentIdx === 8 }
+    { value: 'menunggu_penawaran_admin', label: t('request_details.steps.rfq'), icon: 'edit_document', passed: currentIdx > 0, current: currentIdx === 0 },
+    { value: 'menunggu_kesepakatan_final', label: t('request_details.steps.negotiate'), icon: 'forum', passed: currentIdx > 1, current: currentIdx === 1 },
+    { value: 'menunggu_pembayaran', label: t('request_details.steps.payment'), icon: 'payments', passed: currentIdx > 2, current: currentIdx === 2 },
+    { value: 'sedang_diproses', label: t('request_details.steps.process'), icon: 'conveyor_belt', passed: currentIdx > 4, current: currentIdx === 4 },
+    { value: 'dikirim', label: t('request_details.steps.shipped'), icon: 'local_shipping', passed: currentIdx > 5, current: currentIdx === 5 },
+    { value: 'selesai', label: t('request_details.steps.complete'), icon: 'task_alt', passed: currentIdx > 7, current: currentIdx === 7 }
   ];
 });
 
@@ -877,27 +589,6 @@ const progressWidth = computed(() => {
 
 const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
-
-const getOptionImages = (opt) => {
-  if (!opt) return []
-  let raw = opt.images || opt.image_url
-  if (!raw) return []
-  if (typeof raw === 'string') {
-    if (raw.startsWith('[')) {
-      try { raw = JSON.parse(raw) } catch (e) { raw = [raw] }
-    } else {
-      raw = [raw]
-    }
-  }
-  if (!Array.isArray(raw)) raw = [raw]
-  return raw.map(img => {
-    if (!img) return ''
-    if (typeof img !== 'string') return ''
-    if (img.startsWith('http')) return img
-    // Use relative path so it resolves through Vite dev server / Nginx proxy
-    return img.startsWith('/') ? img : `/${img}`
-  }).filter(Boolean)
 }
 
 const getFileIcon = (filename) => {
@@ -912,7 +603,6 @@ const getFileIcon = (filename) => {
 const getStatusClass = (status) => {
   const classes = {
     'menunggu_penawaran_admin': 'bg-gray-500',
-    'menunggu_pemilihan_buyer': 'bg-blue-500',
     'menunggu_kesepakatan_final': 'bg-indigo-500',
     'menunggu_pembayaran': 'bg-yellow-500',
     'menunggu_verifikasi_pembayaran': 'bg-orange-500',
@@ -928,8 +618,8 @@ const getStatusClass = (status) => {
 
 const shouldShowChat = computed(() => {
   if (!request.value) return false;
-  const idx = stages.indexOf(request.value.status);
-  return idx >= 2 && request.value.status !== 'batal'; // Show from 'menunggu_kesepakatan_final'
+  if (request.value.status === 'batal') return false;
+  return true; // Chat visible from RFQ submission through completion
 });
 
 const loadData = async () => {
@@ -964,153 +654,6 @@ watch(request, (newReq) => {
   }
 }, { deep: true })
 onUnmounted(() => window.removeEventListener('resize', updateDeviceType))
-
-const addToPending = () => {
-  if (!newOption.value.product_name) return showToast('Product name is required');
-  if (!newOption.value.admin_reason) return showToast('Admin reason is required');
-  if (newOptionPhotos.value.length === 0) return showToast('At least one product photo is required');
-  
-  pendingOptions.value.push({
-    data: { ...newOption.value },
-    photos: [...newOptionPhotos.value],
-    photoPreviews: [...newOptionPhotoPreviews.value]
-  });
-  newOption.value = getResetOption();
-  newOptionPhotos.value = [];
-  newOptionPhotoPreviews.value = [];
-}
-
-const removePendingOption = (idx) => {
-  pendingOptions.value.splice(idx, 1);
-}
-
-const editPendingOption = (idx) => {
-  const opt = pendingOptions.value[idx];
-  // If current form has unsaved data, push it to pending first (auto-save current work)
-  if (hasActiveFormData.value) {
-    addToPending();
-  }
-  // Load the clicked option into the form
-  newOptionPhotos.value = [...opt.photos];
-  newOptionPhotoPreviews.value = [...opt.photoPreviews];
-  // Remove from pending list since it's now being edited
-  pendingOptions.value.splice(idx, 1);
-}
-
-const hasActiveFormData = computed(() => {
-  return newOption.value.product_name !== '' || newOptionPhotos.value.length > 0;
-});
-
-const submitAllOptions = async () => {
-  // If there is active form data not added to list yet, auto-add it
-  if (hasActiveFormData.value) {
-    if (!newOption.value.product_name) return showToast('Product name is required for the active form');
-    if (!newOption.value.admin_reason) return showToast('Admin reason is required for the active form');
-    if (newOptionPhotos.value.length === 0) return showToast('At least one product photo is required for the active form');
-    
-    pendingOptions.value.push({
-      data: { ...newOption.value },
-      photos: [...newOptionPhotos.value],
-      photoPreviews: [...newOptionPhotoPreviews.value]
-    });
-    newOption.value = getResetOption();
-    newOptionPhotos.value = [];
-    newOptionPhotoPreviews.value = [];
-  }
-
-  if (pendingOptions.value.length === 0) return showToast('No options to save');
-  uploadingOption.value = true;
-  try {
-    for (const opt of pendingOptions.value) {
-      const formData = new FormData();
-      formData.append('product_name', opt.data.product_name);
-      formData.append('description', opt.data.description);
-      formData.append('price_min', opt.data.price_min);
-      formData.append('price_max', opt.data.price_max);
-      formData.append('admin_reason', opt.data.admin_reason);
-      formData.append('target_delivery', opt.data.target_delivery);
-      formData.append('shipping_method', opt.data.shipping_method);
-      formData.append('est_time_sea', opt.data.est_time_sea);
-      formData.append('est_time_air', opt.data.est_time_air);
-      formData.append('is_fixed_price', opt.data.is_fixed_price);
-      for (const photo of opt.photos) {
-        formData.append('images', photo);
-      }
-      await adminService.uploadOptions(request.value.id, formData);
-    }
-    showOptionsModal.value = false;
-    pendingOptions.value = [];
-    newOption.value = getResetOption();
-    await loadData();
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to save all options');
-  } finally {
-    uploadingOption.value = false;
-  }
-}
-
-const editSavedOption = (opt) => {
-  editingOptionId.value = opt.id;
-  newOption.value = {
-    product_name: opt.product_name || '',
-    description: opt.description || '',
-    admin_reason: opt.admin_reason || '',
-    is_fixed_price: opt.is_fixed_price || false,
-    price_min: opt.price_min || '',
-    price_max: opt.price_max || '',
-    target_delivery: opt.target_delivery ? opt.target_delivery.split('T')[0] : '',
-    shipping_method: opt.shipping_method || 'sea',
-    est_time_sea: opt.est_time_sea || '',
-    est_time_air: opt.est_time_air || ''
-  };
-  newOptionPhotos.value = [];
-  newOptionPhotoPreviews.value = [];
-  showOptionsModal.value = true;
-}
-
-const updateSavedOption = async () => {
-  if (!newOption.value.product_name) return showToast('Product name is required');
-  if (!newOption.value.admin_reason) return showToast('Admin reason is required');
-  
-  uploadingOption.value = true;
-  try {
-    const formData = new FormData();
-    formData.append('product_name', newOption.value.product_name);
-    formData.append('description', newOption.value.description);
-    formData.append('price_min', newOption.value.price_min);
-    formData.append('price_max', newOption.value.price_max);
-    formData.append('admin_reason', newOption.value.admin_reason);
-    formData.append('target_delivery', newOption.value.target_delivery);
-    formData.append('shipping_method', newOption.value.shipping_method);
-    formData.append('est_time_sea', newOption.value.est_time_sea);
-    formData.append('est_time_air', newOption.value.est_time_air);
-    formData.append('is_fixed_price', newOption.value.is_fixed_price);
-    
-    for (const photo of newOptionPhotos.value) {
-      formData.append('images', photo);
-    }
-    
-    await adminService.updateOption(request.value.id, editingOptionId.value, formData);
-    showToast('Option updated successfully', 'success');
-    closeOptionsModal();
-    await loadData();
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to update option');
-  } finally {
-    uploadingOption.value = false;
-  }
-}
-
-const deleteSavedOption = async (optionId) => {
-  if (!confirm('Are you sure you want to delete this option?')) return;
-  try {
-    await adminService.deleteOption(request.value.id, optionId);
-    showToast('Option deleted successfully', 'success');
-    await loadData();
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to delete option');
-  }
-}
 
 // Finalize Deal & Payment Setup State
 const showFinalizeModal = ref(false)
@@ -1178,14 +721,30 @@ const handleQrSelect = (e) => {
 
 const openFinalizeModal = () => {
   let calcPrice = request.value.final_price || request.value.quoted_price || ''
-  if (!calcPrice && request.value.options && request.value.options.length > 0) {
-    const selected = request.value.options.filter(o => o.is_selected)
-    const optionsToSum = selected.length > 0 ? selected : request.value.options
-    calcPrice = optionsToSum.reduce((sum, o) => sum + (parseFloat(o.price_min) || 0), 0)
-  }
-  
+
   finalizeForm.value.final_price = calcPrice
   showFinalizeModal.value = true
+}
+
+const submitOpenDiscussion = async () => {
+  const ok = await confirm({
+    title: t('confirm.open_discussion_title'),
+    message: t('request_details.open_discussion_confirm'),
+    type: 'warning',
+    confirmText: t('confirm.yes_open'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
+  loadingAction.value = true
+  try {
+    await adminService.openDiscussion(request.value.id)
+    showToast(t('request_details.discussion_opened'), 'success')
+    await loadData()
+  } catch (e) {
+    showToast(e.response?.data?.message || t('common.unknownError'))
+  } finally {
+    loadingAction.value = false
+  }
 }
 
 const submitFinalizeDeal = async () => {
@@ -1217,14 +776,21 @@ const submitFinalizeDeal = async () => {
 }
 
 const verifyPayment = async () => {
-  if (!confirm('Verifikasi dan setujui bukti pembayaran ini?')) return
+  const ok = await confirm({
+    title: t('confirm.verify_payment_title'),
+    message: t('confirm.verify_payment_message'),
+    type: 'info',
+    confirmText: t('confirm.yes_verify'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
   loadingAction.value = true
   try {
     await adminService.verifyPayment(request.value.id)
-    showToast('Pembayaran berhasil diverifikasi!', 'success')
+    showToast(t('request_details.payment_verified'), 'success')
     await loadData()
   } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to verify payment')
+    showToast(e.response?.data?.message || t('common.unknownError'))
   } finally {
     loadingAction.value = false
   }
@@ -1259,31 +825,26 @@ const shipOrder = async () => {
 }
 
 const completeOrder = async () => {
-  if(!confirm('Selesaikan pesanan? (Sudah verifikasi B/L dan penerimaan?)')) return;
+  const ok = await confirm({
+    title: t('confirm.complete_order_title'),
+    message: t('confirm.complete_order_message'),
+    type: 'warning',
+    confirmText: t('confirm.yes_complete'),
+    cancelText: t('common.cancel')
+  });
+  if (!ok) return;
   loadingAction.value = true;
   try {
     await adminService.completeOrder(request.value.id);
+    showToast(t('common.success'), 'success');
     await loadData();
   } catch (e) {
-    showToast(e.response?.data?.message || 'Failed');
+    showToast(e.response?.data?.message || t('common.unknownError'));
   } finally {
     loadingAction.value = false;
   }
 }
 
-const proceedToNegotiate = async () => {
-  if (!confirm('Lanjut langsung ke fase negosiasi tanpa memberikan opsi terpisah?')) return;
-  loadingAction.value = true;
-  try {
-    await adminService.proceedToNegotiate(request.value.id);
-    showToast('Status berubah ke fase negosiasi', 'success');
-    await loadData();
-  } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to proceed');
-  } finally {
-    loadingAction.value = false;
-  }
-}
 
 // [NEW Driver Role] Driver Assignment
 const driverForm = ref({
@@ -1303,23 +864,33 @@ const loadAvailableDrivers = async () => {
 
 const assignDriver = async () => {
   if (driverForm.value.delivery_method !== 'trusted_provider' && !driverForm.value.assigned_driver_id) {
-    return showToast('Please select a driver')
+    return showToast(t('validation.driver_required'), 'error')
   }
-  if (!confirm(`Konfirmasi: ${driverForm.value.delivery_method === 'trusted_provider' ? 'Kirim via Trusted Provider' : 'Tugaskan driver ini'}?`)) return
+  const isTrustedProvider = driverForm.value.delivery_method === 'trusted_provider'
+  const ok = await confirm({
+    title: t('confirm.assign_driver_title'),
+    message: isTrustedProvider
+      ? t('confirm.assign_driver_trusted')
+      : t('confirm.assign_driver_assigned'),
+    type: 'warning',
+    confirmText: t('confirm.yes_assign'),
+    cancelText: t('common.cancel')
+  })
+  if (!ok) return
   loadingDriver.value = true
   try {
     const payload = {
       delivery_method: driverForm.value.delivery_method,
-      assigned_driver_id: driverForm.value.delivery_method === 'trusted_provider' ? null : driverForm.value.assigned_driver_id
+      assigned_driver_id: isTrustedProvider ? null : driverForm.value.assigned_driver_id
     }
-    const updated = await adminService.assignDriver(request.value.id, payload)
+    await adminService.assignDriver(request.value.id, payload)
     // Refresh full request to get assigned_driver nested object
     await loadData()
-    showToast(driverForm.value.delivery_method === 'trusted_provider' 
-      ? 'Pengiriman dialihkan ke Trusted Provider' 
-      : 'Driver berhasil ditugaskan!', 'success')
+    showToast(isTrustedProvider
+      ? t('request_details.trusted_provider_assigned')
+      : t('request_details.driver_assigned'), 'success')
   } catch (e) {
-    showToast(e.response?.data?.message || 'Failed to assign driver')
+    showToast(e.response?.data?.message || t('common.unknownError'), 'error')
   } finally {
     loadingDriver.value = false
   }

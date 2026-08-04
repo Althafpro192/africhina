@@ -37,19 +37,13 @@
       </div>
 
       <!-- Error Alert -->
-      <div v-if="errorMsg" class="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-2xl text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
-        <span class="material-symbols-outlined text-rose-500 text-lg shrink-0">error</span>
-        <span>{{ errorMsg }}</span>
-      </div>
+      <BaseAlert v-if="errorMsg" v-model="errorMsg" type="error" :message="errorMsg" class="mb-5 text-xs sm:text-sm rounded-2xl" />
 
       <!-- Success Alert -->
-      <div v-if="successMsg" class="mb-5 p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
-        <span class="material-symbols-outlined text-emerald-500 text-lg shrink-0">check_circle</span>
-        <span>{{ successMsg }}</span>
-      </div>
+      <BaseAlert v-if="successMsg" v-model="successMsg" type="success" :message="successMsg" class="mb-5 text-xs sm:text-sm rounded-2xl" />
 
       <!-- Registration Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-5">
+      <form @submit.prevent="handleSubmit" novalidate class="space-y-4 sm:space-y-5">
         
         <!-- Full Name -->
         <div>
@@ -60,14 +54,15 @@
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <span class="material-symbols-outlined text-lg">person</span>
             </div>
-            <input 
-              v-model="form.full_name" 
-              type="text" 
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
+            <input
+              v-model="form.full_name"
+              type="text"
+              data-field="full_name"
+              :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.full_name ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               :placeholder="$t('supplier_register.full_name_placeholder')"
-              required 
             />
           </div>
+          <p v-if="errors.full_name" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.full_name }}</p>
         </div>
 
         <!-- Email Field -->
@@ -82,11 +77,12 @@
             <input
               v-model="form.email"
               type="email"
+              data-field="email"
+              :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.email ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               :placeholder="$t('supplier_register.email_placeholder')"
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
-              required
             />
           </div>
+          <p v-if="errors.email" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.email }}</p>
         </div>
 
         <!-- Password & Confirm Password -->
@@ -102,10 +98,9 @@
               <input
                 v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
+                data-field="password"
+                :class="['w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.password ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
                 :placeholder="$t('supplier_register.password_placeholder')"
-                class="w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
-                required
-                minlength="6"
               />
               <button
                 @click.prevent="showPassword = !showPassword"
@@ -117,6 +112,7 @@
                 </span>
               </button>
             </div>
+            <p v-if="errors.password" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.password }}</p>
           </div>
           <div>
             <label class="block text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
@@ -129,12 +125,12 @@
               <input
                 v-model="form.password_confirmation"
                 :type="showPassword ? 'text' : 'password'"
+                data-field="password_confirmation"
+                :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.password_confirmation ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
                 :placeholder="$t('supplier_register.confirm_password_placeholder')"
-                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
-                required
-                minlength="6"
               />
             </div>
+            <p v-if="errors.password_confirmation" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.password_confirmation }}</p>
           </div>
         </div>
 
@@ -177,14 +173,15 @@
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <span class="material-symbols-outlined text-lg">business</span>
             </div>
-            <input 
-              v-model="form.company_name" 
-              type="text" 
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
+            <input
+              v-model="form.company_name"
+              type="text"
+              data-field="company_name"
+              :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.company_name ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               :placeholder="$t('supplier_register.company_name_placeholder')"
-              required 
             />
           </div>
+          <p v-if="errors.company_name" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.company_name }}</p>
         </div>
 
         <!-- Category & Factory Address Grid -->
@@ -254,20 +251,22 @@
         </div>
 
         <!-- Terms Checkbox -->
-        <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700">
-          <input 
-            v-model="form.accept_terms" 
-            type="checkbox" 
-            id="accept_terms"
-            class="mt-0.5 w-4 h-4 text-indigo-600 bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500 cursor-pointer"
-            required
-          />
-          <label for="accept_terms" class="text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
-            {{ $t('supplier_register.terms_agreement') }}
-            <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:underline" @click.prevent>{{ $t('supplier_register.terms_link') }}</a>
-            {{ $t('supplier_register.terms_and') }}
-            <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:underline" @click.prevent>{{ $t('supplier_register.privacy_link') }}</a>
-          </label>
+        <div>
+          <div class="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700" data-field="accept_terms">
+            <input
+              v-model="form.accept_terms"
+              type="checkbox"
+              id="accept_terms"
+              class="mt-0.5 w-4 h-4 text-indigo-600 bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500 cursor-pointer"
+            />
+            <label for="accept_terms" class="text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+              {{ $t('supplier_register.terms_agreement') }}
+              <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:underline" @click.prevent>{{ $t('supplier_register.terms_link') }}</a>
+              {{ $t('supplier_register.terms_and') }}
+              <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:underline" @click.prevent>{{ $t('supplier_register.privacy_link') }}</a>
+            </label>
+          </div>
+          <p v-if="errors.accept_terms" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.accept_terms }}</p>
         </div>
 
         <!-- Submit Button (Indigo/Purple Brand Gradient) -->
@@ -303,12 +302,20 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { useTheme } from '../../composables/useTheme'
 import { authService } from '../../api/authService.js'
+import BaseAlert from '../../components/ui/BaseAlert.vue'
+import { useFormValidation } from '../../composables/useFormValidation'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const { isDark, toggleTheme } = useTheme()
+
+// Form Validation
+const { errors, clearErrors, submitGuard } = useFormValidation()
 
 // Form State
 const form = ref({
@@ -330,22 +337,25 @@ const loading = ref(false)
 const errorMsg = ref('')
 const successMsg = ref('')
 
+// Validation Rules
+const registerRules = [
+  { field: 'full_name', required: true, label: t('supplier_register.full_name') },
+  { field: 'email', required: true, email: true, label: t('supplier_register.email') },
+  { field: 'password', required: true, minLength: 6, label: t('supplier_register.password') },
+  { field: 'password_confirmation', required: true, match: 'password', label: t('supplier_register.confirm_password') },
+  { field: 'company_name', required: true, label: t('supplier_register.company_name') },
+  {
+    field: 'accept_terms',
+    required: true,
+    custom: (val) => val === true || t('supplier_register.must_accept_terms'),
+    label: t('supplier_register.terms_agreement')
+  }
+]
+
 // Methods
-const handleSubmit = async () => {
+const performSubmit = async () => {
   errorMsg.value = ''
   successMsg.value = ''
-
-  // Validate passwords match
-  if (form.value.password !== form.value.password_confirmation) {
-    errorMsg.value = 'Password and confirmation password do not match.'
-    return
-  }
-
-  // Validate password length
-  if (form.value.password.length < 6) {
-    errorMsg.value = 'Password must be at least 6 characters.'
-    return
-  }
 
   loading.value = true
 
@@ -361,9 +371,9 @@ const handleSubmit = async () => {
       factory_address: form.value.factory_address || null,
       business_license: form.value.business_license || null
     })
-    
+
     successMsg.value = 'Registration submitted successfully! Your account is pending verification. Please login with your credentials.'
-    
+
     // Reset form
     form.value = {
       full_name: '',
@@ -384,9 +394,15 @@ const handleSubmit = async () => {
       router.push('/login')
     }, 2000)
   } catch (err) {
-    errorMsg.value = err.response?.data?.message || 'Registration failed. Please try again.'
+    errorMsg.value = err.response?.data?.message || t('auth.registration_failed')
   } finally {
     loading.value = false
   }
+}
+
+const handleSubmit = () => {
+  errorMsg.value = ''
+  successMsg.value = ''
+  submitGuard(form.value, registerRules, performSubmit)
 }
 </script>

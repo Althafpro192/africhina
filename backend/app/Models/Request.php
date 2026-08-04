@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Request extends Model
 {
-    use HasUuids;
+    use HasFactory, HasUuids;
 
     protected $table = 'requests';
 
@@ -79,11 +80,6 @@ class Request extends Model
     public function driver()
     {
         return $this->belongsTo(User::class, 'assigned_driver_id');
-    }
-
-    public function options()
-    {
-        return $this->hasMany(RequestOption::class, 'request_id');
     }
 
     public function trackingLogs()

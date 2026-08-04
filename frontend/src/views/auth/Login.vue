@@ -38,15 +38,15 @@
 
       <!-- Mode Toggle Pills (Login / Register) -->
       <div class="grid grid-cols-2 p-1 mb-6 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
-        <button 
-          @click="isRegister = false; errorMsg = ''; successMsg = '';" 
+        <button
+          @click="switchMode(false)"
           class="py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200"
           :class="!isRegister ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
           {{ $t('auth.sign_in') }}
         </button>
-        <button 
-          @click="isRegister = true; errorMsg = ''; successMsg = '';" 
+        <button
+          @click="switchMode(true)"
           class="py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200"
           :class="isRegister ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-md' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
         >
@@ -81,19 +81,13 @@
       </div>
 
       <!-- Error Alert -->
-      <div v-if="errorMsg" class="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 rounded-2xl text-rose-700 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
-        <span class="material-symbols-outlined text-rose-500 text-lg shrink-0">error</span>
-        <span>{{ errorMsg }}</span>
-      </div>
+      <BaseAlert v-if="errorMsg" v-model="errorMsg" type="error" :message="errorMsg" class="mb-5 text-xs sm:text-sm rounded-2xl" />
 
       <!-- Success Alert -->
-      <div v-if="successMsg" class="mb-5 p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm flex items-center gap-2.5 shadow-sm">
-        <span class="material-symbols-outlined text-emerald-500 text-lg shrink-0">check_circle</span>
-        <span>{{ successMsg }}</span>
-      </div>
+      <BaseAlert v-if="successMsg" v-model="successMsg" type="success" :message="successMsg" class="mb-5 text-xs sm:text-sm rounded-2xl" />
 
       <!-- Auth Form -->
-      <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-5">
+      <form @submit.prevent="handleSubmit" novalidate class="space-y-4 sm:space-y-5">
         
         <!-- Company Name (Register Only) -->
         <div v-if="isRegister">
@@ -102,13 +96,14 @@
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <span class="material-symbols-outlined text-lg">business</span>
             </div>
-            <input 
-              v-model="form.company_name" 
-              type="text" 
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
-              required 
+            <input
+              v-model="form.company_name"
+              type="text"
+              data-field="company_name"
+              :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.company_name ? 'border-rose-500 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700']"
             />
           </div>
+          <p v-if="errors.company_name" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.company_name }}</p>
         </div>
 
         <div v-if="isRegister" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -119,13 +114,14 @@
               <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <span class="material-symbols-outlined text-lg">person</span>
               </div>
-              <input 
-                v-model="form.contact_person" 
-                type="text" 
-                class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
-                required 
+              <input
+                v-model="form.contact_person"
+                type="text"
+                data-field="contact_person"
+                :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.contact_person ? 'border-rose-500 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               />
             </div>
+            <p v-if="errors.contact_person" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.contact_person }}</p>
           </div>
 
           <!-- Phone -->
@@ -136,16 +132,16 @@
                 <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }}</option>
               </select>
               <div class="relative w-2/3">
-                <input 
-                  v-model="form.phone" 
-                  type="text" 
-                  class="w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm" 
-                  placeholder="812345678" 
-                  required 
+                <input
+                  v-model="form.phone"
+                  type="text"
+                  data-field="phone"
+                  :class="['w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', (errors.phone || phoneError) ? 'border-rose-500 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+                  placeholder="812345678"
                 />
               </div>
             </div>
-            <p v-if="phoneError" class="text-[11px] text-rose-500 mt-1 font-medium">{{ phoneError }}</p>
+            <p v-if="errors.phone || phoneError" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.phone || phoneError }}</p>
           </div>
         </div>
 
@@ -161,11 +157,12 @@
             <input
               v-model="email"
               type="email"
+              data-field="email"
+              :class="['w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.email ? 'border-rose-500 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               placeholder="e.g. buyer@example.com"
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
-              required
             />
           </div>
+          <p v-if="errors.email" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.email }}</p>
         </div>
 
         <!-- Password Field -->
@@ -189,9 +186,9 @@
             <input
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
+              data-field="password"
+              :class="['w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/60 border rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm', errors.password ? 'border-rose-500 dark:border-rose-500' : 'border-slate-200 dark:border-slate-700']"
               placeholder="••••••••"
-              class="w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-xs sm:text-sm"
-              required
             />
             <button
               @click.prevent="togglePassword"
@@ -203,6 +200,7 @@
               </span>
             </button>
           </div>
+          <p v-if="errors.password" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.password }}</p>
         </div>
 
         <!-- Submit Button (Indigo/Purple Brand Gradient) -->
@@ -293,12 +291,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { useTheme } from '../../composables/useTheme'
 import { authService } from '../../api/authService.js'
 import { countryCodes, validatePhone } from '../../utils/phoneValidation.js'
+import BaseAlert from '../../components/ui/BaseAlert.vue'
+import { useFormValidation } from '../../composables/useFormValidation'
+import { useToast } from '../../composables/useToast'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const { isDark, toggleTheme } = useTheme()
@@ -327,6 +331,41 @@ const forgotLoading = ref(false)
 const forgotSuccessMsg = ref('')
 const forgotErrorMsg = ref('')
 
+// Unified form for validation (combines flat + nested fields)
+const validationForm = reactive({
+  email: '',
+  password: '',
+  company_name: '',
+  contact_person: '',
+  phone: ''
+})
+
+// Keep validationForm in sync with reactive state
+watch([email, password, form], () => {
+  validationForm.email = email.value
+  validationForm.password = password.value
+  validationForm.company_name = form.value.company_name
+  validationForm.contact_person = form.value.contact_person
+  validationForm.phone = form.value.phone
+}, { deep: true, immediate: true })
+
+// Validation rules — different per mode
+const { errors, clearErrors, focusFirstInvalid, submitGuard } = useFormValidation()
+const { showToast } = useToast()
+
+const loginRules = [
+  { field: 'email', required: true, email: true, label: t('auth.email') },
+  { field: 'password', required: true, minLength: 6, label: t('auth.password') }
+]
+
+const registerRules = [
+  { field: 'company_name', required: true, label: t('auth.company_name') },
+  { field: 'contact_person', required: true, label: t('auth.contact_person') },
+  { field: 'email', required: true, email: true, label: t('auth.email') },
+  { field: 'password', required: true, minLength: 6, label: t('auth.password') },
+  { field: 'phone', required: true, label: t('auth.phone') }
+]
+
 watch(() => form.value.phone, () => {
   if (isRegister.value && form.value.phone) {
     phoneError.value = validatePhone(form.value.phone, form.value.country_code)
@@ -341,10 +380,18 @@ watch(() => form.value.country_code, () => {
   }
 })
 
+// Reset validation errors when toggling modes
+watch(isRegister, () => {
+  clearErrors()
+  errorMsg.value = ''
+  successMsg.value = ''
+})
+
 // Methods
-const handleSubmit = async () => {
+const performSubmit = async () => {
   if (isRegister.value && phoneError.value) {
-    errorMsg.value = 'Please fix the phone number errors.'
+    errorMsg.value = t('validation.fix_phone_errors')
+    showToast(t('validation.fix_phone_errors'), 'error')
     return
   }
 
@@ -382,10 +429,15 @@ const handleSubmit = async () => {
       }
     }
   } catch (err) {
-    errorMsg.value = err.response?.data?.message || 'An error occurred. Please try again.'
+    errorMsg.value = err.response?.data?.message || t('common.unknownError')
   } finally {
     loading.value = false
   }
+}
+
+const handleSubmit = () => {
+  const rules = isRegister.value ? registerRules : loginRules
+  submitGuard(validationForm, rules, performSubmit)
 }
 
 const handleForgot = () => {
@@ -413,10 +465,15 @@ const submitForgotPassword = async () => {
   }
 }
 
-const toggleMode = () => {
-  isRegister.value = !isRegister.value
+const switchMode = (mode) => {
+  isRegister.value = mode
   errorMsg.value = ''
   successMsg.value = ''
+  clearErrors()
+}
+
+const toggleMode = () => {
+  switchMode(!isRegister.value)
 }
 
 const togglePassword = () => {
@@ -431,5 +488,6 @@ const fillDemo = (role) => {
     email.value = 'buyer@africhina.com'
     password.value = 'password123'
   }
+  clearErrors()
 }
 </script>

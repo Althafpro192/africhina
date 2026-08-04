@@ -14,7 +14,7 @@
       </div>
 
       <!-- Main Content -->
-      <form @submit.prevent="submitRequest" class="space-y-6">
+      <form @submit.prevent="submitRequest" class="space-y-6" novalidate>
         
         <!-- Product Details Section -->
         <div class="bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl border border-gray-200/80 dark:border-slate-800 shadow-sm rounded-3xl p-6 sm:p-8">
@@ -33,10 +33,12 @@
               <input
                 v-model="form.productName"
                 type="text"
+                data-field="productName"
                 placeholder="e.g. Solar Panel 450W Monocrystalline"
-                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
-                required
+                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
+                :class="[errors.productName ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
               />
+              <p v-if="errors.productName" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.productName }}</p>
             </div>
 
             <div>
@@ -46,8 +48,9 @@
               <div class="relative">
                 <select
                   v-model="form.category"
-                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                  required
+                  data-field="category"
+                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                  :class="[errors.category ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 >
                   <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_category') }}</option>
                   <option value="electronics" class="dark:bg-slate-900">{{ $t('rfq_create.categories.electronics') }}</option>
@@ -59,6 +62,7 @@
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
+              <p v-if="errors.category" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.category }}</p>
             </div>
 
             <div>
@@ -68,10 +72,12 @@
               <input
                 v-model="form.subCategory"
                 type="text"
+                data-field="subCategory"
                 placeholder="e.g. Solar Panels"
-                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
-                required
+                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
+                :class="[errors.subCategory ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
               />
+              <p v-if="errors.subCategory" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.subCategory }}</p>
             </div>
           </div>
         </div>
@@ -93,10 +99,12 @@
               <textarea
                 v-model="form.specifications"
                 rows="4"
+                data-field="specifications"
                 placeholder="Describe technical specs, materials, and sizes."
-                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all resize-none text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
-                required
+                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all resize-none text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
+                :class="[errors.specifications ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
               ></textarea>
+              <p v-if="errors.specifications" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.specifications }}</p>
             </div>
             
             <div>
@@ -143,15 +151,17 @@
                 <input
                   v-model="form.quantity"
                   type="number"
+                  data-field="quantity"
                   placeholder="e.g. 500"
-                  class="flex-[2] px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
-                  required
+                  class="flex-[2] px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium placeholder-gray-400 dark:placeholder-slate-500"
+                  :class="[errors.quantity ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 />
                 <div class="relative flex-1">
                   <select
                     v-model="form.unit"
-                    class="w-full h-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                    required
+                    data-field="unit"
+                    class="w-full h-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                    :class="[errors.unit ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                   >
                     <option value="pcs" class="dark:bg-slate-900">{{ $t('rfq_create.units.pcs') }}</option>
                     <option value="kg" class="dark:bg-slate-900">{{ $t('rfq_create.units.kg') }}</option>
@@ -160,6 +170,10 @@
                   </select>
                   <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
                 </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 mt-1">
+                <p v-if="errors.quantity" class="text-[11px] text-rose-500 font-medium">{{ errors.quantity }}</p>
+                <p v-if="errors.unit" class="text-[11px] text-rose-500 font-medium">{{ errors.unit }}</p>
               </div>
             </div>
 
@@ -170,8 +184,9 @@
               <div class="relative">
                 <select
                   v-model="form.currency"
-                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                  required
+                  data-field="currency"
+                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                  :class="[errors.currency ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 >
                   <option value="USD" class="dark:bg-slate-900">USD ($)</option>
                   <option value="EUR" class="dark:bg-slate-900">EUR (€)</option>
@@ -179,6 +194,7 @@
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
+              <p v-if="errors.currency" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.currency }}</p>
             </div>
           </div>
           
@@ -190,8 +206,9 @@
               <div class="relative">
                 <select
                   v-model="form.budgetRange"
-                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                  required
+                  data-field="budgetRange"
+                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                  :class="[errors.budgetRange ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 >
                   <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_budget') }}</option>
                   <option value="1k-5k" class="dark:bg-slate-900">1,000 - 5,000</option>
@@ -201,6 +218,7 @@
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
+              <p v-if="errors.budgetRange" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.budgetRange }}</p>
             </div>
             
             <div>
@@ -210,10 +228,12 @@
               <input
                 v-model="form.deliveryTimeline"
                 type="date"
+                data-field="deliveryTimeline"
                 :min="minDeliveryDate"
-                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium"
-                required
+                class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all text-gray-800 dark:text-white font-medium"
+                :class="[errors.deliveryTimeline ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
               />
+              <p v-if="errors.deliveryTimeline" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.deliveryTimeline }}</p>
             </div>
           </div>
           
@@ -225,8 +245,9 @@
               <div class="relative">
                 <select
                   v-model="form.shippingTerms"
-                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                  required
+                  data-field="shippingTerms"
+                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                  :class="[errors.shippingTerms ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 >
                   <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_shipping') }}</option>
                   <option value="FOB" class="dark:bg-slate-900">FOB (Free on Board)</option>
@@ -236,6 +257,7 @@
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
+              <p v-if="errors.shippingTerms" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.shippingTerms }}</p>
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">
@@ -244,8 +266,9 @@
               <div class="relative">
                 <select
                   v-model="form.paymentTerms"
-                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
-                  required
+                  data-field="paymentTerms"
+                  class="w-full px-5 py-4 bg-gray-50/50 dark:bg-slate-800/80 border rounded-xl focus:ring-4 focus:ring-[#4f378a]/10 dark:focus:ring-indigo-500/20 focus:border-[#4f378a] dark:focus:border-indigo-500 outline-none transition-all appearance-none text-gray-800 dark:text-white font-medium cursor-pointer"
+                  :class="[errors.paymentTerms ? 'border-rose-500' : 'border-gray-200 dark:border-slate-700']"
                 >
                   <option value="" disabled selected class="dark:bg-slate-900">{{ $t('rfq_create.select_payment') }}</option>
                   <option value="TT" class="dark:bg-slate-900">T/T (Telegraphic Transfer)</option>
@@ -254,6 +277,7 @@
                 </select>
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none">unfold_more</span>
               </div>
+              <p v-if="errors.paymentTerms" class="text-[11px] text-rose-500 mt-1 font-medium">{{ errors.paymentTerms }}</p>
             </div>
           </div>
           
@@ -302,10 +326,7 @@
         </div>
 
         <!-- Error Message -->
-        <div v-if="errorMsg" class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2 font-medium">
-          <span class="material-symbols-outlined text-red-500">error</span>
-          {{ errorMsg }}
-        </div>
+        <BaseAlert v-if="errorMsg" v-model="errorMsg" type="error" :message="errorMsg" dismissible class="text-sm rounded-xl" />
 
         <!-- Submit Button -->
         <div class="pt-4 pb-12">
@@ -330,13 +351,20 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
 import FileUpload from '../../components/ui/FileUpload.vue'
 import FilePreviewGrid from '../../components/ui/FilePreviewGrid.vue'
+import BaseAlert from '../../components/ui/BaseAlert.vue'
+import { useFormValidation } from '../../composables/useFormValidation'
 import { requestService } from '../../api/requestService.js'
 
+const { t } = useI18n()
 const router = useRouter()
+
+// Form validation (composable: errors, validate, validateField, clearErrors, focusFirstInvalid, submitGuard, summaryMessage)
+const { errors, submitGuard } = useFormValidation()
 
 // Form state
 const form = ref({
@@ -354,6 +382,21 @@ const form = ref({
   shippingTerms: '',
   paymentTerms: ''
 })
+
+// Validation rules — labels re-translate when locale changes
+const rules = computed(() => [
+  { field: 'productName', required: true, label: t('request_details.product_name') },
+  { field: 'category', required: true, label: t('request_details.category') },
+  { field: 'subCategory', required: true, label: t('rfq_create.sub_category') },
+  { field: 'specifications', required: true, label: t('request_details.detailed_reqs') },
+  { field: 'quantity', required: true, label: t('request_details.quantity') },
+  { field: 'unit', required: true, label: t('rfq_create.units.pcs') },
+  { field: 'currency', required: true, label: t('rfq_create.currency') },
+  { field: 'budgetRange', required: true, label: t('rfq_create.budget_range') },
+  { field: 'deliveryTimeline', required: true, label: t('rfq_create.delivery_date') },
+  { field: 'shippingTerms', required: true, label: t('rfq_create.shipping_terms') },
+  { field: 'paymentTerms', required: true, label: t('rfq_create.payment_terms') }
+])
 
 // File upload state
 const uploadedFiles = ref([])
@@ -392,7 +435,7 @@ const handleDeleteFile = (fileId) => {
   }
 }
 
-const submitRequest = async () => {
+const performSubmitRequest = async () => {
   if (isSubmitting.value) return;
   isSubmitting.value = true;
   errorMsg.value = '';
@@ -402,7 +445,7 @@ const submitRequest = async () => {
     if (fileUploadRef.value) {
       const { results, errors } = await fileUploadRef.value.uploadAll()
       if (errors && errors.length > 0) {
-        errorMsg.value = 'Some files failed to upload. Please try again.'
+        errorMsg.value = t('rfq_create.some_files_failed')
         isSubmitting.value = false
         return
       }
@@ -430,14 +473,19 @@ const submitRequest = async () => {
     })
 
     await requestService.createRequest(formData);
-    
+
     // Navigate back to my requests on success
     router.push('/buyer/requests');
   } catch (error) {
     console.error('Failed to create request:', error);
-    errorMsg.value = error.response?.data?.message || 'Failed to submit request. Please try again.';
+    errorMsg.value = error.response?.data?.message || t('rfq_create.submit_failed');
   } finally {
     isSubmitting.value = false;
   }
+}
+
+const submitRequest = () => {
+  errorMsg.value = '';
+  submitGuard(form.value, rules.value, performSubmitRequest);
 }
 </script>

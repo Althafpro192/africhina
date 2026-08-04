@@ -19,7 +19,7 @@
                   
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label class="block text-sm font-medium text-gray-700">Status</label>
+                      <label class="block text-sm font-medium text-gray-700">{{ $t('modal.status_label') }}</label>
                       <select v-model="form.status" class="input-3d mt-1 block w-full">
                         <option value="pending">Pending</option>
                         <option value="quoted">Quoted</option>
@@ -31,31 +31,31 @@
                       </select>
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-gray-700">Assign Supplier</label>
+                      <label class="block text-sm font-medium text-gray-700">{{ $t('modal.assign_supplier') }}</label>
                       <select v-model="form.assigned_supplier_id" class="input-3d mt-1 block w-full">
-                        <option :value="null">-- Select Supplier --</option>
+                        <option :value="null">{{ $t('modal.select_supplier') }}</option>
                         <option v-for="sup in suppliers" :key="sup.id" :value="sup.id">{{ sup.company_name }}</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Quoted Price (USD)</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ $t('modal.quoted_price') }}</label>
                     <input v-model="form.quoted_price" type="number" step="0.01" class="input-3d mt-1 block w-full" />
                   </div>
 
                   <div v-if="['production', 'shipped'].includes(form.status)">
-                    <label class="block text-sm font-medium text-gray-700">Production Progress ({{ form.production_progress }}%)</label>
+                    <label class="block text-sm font-medium text-gray-700">{{ $t('modal.production_progress_label', { percent: form.production_progress }) }}</label>
                     <input v-model="form.production_progress" type="range" min="0" max="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-2" />
                   </div>
 
                   <div>
-                    <label class="block text-sm font-bold text-amber-700 mb-1">⚠️ Internal Notes (Hidden from Buyer)</label>
+                    <label class="block text-sm font-bold text-amber-700 mb-1">{{ $t('modal.internal_notes_hidden') }}</label>
                     <textarea v-model="form.internal_notes" rows="3" class="input-3d mt-1 block w-full py-2 bg-amber-50 border-amber-200 focus:border-amber-500 focus:ring-amber-500/30"></textarea>
                   </div>
 
                   <div v-if="['production', 'shipped'].includes(form.status)">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload QC / Production Media</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('modal.upload_qc_media') }}</label>
                     <input type="file" @change="handleFileUpload" multiple accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                   </div>
 
@@ -66,7 +66,7 @@
                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                       </svg>
-                      Send Email Update to Supplier
+                      {{ $t('modal.send_email_supplier') }}
                     </button>
                   </div>
 
@@ -77,10 +77,10 @@
           
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-100">
             <button type="submit" :disabled="isSaving" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-2 bg-primary text-base font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200">
-              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+              {{ isSaving ? $t('common.saving') : $t('request_details.save_changes') }}
             </button>
             <button type="button" @click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-6 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-              Cancel
+              {{ $t('common.cancel') }}
             </button>
           </div>
         </form>

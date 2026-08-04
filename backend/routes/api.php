@@ -43,9 +43,6 @@ $defineRoutes = function() {
         Route::post('/requests/{id}/dispute', [BuyerRequestActionsController::class, 'disputeRequest']);
         Route::post('/requests/{id}/confirm-delivery', [BuyerRequestActionsController::class, 'confirmDelivery']);
 
-        // Options Selection
-        Route::post('/requests/{id}/select-option', [BuyerRequestActionsController::class, 'selectOption']);
-
         // Payments (Buyer)
         Route::post('/payments/requests/{id}', [PaymentController::class, 'uploadPaymentProof']);
         Route::get('/payments/requests/{requestId}', [PaymentController::class, 'getBuyerPayments']);
@@ -75,12 +72,8 @@ $defineRoutes = function() {
             Route::get('/admin/requests/{id}', [AdminController::class, 'getAdminRequestById']);
             Route::put('/admin/requests/{id}', [AdminController::class, 'updateAdminRequest']);
             
-            Route::post('/admin/requests/{id}/options', [AdminRequestActionsController::class, 'uploadRequestOptions']);
-            Route::put('/admin/requests/{id}/options/{optionId}', [AdminRequestActionsController::class, 'updateRequestOption']);
-            Route::delete('/admin/requests/{id}/options/{optionId}', [AdminRequestActionsController::class, 'deleteRequestOption']);
-            
             Route::post('/admin/requests/{id}/finalize', [AdminRequestActionsController::class, 'finalizeDeal']);
-            Route::post('/admin/requests/{id}/proceed-to-negotiate', [AdminRequestActionsController::class, 'proceedToNegotiate']);
+            Route::post('/admin/requests/{id}/open-discussion', [AdminRequestActionsController::class, 'openDiscussion']);
             Route::post('/admin/requests/{id}/ship', [AdminRequestActionsController::class, 'shipOrder']);
             Route::post('/admin/requests/{id}/complete', [AdminRequestActionsController::class, 'completeOrder']);
             Route::post('/admin/requests/{id}/media', [AdminController::class, 'uploadQCMedia']);

@@ -59,7 +59,7 @@
               idx === currentIndex ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'
             ]"
           >
-            <img :src="img" :alt="`Thumbnail ${idx + 1}`" class="w-full h-full object-cover" />
+            <img :src="img" :alt="$t('image_lightbox.thumbnail_alt', { idx: idx + 1 })" class="w-full h-full object-cover" />
           </button>
         </div>
       </div>

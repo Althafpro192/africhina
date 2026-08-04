@@ -47,11 +47,6 @@ export const requestService = {
     return data;
   },
 
-  async selectOption(id, option_ids, buyer_notes = '', direct_approval = false) {
-    const { data } = await api.post(`/requests/${id}/select-option`, { option_ids, buyer_notes, direct_approval });
-    return data;
-  },
-
   async uploadPaymentProof(id, formData) {
     const { data } = await api.post(`/payments/requests/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }

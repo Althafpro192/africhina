@@ -296,22 +296,22 @@
     >
       <button @click="navigate('dashboard')" :class="['relative flex flex-col items-center p-1', activeRoute === 'dashboard' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">dashboard</span>
-        <span class="text-[10px]">Dashboard</span>
+        <span class="text-[10px]">{{ $t('nav.dashboard') }}</span>
         <span v-if="hasNotifForRoute('dashboard')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
       <button @click="navigate('requests')" :class="['relative flex flex-col items-center p-1', activeRoute === 'requests' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">request_quote</span>
-        <span class="text-[10px]">Requests</span>
+        <span class="text-[10px]">{{ $t('nav.requests') }}</span>
         <span v-if="hasNotifForRoute('requests') || hasNotifForRoute('rfq')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
       <button @click="navigate('messages')" :class="['relative flex flex-col items-center p-1', activeRoute === 'messages' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">forum</span>
-        <span class="text-[10px]">Chat Admin</span>
+        <span class="text-[10px]">{{ $t('nav.chat_admin') }}</span>
         <span v-if="hasNotifForRoute('messages')" class="absolute top-1 right-3 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
       <button @click="navigate('settings')" :class="['relative flex flex-col items-center p-1', activeRoute === 'settings' ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400']">
         <span class="material-symbols-outlined text-xl">settings</span>
-        <span class="text-[10px]">Settings</span>
+        <span class="text-[10px]">{{ $t('nav.settings') }}</span>
         <span v-if="hasNotifForRoute('settings')" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
       </button>
     </nav>

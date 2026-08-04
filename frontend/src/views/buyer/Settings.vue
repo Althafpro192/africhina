@@ -43,13 +43,19 @@
             </div>
           </div>
 
-          <form @submit.prevent="handleUpdateProfile" class="space-y-4 max-w-lg">
-            <div v-if="successMsg" class="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-semibold rounded-2xl border border-emerald-200 dark:border-emerald-800">{{ successMsg }}</div>
-            <div v-if="errorMsg" class="p-3.5 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs sm:text-sm font-semibold rounded-2xl border border-rose-200 dark:border-rose-800">{{ errorMsg }}</div>
-            
+          <form @submit.prevent="handleUpdateProfile" novalidate class="space-y-4 max-w-lg">
+            <BaseAlert v-if="successMsg" v-model="successMsg" type="success" :message="successMsg" dismissible class="text-xs sm:text-sm rounded-2xl" />
+            <BaseAlert v-if="errorMsg" v-model="errorMsg" type="error" :message="errorMsg" dismissible class="text-xs sm:text-sm rounded-2xl" />
+
             <div>
               <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.full_name') }}</label>
-              <input v-model="form.full_name" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required />
+              <input
+                v-model="form.full_name"
+                data-field="full_name"
+                type="text"
+                :class="['w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm', profileErrors.full_name ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+              />
+              <p v-if="profileErrors.full_name" class="text-[11px] text-rose-500 mt-1 font-medium">{{ profileErrors.full_name }}</p>
             </div>
 
             <div>
@@ -63,14 +69,27 @@
                 <select v-model="form.country_code" class="w-1/3 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none text-xs">
                   <option v-for="c in countryCodes" :key="c.code" :value="c.code">{{ c.code }}</option>
                 </select>
-                <input v-model="form.phone" type="text" class="w-2/3 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" placeholder="1234567890" />
+                <input
+                  v-model="form.phone"
+                  data-field="phone"
+                  type="text"
+                  :class="['w-2/3 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm', profileErrors.phone ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+                  placeholder="1234567890"
+                />
               </div>
-              <p v-if="phoneError" class="text-xs text-rose-500 mt-1">{{ phoneError }}</p>
+              <p v-if="profileErrors.phone" class="text-[11px] text-rose-500 mt-1 font-medium">{{ profileErrors.phone }}</p>
+              <p v-else-if="phoneError" class="text-xs text-rose-500 mt-1">{{ phoneError }}</p>
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.company_name') }}</label>
-              <input v-model="form.company_name" type="text" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required />
+              <input
+                v-model="form.company_name"
+                data-field="company_name"
+                type="text"
+                :class="['w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm', profileErrors.company_name ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+              />
+              <p v-if="profileErrors.company_name" class="text-[11px] text-rose-500 mt-1 font-medium">{{ profileErrors.company_name }}</p>
             </div>
             
             <div class="pt-2">
@@ -130,18 +149,32 @@
           </button>
         </div>
 
-        <form @submit.prevent="submitChangePassword" class="space-y-4">
-          <div v-if="passSuccess" class="p-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs rounded-xl border border-emerald-200 dark:border-emerald-800">{{ passSuccess }}</div>
-          <div v-if="passError" class="p-3 bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs rounded-xl border border-rose-200 dark:border-rose-800">{{ passError }}</div>
+        <form @submit.prevent="submitChangePassword" novalidate class="space-y-4">
+          <BaseAlert v-if="passSuccess" v-model="passSuccess" type="success" :message="passSuccess" dismissible class="text-xs rounded-xl" />
+          <BaseAlert v-if="passError" v-model="passError" type="error" :message="passError" dismissible class="text-xs rounded-xl" />
 
           <div>
             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.new_password') }}</label>
-            <input v-model="newPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required :placeholder="$t('settings_page.min_chars')" />
+            <input
+              v-model="newPassword"
+              data-field="newPassword"
+              type="password"
+              :class="['w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm', passErrors.newPassword ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+              :placeholder="$t('settings_page.min_chars')"
+            />
+            <p v-if="passErrors.newPassword" class="text-[11px] text-rose-500 mt-1 font-medium">{{ passErrors.newPassword }}</p>
           </div>
 
           <div>
             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ $t('settings_page.confirm_new_password') }}</label>
-            <input v-model="confirmPassword" type="password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm" required :placeholder="$t('settings_page.repeat_pass')" />
+            <input
+              v-model="confirmPassword"
+              data-field="confirmPassword"
+              type="password"
+              :class="['w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 text-xs sm:text-sm', passErrors.confirmPassword ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700']"
+              :placeholder="$t('settings_page.repeat_pass')"
+            />
+            <p v-if="passErrors.confirmPassword" class="text-[11px] text-rose-500 mt-1 font-medium">{{ passErrors.confirmPassword }}</p>
           </div>
 
           <div class="flex justify-end gap-3 pt-3">
@@ -164,13 +197,30 @@ import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 import BuyerLayout from '../../components/layout/BuyerLayout.vue'
+import BaseAlert from '../../components/ui/BaseAlert.vue'
 import { authService } from '../../api/authService'
 import { countryCodes, validatePhone } from '../../utils/phoneValidation'
 import { getAvatarUrl } from '../../utils/avatar'
 import { useToast } from '../../composables/useToast'
+import { useFormValidation } from '../../composables/useFormValidation'
 import { compressImage } from '../../utils/imageCompressor'
 
 const { showToast } = useToast()
+
+// Two separate validation scopes: profile + password modal
+const { errors: profileErrors, submitGuard: profileSubmitGuard } = useFormValidation()
+const { errors: passErrors, submitGuard: passSubmitGuard } = useFormValidation()
+
+const profileRules = [
+  { field: 'full_name', required: true, label: t('settings_page.full_name') },
+  { field: 'company_name', required: true, label: t('settings_page.company_name') }
+  // phone is optional here; live phoneError (phoneValidation util) still flags malformed numbers
+]
+
+const passRules = [
+  { field: 'newPassword', required: true, minLength: 6, label: t('settings_page.new_password') },
+  { field: 'confirmPassword', required: true, match: 'newPassword', label: t('settings_page.confirm_new_password') }
+]
 
 // Safe LocalStorage JSON parse with fallback
 const getStoredUser = () => {
@@ -268,38 +318,35 @@ const handleAvatarChange = async (e) => {
   }
 }
 
-const handleUpdateProfile = async () => {
+const performUpdateProfile = async () => {
   if (phoneError.value) {
-    errorMsg.value = 'Please fix the errors before saving.'
+    errorMsg.value = t('validation.fix_errors_before_saving')
     return
   }
-  
+
   saving.value = true
   successMsg.value = ''
   errorMsg.value = ''
   try {
     const data = await authService.updateProfile(form.value)
-    successMsg.value = 'Profile updated successfully!'
+    successMsg.value = t('settings_page.update_success')
     const updatedUser = { ...user.value, ...data.user }
     localStorage.setItem('user', JSON.stringify(updatedUser))
     user.value = updatedUser
   } catch (error) {
-    errorMsg.value = error.response?.data?.message || 'Failed to update profile'
+    errorMsg.value = error.response?.data?.message || t('settings_page.update_failed')
   } finally {
     saving.value = false
   }
 }
 
-const submitChangePassword = async () => {
-  if (newPassword.value !== confirmPassword.value) {
-    passError.value = t('settings_page.error_match')
-    return
-  }
-  if (newPassword.value.length < 6) {
-    passError.value = t('settings_page.error_min')
-    return
-  }
+const handleUpdateProfile = () => {
+  errorMsg.value = ''
+  successMsg.value = ''
+  profileSubmitGuard(form.value, profileRules, performUpdateProfile)
+}
 
+const performChangePassword = async () => {
   passLoading.value = true
   passSuccess.value = ''
   passError.value = ''
@@ -317,5 +364,13 @@ const submitChangePassword = async () => {
   } finally {
     passLoading.value = false
   }
+}
+
+const submitChangePassword = () => {
+  passError.value = ''
+  passSuccess.value = ''
+  // Pass a synthetic object so the match rule can compare newPassword === confirmPassword
+  const passForm = { newPassword: newPassword.value, confirmPassword: confirmPassword.value }
+  passSubmitGuard(passForm, passRules, performChangePassword)
 }
 </script>
